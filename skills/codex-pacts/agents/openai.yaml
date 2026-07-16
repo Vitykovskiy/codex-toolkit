@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Pacts"
+  short_description: "Route legacy requests to separate pact skills"
+  default_prompt: "Use $codex-pacts only as a compatibility router for this task."

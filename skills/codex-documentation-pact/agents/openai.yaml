@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Documentation Pact"
+  short_description: "Apply shared documentation rules"
+  default_prompt: "Apply the shared documentation pact to documentation work."

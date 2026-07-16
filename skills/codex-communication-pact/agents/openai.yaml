@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Communication Pact"
+  short_description: "Apply the universal communication pact"
+  default_prompt: "Apply the universal communication pact exactly for this task."

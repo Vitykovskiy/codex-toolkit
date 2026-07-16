@@ -1,0 +1,917 @@
+﻿{
+    "format":  "codex-toolkit-backup-manifest/v1",
+    "created_at":  "2026-07-15",
+    "backup_root":  "backup/2026-07-15",
+    "sources":  [
+                    {
+                        "source_path":  "C:/Users/v9875/Desktop/work/barsim-4.0-frontend-2",
+                        "backup_path":  "barsim-4.0-frontend-2",
+                        "preserved":  [
+                                          "AGENTS.md",
+                                          ".gitignore",
+                                          ".codex/** excluding .codex/tmp/**, including .codex/.git/**"
+                                      ]
+                    },
+                    {
+                        "source_path":  "C:/Users/v9875/Desktop/work/barsim-4.0-frontend",
+                        "backup_path":  "barsim-4.0-frontend",
+                        "preserved":  [
+                                          "AGENTS.md",
+                                          ".gitignore",
+                                          ".codex/** excluding .codex/tmp/**, including .codex/.git/**"
+                                      ]
+                    },
+                    {
+                        "source_path":  "C:/Users/v9875/.codex/config.toml",
+                        "backup_path":  "user-codex/config.toml",
+                        "preserved":  [
+                                          "config.toml"
+                                      ]
+                    },
+                    {
+                        "source_path":  "C:/Users/v9875/.codex/AGENTS.md",
+                        "backup_path":  null,
+                        "preserved":  [
+
+                                      ],
+                        "status":  "absent at backup time"
+                    }
+                ],
+    "files":  [
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/COMMIT_EDITMSG",
+                      "bytes":  34,
+                      "sha256":  "0826b540440e7db9f2c372936d34a780c52006e62a3dfb928a98ee49ec5e788b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/config",
+                      "bytes":  130,
+                      "sha256":  "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/description",
+                      "bytes":  73,
+                      "sha256":  "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/HEAD",
+                      "bytes":  21,
+                      "sha256":  "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/applypatch-msg.sample",
+                      "bytes":  478,
+                      "sha256":  "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/commit-msg.sample",
+                      "bytes":  896,
+                      "sha256":  "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/fsmonitor-watchman.sample",
+                      "bytes":  4726,
+                      "sha256":  "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/post-update.sample",
+                      "bytes":  189,
+                      "sha256":  "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-applypatch.sample",
+                      "bytes":  424,
+                      "sha256":  "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-commit.sample",
+                      "bytes":  1649,
+                      "sha256":  "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-merge-commit.sample",
+                      "bytes":  416,
+                      "sha256":  "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/prepare-commit-msg.sample",
+                      "bytes":  1492,
+                      "sha256":  "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-push.sample",
+                      "bytes":  1374,
+                      "sha256":  "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-rebase.sample",
+                      "bytes":  4898,
+                      "sha256":  "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/pre-receive.sample",
+                      "bytes":  544,
+                      "sha256":  "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/push-to-checkout.sample",
+                      "bytes":  2783,
+                      "sha256":  "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/sendemail-validate.sample",
+                      "bytes":  2308,
+                      "sha256":  "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/hooks/update.sample",
+                      "bytes":  3650,
+                      "sha256":  "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/index",
+                      "bytes":  2190,
+                      "sha256":  "9f914519641dbea661b2e942e88565679af5afac0b4231fdab0938bcf9aa2aed"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/info/exclude",
+                      "bytes":  240,
+                      "sha256":  "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/logs/HEAD",
+                      "bytes":  530,
+                      "sha256":  "a7e6f16abef42867cc32b3693613c184c1e4e623adca59a695b72c2db5aaa568"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/logs/refs/heads/main",
+                      "bytes":  530,
+                      "sha256":  "a7e6f16abef42867cc32b3693613c184c1e4e623adca59a695b72c2db5aaa568"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/03/b267bca11b0d5c954601cd7a9ee56d60a64529",
+                      "bytes":  10519,
+                      "sha256":  "d6e9c4772517611666774940cca01fe0e95f596eb918e38b4059d3cde5ff52a1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/04/855fe78a2050b4ee260c7e08a71dc3bb3c078f",
+                      "bytes":  2013,
+                      "sha256":  "6198fb39002dd7a69bcb250e832b7962b2f7cccc6ecca48888169a8f807af308"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/08/b00d0fbb34c638b0153b886e2cc09da83d9d9b",
+                      "bytes":  447,
+                      "sha256":  "88d23ebb16c3844fb795a13f99369670012fbcd44bfd6fababf79c2c2c98607b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/09/d6f8dc819e558c7c8d99d5a74dfdd097500159",
+                      "bytes":  57,
+                      "sha256":  "a9c83780655b70ee8d526657df8fd9c56c971e97295b37adedd38fa521119380"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/13/109e0486eeda9a4a3efb47c77d3e4ca8ae2c11",
+                      "bytes":  1107,
+                      "sha256":  "3c0a09b79eeb4f95001edd6549c17e3837934c08d147d3aa1b7bc7d891facd82"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/18/aa83f85069a947511b5ba3e81af9ebdb3a723b",
+                      "bytes":  1279,
+                      "sha256":  "5b05be26635ab38c70618e09542f3ebc623a2f131d7ea5bc2a545b1c7099efc1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/1a/d8eb366e8496e0ab665d86afb1c0cbe1ab8387",
+                      "bytes":  448,
+                      "sha256":  "2201af700a7159ad0a694587dfc3cd77310044d47a93f259a5966f751a13a464"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/27/30e5b3b25d8cf447fba41b317fdfe76cb21b61",
+                      "bytes":  107,
+                      "sha256":  "30ec914af922b09b82ab7d4608ef6be41dbb487e52059442e6eaeee1e4b9b6e8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/28/b03874cb7b4b47fd1667679cbe37bb50ea9082",
+                      "bytes":  193,
+                      "sha256":  "d1321eb92884a96431c68adfbfc3c335ede5138c33e520d16302d73d1ad3f245"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/2c/e4fccb85361e1c1ade31f1ce350510fde9fcb1",
+                      "bytes":  2544,
+                      "sha256":  "ecff9469753be0216fae4937f249ffba628a4f4554267f8d2f977aafc3b3b284"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/31/a307d1f324b253c78a6ceeb4a4e6ac3bf66dea",
+                      "bytes":  1702,
+                      "sha256":  "44e2c86facf3fe5e3d7acf743785ffb72f1df4eacf7f51b9741ee55f99471e41"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/42/62079926cb01b90676a9ad77831d0c78de5821",
+                      "bytes":  636,
+                      "sha256":  "709c0daec5f39023d2b8edc6117e7941b9ddf7dfdd83eb11d4af2e8d2da7a3b8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/44/cff759860a2cb7fe52058e4c15d6eeb7ca9356",
+                      "bytes":  968,
+                      "sha256":  "b02686ef6ee89e37b19a601e34a668bf5ac15fb2672c7fad57da4c7aec41b2a2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/51/08b97006755f672bd049c89761b1dc0aa714d3",
+                      "bytes":  1132,
+                      "sha256":  "1faf01449d1426963bb1d185cd0738981acdefd5d6cfd7f9e6f564a5dfc9ffe1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/54/4fec1b56ddd169bb58c1d42a9071f231c07e2a",
+                      "bytes":  1205,
+                      "sha256":  "5c78f213b6aee9e808a0d1399a3d774005534dabb3313be2857ce6d6dc46771d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/56/1cd90667d4d27b4b3ead3b6f08e9487d43583f",
+                      "bytes":  447,
+                      "sha256":  "9429bd5c2527766333c90407cd0268a566ed584062e4f3f31e9123994a13f0c2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/56/1e011aa8d9d41341ae165bb95163b0d1348e78",
+                      "bytes":  1018,
+                      "sha256":  "670c66d5ce45331a1f183f40212842b6fd3fa43b951485ecc29bfeaff721d861"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/59/cdfa1267eddaaf67fbe37a9d6627204b99fbf1",
+                      "bytes":  586,
+                      "sha256":  "adf974543210abb63835694275e8dc4650daf0997009fa1d6e35442c71c8de57"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/64/37a5f36f6efcef52f7abf87900c42211e10996",
+                      "bytes":  1248,
+                      "sha256":  "d3b10253cd46be5d71e8a491d3aedb061c94294bf113edc5d13976d5ceced4f4"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/6e/6023602e020f57551cb3be3e36ae7e5c04d093",
+                      "bytes":  1133,
+                      "sha256":  "b264581abc91cb9cdb98ef090b42b20b6e521508927e2dc86e015242c177e2ef"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/8d/54e8865237c97615784d66aeb7c06b7a4c6e71",
+                      "bytes":  200,
+                      "sha256":  "8ee2d3401894b44282b3e3f94e5765aadfdc5531d6a61304b173cd67f838a6cf"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/92/1ad5f8c89bd795c5160fee1e3cfddbdff1eac1",
+                      "bytes":  648,
+                      "sha256":  "48b58c8df976136c89cc069c53d11749602bbc0832ed99e1a99d3f67a362be5c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/98/448f304885d976ccd16c60d57d188b59a0f0e0",
+                      "bytes":  157,
+                      "sha256":  "0322b9463479dd1f154ccc6210c2605d3731b82b64b3968913feba8f930658f2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/a8/f5566676311bebbba91c924c0f4e7ac1d72e57",
+                      "bytes":  3296,
+                      "sha256":  "5292ff7e84bfc11e68fb74d38fa4568a30e718c8b0eb3b191f5e8c07a44a693e"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/b4/44bc57b601e795eff93d446f17add90daae940",
+                      "bytes":  2841,
+                      "sha256":  "53a2f548fea1bca38fb0da873f1b0f22ee2328c3b321ff765f35a6a7c87792e1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/b5/79fee98c30b7b35e0696370ca00084bfa7fa35",
+                      "bytes":  1086,
+                      "sha256":  "bfde65a27a437ea17b91c59c35dc9995c3dc580539598b8c79873ad6f6613faa"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/be/d0b05fb2e10f978a4cb1882628366903b8077a",
+                      "bytes":  5982,
+                      "sha256":  "ed7b88b871233b2e56213eff5957404d2148ba4ad71bf478d0ea806d5df33c39"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/be/e4f8f7a99ab6de6cffcdebd1a828ebee6a1f8a",
+                      "bytes":  1128,
+                      "sha256":  "a1265bff55717ad136745ce51be75e828d93cebdd3bd87d6755df110e8a1232d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/c1/319b91a502b9a4c8b2b55e877d300b6ec9d38b",
+                      "bytes":  3727,
+                      "sha256":  "08c4f693e8d35ade895d8b01529ca09bfa9f55c04e704411e5e0fecf541a6a08"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/c9/81b3283726313512c1f88ebd79664ab519d6c1",
+                      "bytes":  693,
+                      "sha256":  "3652e78e41774ef111514bca49bd5a701621080b9cc15d6d21c6624528d11c79"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/cc/b4992f33af1816fb54d771259f0fd93aefa09f",
+                      "bytes":  129,
+                      "sha256":  "b79fb619c65929285f5f4adc15bc8211e11efad23fc4fd0cb562b11910a870c1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/cf/e0f0b5558f3c2403d49eaa637d480be3572338",
+                      "bytes":  1103,
+                      "sha256":  "72677ed7bf055d6b3f16f1eb0a5594e192d9e723bf777c93e046c13acbc3255a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/db/913fb1da4545f75205fe3bb6a74953e6f9480d",
+                      "bytes":  624,
+                      "sha256":  "31dc50eccd0c503a6b0ace49beb90f8c5519bd3a55cca9e42fe3d06945ef5c1f"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/e0/41e59fa7772d3408953cc57603e3b6ee21480a",
+                      "bytes":  672,
+                      "sha256":  "cc7178fe827132bfd31879d426490e98a66bd11ffb0e308af8cfba09fdcb0b01"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/e0/8754c4edc31c2ad5a241fa3520b9c7daba0d1e",
+                      "bytes":  669,
+                      "sha256":  "8d6b2fb3a65e0347c9c48e19859300a0af06a3945c87a7bcc3724ac19a1b5d6a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/e1/4fdd712c8f42534788a21e15c556c532ce0f0b",
+                      "bytes":  289,
+                      "sha256":  "ce5e6708f5bfc65e19a20eac962eb676f75616dc40e75e932918af1bd59981fc"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/objects/f0/f0fd6659c56b89711c1bf15d85d0ec4fed54ff",
+                      "bytes":  2478,
+                      "sha256":  "4236f85661246727e041ff3f0fb7f93ddd480ef3d99ab7b8c7bc283aac4dbeff"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/refs/heads/main",
+                      "bytes":  41,
+                      "sha256":  "847a6def7b5714554d876a6fbac61c3cbf664a5046bb969f96dadd357c16f38a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/tgitchangelist",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/tortoisegit.data",
+                      "bytes":  2524,
+                      "sha256":  "d138795136bf27f6e13028c7c49a96d6be8ec954bcc31d4876397a81b6202d8d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.git/tortoisegit.index",
+                      "bytes":  96,
+                      "sha256":  "4468ba460f1e2770b0677b3da9d947d9d1434ed6261c931c37d2a861241576b5"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/.gitignore",
+                      "bytes":  41,
+                      "sha256":  "feacb08c6806345b2b62e64c3edf81dea1cc2e56d1b0ce84c0ba7c0ee0b3dd33"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/architect.toml",
+                      "bytes":  1966,
+                      "sha256":  "326b5044fcdf4b93ef2b5b6705d3db6ab49fca268d0e7c5ceacdc9cccc9f1b80"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/decomposer.toml",
+                      "bytes":  2199,
+                      "sha256":  "3956921895947abd416a781f8e22133655996380231efde8d573caf9d61622bb"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/developer.toml",
+                      "bytes":  2296,
+                      "sha256":  "7a2b97d8f7da2b72b4d51b10265519f9dbfc8ddb1ad7e4f29f675ed2b52f7145"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/integration-reviewer.toml",
+                      "bytes":  2584,
+                      "sha256":  "01abaa4f74935adc60ba5b89c369c1815eda278ce86a8d70ffcaf7585dab90f0"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/mechanical.toml",
+                      "bytes":  2244,
+                      "sha256":  "b43cfcd0be58dafe9553b3fda643aa3c221971e22dd5b73e62cae1781c848524"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/reviewer.toml",
+                      "bytes":  2252,
+                      "sha256":  "f12229519fb03b4fd6e165e8cd4c745e2df6a240aa979e0aa3c9ff2112d97015"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/reviewer-owner.toml",
+                      "bytes":  2307,
+                      "sha256":  "a9f994d3a7be66103a57888c62458694a9dd075064bd0dd698e08a2e08b8f37f"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/agents/scout.toml",
+                      "bytes":  1821,
+                      "sha256":  "71701390a38790663c553dcb780f08ede1d699737071c855eff20179d3fa9932"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/communication-pact.md",
+                      "bytes":  6886,
+                      "sha256":  "107eb0e914883d14d97c825462ebf88347cd4df309ee05d5e41cfc2a1bebfcc8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/complex-task-orchestration.md",
+                      "bytes":  10751,
+                      "sha256":  "494f7ba6b1419d4b787b4676cb934f79def8d2cdb941eec346caba346313daf2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/config.toml",
+                      "bytes":  4454,
+                      "sha256":  "ac3755eec00acf2ba7c1a80e932c0156dbcf2499e3265a5d750208f1b345cd32"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/continuity/create-handoff.md",
+                      "bytes":  5944,
+                      "sha256":  "03665c9de4af01bea7c0c4201da836e702e6c33f72bf740a8951deaaa0a1333c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/continuity/resume-orchestration.md",
+                      "bytes":  5960,
+                      "sha256":  "da788b75f63c66af83498576f64cf628af1d2e10c5932e9b90996e45b7c91195"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/development-pact.md",
+                      "bytes":  15417,
+                      "sha256":  "5f695e9eaa918974eed84f93176ae8d7b07a345897bbd2310093d15416af0771"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/documentation-pact.md",
+                      "bytes":  28994,
+                      "sha256":  "0267fc4666bed3b1bc41bd6d9ef45997311a0f7ed62f335c6c538c4cc2072731"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/README.md",
+                      "bytes":  1303,
+                      "sha256":  "bf22d7fcc1e38e16cf588ee5b30d25b7540d643b4d0bde5e61154e61234dc581"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/templates/AGENTS.fragment.md",
+                      "bytes":  2320,
+                      "sha256":  "5ade6572bcdb20541c2d91194c4d51e85f4b381057f26926b95e3ab8fa23cafe"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/templates/handoff.md",
+                      "bytes":  2929,
+                      "sha256":  "eee4928ef86acc2f16e535ac6aefebf5c4ffb8b2b60831ba2d9ee682f39aeead"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/templates/report.md",
+                      "bytes":  1172,
+                      "sha256":  "9c8dc7f7d1da3b707601050f757f1d2ce1430773cfa764951e49f24c20bce4ee"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/templates/task.md",
+                      "bytes":  1169,
+                      "sha256":  "a725d1a30cc0fbd71bd76d074e7b7a86fb2dec0e63b608a1b24c1291640ed1c2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/ui-analysis-pact.md",
+                      "bytes":  8000,
+                      "sha256":  "899b594e92937549bb082ec268b275e17c1c196d02956fcb645c13188732063e"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.codex/ui-reference.md",
+                      "bytes":  4347,
+                      "sha256":  "8d7eb2fdd369250df58b86b3958a472fcefb7209368027ca1e49d84f16921d03"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/.gitignore",
+                      "bytes":  809,
+                      "sha256":  "38ac82b40a4ab60d8e2de8ced10f5be264eb3e6eb3104c9f044a36ede54446a1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend/AGENTS.md",
+                      "bytes":  22240,
+                      "sha256":  "4bacd135eca3b153ef1b045e15866d263e950a835e86e8c74702f14ee7a4e0ad"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/COMMIT_EDITMSG",
+                      "bytes":  34,
+                      "sha256":  "0826b540440e7db9f2c372936d34a780c52006e62a3dfb928a98ee49ec5e788b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/config",
+                      "bytes":  130,
+                      "sha256":  "05becdb83bb897f6103c8d91439e2e9092144edf5b3955a746fce4975c12bfdc"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/description",
+                      "bytes":  73,
+                      "sha256":  "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/gk/config",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/HEAD",
+                      "bytes":  21,
+                      "sha256":  "28d25bf82af4c0e2b72f50959b2beb859e3e60b9630a5e8c603dad4ddb2b6e80"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/applypatch-msg.sample",
+                      "bytes":  478,
+                      "sha256":  "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/commit-msg.sample",
+                      "bytes":  896,
+                      "sha256":  "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/fsmonitor-watchman.sample",
+                      "bytes":  4726,
+                      "sha256":  "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/post-update.sample",
+                      "bytes":  189,
+                      "sha256":  "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-applypatch.sample",
+                      "bytes":  424,
+                      "sha256":  "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-commit.sample",
+                      "bytes":  1649,
+                      "sha256":  "57185b7b9f05239d7ab52db045f5b89eb31348d7b2177eab214f5eb872e1971b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-merge-commit.sample",
+                      "bytes":  416,
+                      "sha256":  "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/prepare-commit-msg.sample",
+                      "bytes":  1492,
+                      "sha256":  "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-push.sample",
+                      "bytes":  1374,
+                      "sha256":  "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-rebase.sample",
+                      "bytes":  4898,
+                      "sha256":  "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/pre-receive.sample",
+                      "bytes":  544,
+                      "sha256":  "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/push-to-checkout.sample",
+                      "bytes":  2783,
+                      "sha256":  "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/sendemail-validate.sample",
+                      "bytes":  2308,
+                      "sha256":  "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/hooks/update.sample",
+                      "bytes":  3650,
+                      "sha256":  "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/index",
+                      "bytes":  2190,
+                      "sha256":  "e41e8b4af6e39471be1197bc32fbf5038aff5d8e1ebfd03456bf323eadf95f3a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/info/exclude",
+                      "bytes":  240,
+                      "sha256":  "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/logs/HEAD",
+                      "bytes":  345,
+                      "sha256":  "78126c6971d7f317e7f56d63581924bc43a2265c19c635cbc6b9706ac65d3d09"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/logs/refs/heads/main",
+                      "bytes":  345,
+                      "sha256":  "78126c6971d7f317e7f56d63581924bc43a2265c19c635cbc6b9706ac65d3d09"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/03/b267bca11b0d5c954601cd7a9ee56d60a64529",
+                      "bytes":  10519,
+                      "sha256":  "d6e9c4772517611666774940cca01fe0e95f596eb918e38b4059d3cde5ff52a1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/04/855fe78a2050b4ee260c7e08a71dc3bb3c078f",
+                      "bytes":  2013,
+                      "sha256":  "6198fb39002dd7a69bcb250e832b7962b2f7cccc6ecca48888169a8f807af308"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/08/b00d0fbb34c638b0153b886e2cc09da83d9d9b",
+                      "bytes":  447,
+                      "sha256":  "88d23ebb16c3844fb795a13f99369670012fbcd44bfd6fababf79c2c2c98607b"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/09/d6f8dc819e558c7c8d99d5a74dfdd097500159",
+                      "bytes":  57,
+                      "sha256":  "a9c83780655b70ee8d526657df8fd9c56c971e97295b37adedd38fa521119380"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/13/109e0486eeda9a4a3efb47c77d3e4ca8ae2c11",
+                      "bytes":  1107,
+                      "sha256":  "3c0a09b79eeb4f95001edd6549c17e3837934c08d147d3aa1b7bc7d891facd82"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/18/aa83f85069a947511b5ba3e81af9ebdb3a723b",
+                      "bytes":  1279,
+                      "sha256":  "5b05be26635ab38c70618e09542f3ebc623a2f131d7ea5bc2a545b1c7099efc1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/27/30e5b3b25d8cf447fba41b317fdfe76cb21b61",
+                      "bytes":  107,
+                      "sha256":  "30ec914af922b09b82ab7d4608ef6be41dbb487e52059442e6eaeee1e4b9b6e8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/2c/e4fccb85361e1c1ade31f1ce350510fde9fcb1",
+                      "bytes":  2544,
+                      "sha256":  "ecff9469753be0216fae4937f249ffba628a4f4554267f8d2f977aafc3b3b284"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/31/a307d1f324b253c78a6ceeb4a4e6ac3bf66dea",
+                      "bytes":  1702,
+                      "sha256":  "44e2c86facf3fe5e3d7acf743785ffb72f1df4eacf7f51b9741ee55f99471e41"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/42/62079926cb01b90676a9ad77831d0c78de5821",
+                      "bytes":  636,
+                      "sha256":  "709c0daec5f39023d2b8edc6117e7941b9ddf7dfdd83eb11d4af2e8d2da7a3b8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/44/cff759860a2cb7fe52058e4c15d6eeb7ca9356",
+                      "bytes":  968,
+                      "sha256":  "b02686ef6ee89e37b19a601e34a668bf5ac15fb2672c7fad57da4c7aec41b2a2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/51/08b97006755f672bd049c89761b1dc0aa714d3",
+                      "bytes":  1132,
+                      "sha256":  "1faf01449d1426963bb1d185cd0738981acdefd5d6cfd7f9e6f564a5dfc9ffe1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/54/4fec1b56ddd169bb58c1d42a9071f231c07e2a",
+                      "bytes":  1205,
+                      "sha256":  "5c78f213b6aee9e808a0d1399a3d774005534dabb3313be2857ce6d6dc46771d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/56/1cd90667d4d27b4b3ead3b6f08e9487d43583f",
+                      "bytes":  447,
+                      "sha256":  "9429bd5c2527766333c90407cd0268a566ed584062e4f3f31e9123994a13f0c2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/56/1e011aa8d9d41341ae165bb95163b0d1348e78",
+                      "bytes":  1018,
+                      "sha256":  "670c66d5ce45331a1f183f40212842b6fd3fa43b951485ecc29bfeaff721d861"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/59/cdfa1267eddaaf67fbe37a9d6627204b99fbf1",
+                      "bytes":  586,
+                      "sha256":  "adf974543210abb63835694275e8dc4650daf0997009fa1d6e35442c71c8de57"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/64/37a5f36f6efcef52f7abf87900c42211e10996",
+                      "bytes":  1248,
+                      "sha256":  "d3b10253cd46be5d71e8a491d3aedb061c94294bf113edc5d13976d5ceced4f4"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/6e/6023602e020f57551cb3be3e36ae7e5c04d093",
+                      "bytes":  1133,
+                      "sha256":  "b264581abc91cb9cdb98ef090b42b20b6e521508927e2dc86e015242c177e2ef"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/92/1ad5f8c89bd795c5160fee1e3cfddbdff1eac1",
+                      "bytes":  648,
+                      "sha256":  "48b58c8df976136c89cc069c53d11749602bbc0832ed99e1a99d3f67a362be5c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/98/448f304885d976ccd16c60d57d188b59a0f0e0",
+                      "bytes":  157,
+                      "sha256":  "0322b9463479dd1f154ccc6210c2605d3731b82b64b3968913feba8f930658f2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/a8/f5566676311bebbba91c924c0f4e7ac1d72e57",
+                      "bytes":  3296,
+                      "sha256":  "5292ff7e84bfc11e68fb74d38fa4568a30e718c8b0eb3b191f5e8c07a44a693e"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/b4/44bc57b601e795eff93d446f17add90daae940",
+                      "bytes":  2841,
+                      "sha256":  "53a2f548fea1bca38fb0da873f1b0f22ee2328c3b321ff765f35a6a7c87792e1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/b5/79fee98c30b7b35e0696370ca00084bfa7fa35",
+                      "bytes":  1086,
+                      "sha256":  "bfde65a27a437ea17b91c59c35dc9995c3dc580539598b8c79873ad6f6613faa"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/ba/b5955695081b96c94e8d38cd89d123a571bb86",
+                      "bytes":  193,
+                      "sha256":  "eac58b61adbd2b3e1f4127bbf31aa5cc75ca1956ebc3986a8ebe179dc1921da6"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/be/d0b05fb2e10f978a4cb1882628366903b8077a",
+                      "bytes":  5982,
+                      "sha256":  "ed7b88b871233b2e56213eff5957404d2148ba4ad71bf478d0ea806d5df33c39"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/be/e4f8f7a99ab6de6cffcdebd1a828ebee6a1f8a",
+                      "bytes":  1128,
+                      "sha256":  "a1265bff55717ad136745ce51be75e828d93cebdd3bd87d6755df110e8a1232d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/c9/81b3283726313512c1f88ebd79664ab519d6c1",
+                      "bytes":  693,
+                      "sha256":  "3652e78e41774ef111514bca49bd5a701621080b9cc15d6d21c6624528d11c79"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/cc/b4992f33af1816fb54d771259f0fd93aefa09f",
+                      "bytes":  129,
+                      "sha256":  "b79fb619c65929285f5f4adc15bc8211e11efad23fc4fd0cb562b11910a870c1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/cf/e0f0b5558f3c2403d49eaa637d480be3572338",
+                      "bytes":  1103,
+                      "sha256":  "72677ed7bf055d6b3f16f1eb0a5594e192d9e723bf777c93e046c13acbc3255a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/db/913fb1da4545f75205fe3bb6a74953e6f9480d",
+                      "bytes":  624,
+                      "sha256":  "31dc50eccd0c503a6b0ace49beb90f8c5519bd3a55cca9e42fe3d06945ef5c1f"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/e0/41e59fa7772d3408953cc57603e3b6ee21480a",
+                      "bytes":  672,
+                      "sha256":  "cc7178fe827132bfd31879d426490e98a66bd11ffb0e308af8cfba09fdcb0b01"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/e0/8754c4edc31c2ad5a241fa3520b9c7daba0d1e",
+                      "bytes":  669,
+                      "sha256":  "8d6b2fb3a65e0347c9c48e19859300a0af06a3945c87a7bcc3724ac19a1b5d6a"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/e1/4fdd712c8f42534788a21e15c556c532ce0f0b",
+                      "bytes":  289,
+                      "sha256":  "ce5e6708f5bfc65e19a20eac962eb676f75616dc40e75e932918af1bd59981fc"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/objects/f0/f0fd6659c56b89711c1bf15d85d0ec4fed54ff",
+                      "bytes":  2478,
+                      "sha256":  "4236f85661246727e041ff3f0fb7f93ddd480ef3d99ab7b8c7bc283aac4dbeff"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/refs/heads/main",
+                      "bytes":  41,
+                      "sha256":  "68bd08cbffdb42629a8eda1f633081747570617a688662696da776bdeb9d10a9"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/tgitchangelist",
+                      "bytes":  0,
+                      "sha256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/tortoisegit.data",
+                      "bytes":  2118,
+                      "sha256":  "6704410b80bd7a355ad9f573beed286ec4472eeee31e352946fcdd65cbbbe16c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.git/tortoisegit.index",
+                      "bytes":  68,
+                      "sha256":  "c4d8eaa62adeec33f613608865ccb69235d2af7da8a6e525145e923a42ac670d"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/.gitignore",
+                      "bytes":  41,
+                      "sha256":  "feacb08c6806345b2b62e64c3edf81dea1cc2e56d1b0ce84c0ba7c0ee0b3dd33"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/architect.toml",
+                      "bytes":  1972,
+                      "sha256":  "03c9ece28b110a1880f5b4a4cb088ad6168fbeef43c3eceeade3cd9d9b1f5848"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/decomposer.toml",
+                      "bytes":  2205,
+                      "sha256":  "695d633f68e1aa33e179b03a587307745230421c6e45fef1ffaeb241da5a037c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/developer.toml",
+                      "bytes":  2304,
+                      "sha256":  "bd6a0008e1fc9bf8e299485aa5d4a5a8651c700fbccf1784c3849fa7b2cd61b6"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/integration-reviewer.toml",
+                      "bytes":  2590,
+                      "sha256":  "3bbf627c88dd77170225255f833206137f8113dd3d8bf8aaf38838c10a342655"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/mechanical.toml",
+                      "bytes":  2251,
+                      "sha256":  "7b0b1eab817f629a485503d3203fbdbd8c249af8df27ac76c55776a1c05d9557"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/reviewer.toml",
+                      "bytes":  2260,
+                      "sha256":  "3afdcaf3618753c2d900300f1c9620d84d7e278603db6c40f1075bda219531b5"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/reviewer-owner.toml",
+                      "bytes":  2313,
+                      "sha256":  "83e4c65a2e04d7cf16f5f3ad4c9f328a796579c85cebc384c3059390198acfb8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/agents/scout.toml",
+                      "bytes":  1828,
+                      "sha256":  "abafd4cb6fdab315d722a47ef36e84912d7dbb3adf1743ea1ac88bc67ecb535c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/communication-pact.md",
+                      "bytes":  6886,
+                      "sha256":  "107eb0e914883d14d97c825462ebf88347cd4df309ee05d5e41cfc2a1bebfcc8"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/complex-task-orchestration.md",
+                      "bytes":  2560,
+                      "sha256":  "1e7229537ba07672f48fd15c7bfa3c9922f6e1de6a81d5f88ffcf11a7ce03e21"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/config.toml",
+                      "bytes":  4523,
+                      "sha256":  "4b6a50a247bc91ff8ed3241e9716e950f60c4b65f2a9a4b19f4b88db87c041a3"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/continuity/create-handoff.md",
+                      "bytes":  5944,
+                      "sha256":  "03665c9de4af01bea7c0c4201da836e702e6c33f72bf740a8951deaaa0a1333c"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/continuity/resume-orchestration.md",
+                      "bytes":  5960,
+                      "sha256":  "da788b75f63c66af83498576f64cf628af1d2e10c5932e9b90996e45b7c91195"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/development-pact.md",
+                      "bytes":  15417,
+                      "sha256":  "5f695e9eaa918974eed84f93176ae8d7b07a345897bbd2310093d15416af0771"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/documentation-pact.md",
+                      "bytes":  28994,
+                      "sha256":  "0267fc4666bed3b1bc41bd6d9ef45997311a0f7ed62f335c6c538c4cc2072731"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/README.md",
+                      "bytes":  1303,
+                      "sha256":  "bf22d7fcc1e38e16cf588ee5b30d25b7540d643b4d0bde5e61154e61234dc581"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/templates/AGENTS.fragment.md",
+                      "bytes":  2320,
+                      "sha256":  "5ade6572bcdb20541c2d91194c4d51e85f4b381057f26926b95e3ab8fa23cafe"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/templates/handoff.md",
+                      "bytes":  2929,
+                      "sha256":  "eee4928ef86acc2f16e535ac6aefebf5c4ffb8b2b60831ba2d9ee682f39aeead"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/templates/report.md",
+                      "bytes":  1172,
+                      "sha256":  "9c8dc7f7d1da3b707601050f757f1d2ce1430773cfa764951e49f24c20bce4ee"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/templates/task.md",
+                      "bytes":  1169,
+                      "sha256":  "a725d1a30cc0fbd71bd76d074e7b7a86fb2dec0e63b608a1b24c1291640ed1c2"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/ui-analysis-pact.md",
+                      "bytes":  8000,
+                      "sha256":  "899b594e92937549bb082ec268b275e17c1c196d02956fcb645c13188732063e"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.codex/ui-reference.md",
+                      "bytes":  4347,
+                      "sha256":  "8d7eb2fdd369250df58b86b3958a472fcefb7209368027ca1e49d84f16921d03"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/.gitignore",
+                      "bytes":  809,
+                      "sha256":  "38ac82b40a4ab60d8e2de8ced10f5be264eb3e6eb3104c9f044a36ede54446a1"
+                  },
+                  {
+                      "path":  "barsim-4.0-frontend-2/AGENTS.md",
+                      "bytes":  22240,
+                      "sha256":  "4bacd135eca3b153ef1b045e15866d263e950a835e86e8c74702f14ee7a4e0ad"
+                  },
+                  {
+                      "path":  "user-codex/config.toml",
+                      "bytes":  7401,
+                      "sha256":  "159f2f755d89b09f502e6390c40aed2a1abc3e0c623642bb3a48aa2381cd9691"
+                  }
+              ]
+}

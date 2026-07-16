@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex UI Analysis Pact"
+  short_description: "Apply shared UI analysis rules"
+  default_prompt: "Apply the shared UI analysis pact to UI analysis and documentation."

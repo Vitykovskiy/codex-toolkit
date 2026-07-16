@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Development Pact"
+  short_description: "Apply shared code development rules"
+  default_prompt: "Apply the shared development pact to code work."

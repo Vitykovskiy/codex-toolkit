@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Orchestration Pact"
+  short_description: "Apply adaptive custom-agent orchestration"
+  default_prompt: "Apply the base orchestration pact and adaptive overlay in the required order."
