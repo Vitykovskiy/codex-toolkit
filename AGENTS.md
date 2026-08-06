@@ -17,7 +17,7 @@
 - Keep project customization and project rules out of all pact skills and compatibility shims.
 - Keep absolute project paths and machine-specific toolkit paths out of permanent instructions, skills, maps, and agent profiles.
 - Keep toolkit content canonical; install global skills and agents only through directory junctions.
-- Use `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` in all custom-agent profiles; allow `gpt-5.3-codex-spark` only for `agents/scout.toml`. Keep `agents/scout-fallback.toml` on Luna. Never silently substitute a model or role.
+- Use only `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` in custom-agent profiles. Never silently substitute a model or role.
 - Do not add permanent validators, checkers, hooks, install scripts, or generated runtime state.
 - Do not commit, push, open a PR, publish, or modify product repositories without explicit user permission.
 - Do not treat this toolkit as a plugin. Codex `0.144.4` plugin API does not register custom agents.
