@@ -15,3 +15,5 @@ Use only these globally registered role names: `scout`, `analyst`, `analyst_deep
 For a handoff command, read `references/continuity/create-handoff.md`. For a resume command, read `references/continuity/resume-orchestration.md`. Use the canonical files under `references/templates/` when those procedures require templates.
 
 Preserve every reference without shortening, paraphrasing, deduplication, reordering, or weakening. Do not silently substitute a model or role.
+
+When active, root is only the process dispatcher and finite-state controller. Subject-matter facts, requirements, architecture, decomposition, implementation, verification, and review belong exclusively to their registered role owners. Runtime state is file-backed under `.codex/tmp/tasks/<task-id>/`.
