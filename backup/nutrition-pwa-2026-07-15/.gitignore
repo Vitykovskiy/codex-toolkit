@@ -1,9 +1,0 @@
-.codex/tmp/
-node_modules/
-dist/
-coverage/
-.env
-.env.*
-!.env.example
-playwright-report/
-test-results/

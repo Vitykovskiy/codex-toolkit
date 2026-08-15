@@ -7,7 +7,6 @@
 - Apply skill `codex-development-pact` to code, test, configuration, and agent-profile work.
 - Apply skill `codex-documentation-pact` to documentation, durable instructions, pact metadata, and migration maps.
 - Apply skill `codex-ui-analysis-pact` only to UI analysis or UI documentation.
-- Apply skill `primeng-developer` only when PrimeNG is applicable.
 
 ## Preservation rules
 

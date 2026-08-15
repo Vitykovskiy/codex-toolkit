@@ -1,4 +1,0 @@
-interface:
-  display_name: "Barsim Frontend"
-  short_description: "Route legacy Barsim pact requests"
-  default_prompt: "Use $barsim-frontend only as a compatibility router for this task."
