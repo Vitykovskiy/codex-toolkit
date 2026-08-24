@@ -1,56 +1,63 @@
 # Отчёт роли
 
-Не более 300 слов. Полный diff и длинные логи сохраняются отдельными артефактами; отчёт содержит только результат, проверки, риски и следующее действие.
+Не более 300 слов. Верни только шесть верхнеуровневых ключей. Полный diff и длинные логи сохраняются отдельными артефактами.
 
-## Метаданные
+```yaml
+status: approved # approved | blocked | split_required | baseline_failure
+changed_files: [] # точный список собственных файлов
+checks:
+  - command: "<команда>"
+    execution_status: checked # checked | not_run | unable_to_verify
+    result: passed # passed | failed | null
+    # reason: "<обязателен при not_run или unable_to_verify>"
+result: {}
+risks: []
+next_action: "<действие или none>"
+```
 
-- ID задачи:
-- ID назначения:
-- Роль:
-- Агент:
-- Итоговый статус: `approved | blocked | split_required | baseline_failure`
+Пустые вложенные секции не выводи. Шесть верхнеуровневых ключей сохраняй всегда.
 
-Укажи ровно один итоговый статус.
+## Формат `result`
 
-## Изменённые файлы (`changed_files`)
+### `scout`
 
-| Git-контекст | Файл | Состояние | `git hash-object` |
-| --- | --- | --- | --- |
-|  |  |  |  |
+```yaml
+result:
+  facts:
+    - "path:line — `symbol` — факт"
+  totals: "<итоги>"
+```
 
-## Проверки (`checks`)
+### `mechanical`, `developer`
 
-| Команда | Время | Статус запуска (`execution_status`) | Результат (`result`) | Подтверждение или причина |
-| --- | --- | --- | --- | --- |
-|  |  | `checked | not_run | unable_to_verify` | `passed | failed | null` |  |
+```yaml
+result:
+  changes:
+    - "path:line — изменение"
+```
 
-## Результат (`result`)
+### `reviewer`
 
-- Что выполнено или установлено:
-- Критерии приёмки:
+```yaml
+result:
+  findings:
+    - "path:line — blocker|follow_up — проблема — исправление"
+  totals: "<итоги>"
+```
 
-## Трассировка цели
+При отсутствии замечаний: `result.findings: "No issues."`
 
-Заполняют только `analyst`, `architect`, `decomposer` и `integration_reviewer`.
+### `analyst`, `architect`, `decomposer`, `integration_reviewer`
 
-- `covered_goal_items`:
-- `uncovered_goal_items`:
-- `assumptions`:
-- `scope_delta`:
-- `contradictions`:
+Используй короткие именованные поля. Обязательно добавь все поля трассировки цели; для отсутствующих значений используй `[]`:
 
-## Замечания reviewer
+```yaml
+result:
+  covered_goal_items: []
+  uncovered_goal_items: []
+  assumptions: []
+  scope_delta: []
+  contradictions: []
+```
 
-| Тип (`blocker | follow_up`) | Критерий | Файл или артефакт | Исправление |
-| --- | --- | --- | --- |
-|  |  |  |  |
-
-## Риски (`risks`)
-
-- Остаточные риски:
-- Блокер или причина `split_required` / `baseline_failure`:
-
-## Следующее действие (`next_action`)
-
-- Требуемое действие:
-- Исполнитель:
+`path:line` используй только для утверждений о файлах. Не указывай вымышленные строки для решения или агрегированного итога.
