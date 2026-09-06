@@ -1,0 +1,12 @@
+# Template; в конкретной задаче все указанные пути уже существуют.
+status: completed
+artifact: reports/A01.yaml
+assignment_id: A01
+route_revision: 1
+next_transition:
+  action: review
+  role: reviewer
+  assignment_id: R-A01
+  assignment_path: assignments/R-A01.yaml
+  input_paths: [goal.md, reports/A01.yaml]
+decision_question: null

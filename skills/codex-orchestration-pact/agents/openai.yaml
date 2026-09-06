@@ -1,6 +1,6 @@
 interface:
   display_name: "Codex Orchestration Pact"
   short_description: "Координация доказательных назначений"
-  default_prompt: "Примени $codex-orchestration-pact и выбери соразмерный маршрут."
+  default_prompt: "Примени $codex-orchestration-pact для соразмерной координации и независимой приёмки; длительный dispatcher_only веди через codex-long-orchestration."
 policy:
   allow_implicit_invocation: true

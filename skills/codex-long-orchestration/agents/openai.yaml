@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Long Orchestration"
+  short_description: "Строгая диспетчеризация и возобновление"
+  default_prompt: "Примени $codex-long-orchestration: сохрани dispatcher_only и передавай работу по принятому файловому маршруту."
+policy:
+  allow_implicit_invocation: true

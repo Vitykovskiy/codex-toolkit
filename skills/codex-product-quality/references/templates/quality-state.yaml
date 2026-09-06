@@ -1,0 +1,16 @@
+# Предметное состояние; единственный писатель — назначенный quality_owner.
+# Все пути ниже относительны task_root, включая путь бюджета процесса.
+# Пример не подтверждает существование файлов или начало реальной кампании.
+version: 1
+campaign_id: example-campaign
+iteration: 0
+permission: observe_only
+inventory_path: quality/inventory.yaml
+findings_path: quality/findings.yaml
+current_batch_path: quality/current-batch.md
+decisions_path: quality/decisions.md
+evidence_path: quality/evidence
+budget_path: budget.yaml
+expected: null
+unresolved_questions: []
+next_step: "Наблюдать разрешённый сценарий и установить источники критериев."

@@ -1,3 +1,4 @@
+# Runtime задач; canonical references/templates остаются исходниками.
 .codex/tmp/
 *.tmp
 runtime/
@@ -14,3 +15,6 @@ env/
 !.env.example
 screenshots/
 *.pyc
+
+.codex/checkpoints/
+.codex/quality/

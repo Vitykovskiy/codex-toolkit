@@ -1,6 +1,6 @@
 interface:
   display_name: "Codex Development Pact"
-  short_description: "Применение проверяемых правил разработки"
-  default_prompt: "Примени $codex-development-pact к изменению технических артефактов."
+  short_description: "Изменение, функциональное ревью и проверка технических артефактов"
+  default_prompt: "Примени $codex-development-pact к изменению, функциональному ревью или проверке технических артефактов в разрешённом режиме."
 policy:
   allow_implicit_invocation: true

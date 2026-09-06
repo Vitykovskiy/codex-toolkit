@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Product Quality"
+  short_description: "Кампания качества с малыми партиями и независимой приёмкой"
+  default_prompt: "Примени $codex-product-quality к кампании качества с root в dispatcher_only и сменяемым quality_owner."
+policy:
+  allow_implicit_invocation: true

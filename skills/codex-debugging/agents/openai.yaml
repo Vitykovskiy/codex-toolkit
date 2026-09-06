@@ -1,6 +1,6 @@
 interface:
   display_name: "Codex Debugging"
-  short_description: "Находит доказанную причину дефекта и проверяет исправление"
-  default_prompt: "Примени $codex-debugging к диагностике дефекта."
+  short_description: "Диагностирует без правок либо исправляет дефект по запросу"
+  default_prompt: "Примени $codex-debugging в режиме диагностики без правок либо разрешённого исправления дефекта."
 policy:
   allow_implicit_invocation: true
