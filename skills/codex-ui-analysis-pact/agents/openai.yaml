@@ -1,4 +1,6 @@
 interface:
   display_name: "Codex UI Analysis Pact"
-  short_description: "Apply shared UI analysis rules"
-  default_prompt: "Apply the shared UI analysis pact to UI analysis and documentation."
+  short_description: "Документирует наблюдаемое поведение и разрывы UI"
+  default_prompt: "$codex-ui-analysis-pact"
+policy:
+  allow_implicit_invocation: true

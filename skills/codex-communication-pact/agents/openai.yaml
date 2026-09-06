@@ -1,4 +1,6 @@
 interface:
   display_name: "Codex Communication Pact"
-  short_description: "Apply the universal communication pact"
-  default_prompt: "Apply the universal communication pact exactly for this task."
+  short_description: "Ясно сообщает пользователю результат и доказательства"
+  default_prompt: "$codex-communication-pact"
+policy:
+  allow_implicit_invocation: false

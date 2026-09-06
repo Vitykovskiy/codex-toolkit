@@ -1,0 +1,249 @@
+"""Structural validator regression tests, using disposable Git repositories."""
+import contextlib
+import io
+from pathlib import Path
+import subprocess
+import tempfile
+import unittest
+
+import yaml
+
+from tools.validate_toolkit import PROFILE_FILES, RUNTIME_PROBES, SKILLS, Validator, main
+
+
+REPORT = '''```yaml
+status: completed
+changed_files: []
+checks: []
+result:
+  findings: []
+risks: []
+next_action: null
+```
+'''
+
+
+class ValidatorTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        subprocess.run(['git', 'init', '-q', str(self.root)], check=True)
+        self.write('.gitignore', '\n'.join(RUNTIME_PROBES) + '\n')
+        for name in SKILLS:
+            self.write(f'skills/{name}/SKILL.md', f'---\nname: {name}\ndescription: Test procedure\n---\n# Procedure\n')
+            metadata = {'interface': {'display_name': name, 'short_description': 'Test skill', 'default_prompt': f'Use ${name}.'}, 'policy': {'allow_implicit_invocation': name != 'codex-communication-pact'}}
+            self.write(f'skills/{name}/agents/openai.yaml', yaml.safe_dump(metadata))
+        for filename, role in PROFILE_FILES.items():
+            self.write(f'agents/{filename}', f'name = "{role}"\ndescription = "Test role"\ndeveloper_instructions = "Read assigned input"\n')
+        self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT)
+
+    def write(self, name, text):
+        path = self.root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding='utf-8')
+        return path
+
+    def append(self, name, text):
+        path = self.root / name
+        path.write_text(path.read_text() + text)
+
+    def validate(self):
+        result = Validator(self.root)
+        result.run()
+        return result
+
+    def assert_error(self, fragment):
+        result = self.validate()
+        self.assertTrue(any(fragment in error for error in result.errors), result.errors)
+
+    def test_minimal_valid_set_and_read_only(self):
+        before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
+        result = self.validate()
+        self.assertEqual([], result.errors)
+        after = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
+        self.assertEqual(before, after)
+
+    def test_invalid_yaml(self):
+        self.write('skills/codex-debugging/agents/openai.yaml', 'interface: [\n')
+        self.assert_error('expected')
+
+    def test_unsafe_yaml_tag_is_rejected(self):
+        self.write('skills/codex-debugging/agents/openai.yaml', '!!python/object/apply:os.system ["false"]')
+        self.assert_error('could not determine a constructor')
+
+    def test_invalid_toml(self):
+        self.write('agents/scout.toml', 'name = [')
+        self.assert_error('Invalid value')
+
+    def test_duplicate_yaml_key_nested(self):
+        self.append('skills/codex-debugging/agents/openai.yaml', 'policy:\n  allow_implicit_invocation: true\n')
+        self.assert_error('duplicate key: policy')
+
+    def test_duplicate_frontmatter_key(self):
+        self.write('skills/codex-debugging/SKILL.md', '---\nname: codex-debugging\nname: codex-debugging\ndescription: test\n---\n')
+        self.assert_error('duplicate key: name')
+
+    def test_name_mismatch_and_duplicate(self):
+        self.write('skills/codex-debugging/SKILL.md', '---\nname: codex-development-pact\ndescription: test\n---\n')
+        self.assert_error('name must match directory')
+        self.assert_error('duplicate name')
+
+    def test_eval_protocol_links_are_checked(self):
+        self.write('evals/README.md', '[Cases](cases.jsonl)\n')
+        self.assert_error('local target does not exist: cases.jsonl')
+        self.write('evals/cases.jsonl', '')
+        self.assertEqual([], self.validate().errors)
+
+    def test_broken_markdown_link(self):
+        self.append('skills/codex-debugging/SKILL.md', '[Guide](references/missing.md)\n')
+        self.assert_error('local target does not exist')
+
+    def test_reference_links_and_percent_escaped_paths(self):
+        self.write('docs/guide with space.md', '# Guide\n')
+        self.write('README.md', '[Guide][guide]\n[guide]: docs/guide%20with%20space.md "Title"\n')
+        self.assertEqual([], self.validate().errors)
+        self.append('README.md', '[Missing][missing]\n')
+        self.assert_error('undefined reference link')
+
+    def test_example_paths_are_not_file_requirements(self):
+        self.write('README.md', '''```md
+[Sample](missing.md)
+$codex-not-a-real-skill
+```
+    [Example](missing.md)
+`[Inline](missing.md)`
+[Parameter](<project/{name}/file.md>)
+[Variable]($PROJECT/file.md)
+[Web](https://example.invalid/missing)
+[Anchor](#heading)
+`examples/missing.md`
+''')
+        self.assertEqual([], self.validate().errors)
+
+    def test_policy_requires_boolean(self):
+        path = self.root / 'skills/codex-debugging/agents/openai.yaml'
+        data = yaml.safe_load(path.read_text())
+        for value in ('true', 1, None, []):
+            with self.subTest(value=value):
+                data['policy']['allow_implicit_invocation'] = value
+                path.write_text(yaml.safe_dump(data))
+                self.assert_error('must be bool')
+
+    def test_integration_reviewer_underscore_is_required(self):
+        self.assertEqual([], self.validate().errors)
+        path = self.root / 'agents/integration-reviewer.toml'
+        path.write_text(path.read_text().replace('integration_reviewer', 'integration-reviewer'))
+        self.assert_error('integration_reviewer uses underscore')
+
+    def test_metadata_own_prompt_and_resource(self):
+        path = self.root / 'skills/codex-debugging/agents/openai.yaml'
+        data = yaml.safe_load(path.read_text())
+        data['interface']['default_prompt'] = '$codex-debugging-extra'
+        data['interface']['icon_small'] = '../missing.svg'
+        path.write_text(yaml.safe_dump(data))
+        self.assert_error('own $skill-name')
+        self.assert_error('local target does not exist')
+
+    def test_metadata_rejects_additional_unknown_skill(self):
+        path = self.root / 'skills/codex-debugging/agents/openai.yaml'
+        data = yaml.safe_load(path.read_text())
+        data['interface']['default_prompt'] = 'Use $codex-debugging and $codex-development-pact.'
+        path.write_text(yaml.safe_dump(data))
+        self.assertEqual([], self.validate().errors)
+        for unknown in ('$codex-unknown', '`$codex-unknown`'):
+            with self.subTest(unknown=unknown):
+                data['interface']['default_prompt'] = 'Use $codex-debugging. Then use ' + unknown
+                path.write_text(yaml.safe_dump(data))
+                self.assert_error('unknown explicit skill: codex-unknown')
+
+    def test_explicit_role_uses_identifier_not_profile_filename(self):
+        self.write('README.md', 'Delegate role: `integration_reviewer`.\n')
+        self.assertEqual([], self.validate().errors)
+        self.write('README.md', 'Delegate role: `integration-reviewer`.\n')
+        self.assert_error('unknown explicit role: integration-reviewer')
+
+    def test_inline_skill_example_is_not_an_active_reference(self):
+        self.write('README.md', 'Example syntax: `$codex-nonexistent`.\n')
+        self.assertEqual([], self.validate().errors)
+        self.append('README.md', 'Apply skill `$codex-nonexistent`.\n')
+        self.assert_error('unknown explicit skill: codex-nonexistent')
+
+    def test_report_unexecuted_result_must_be_explicit(self):
+        path = 'skills/codex-orchestration-pact/references/templates/report.md'
+        for status in ('not_run', 'unable_to_verify'):
+            with self.subTest(status=status):
+                check = f'checks:\n  - command: test\n    execution_status: {status}\n    reason: unavailable'
+                self.write(path, REPORT.replace('checks: []', check))
+                self.assert_error('check requires result key')
+                self.write(path, REPORT.replace('checks: []', check + '\n    result: null'))
+                self.assertEqual([], self.validate().errors)
+
+    def test_report_findings_type(self):
+        self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT.replace('findings: []', 'findings: No issues.'))
+        self.assert_error('result.findings must be list')
+
+    def test_report_check_status_consistency(self):
+        self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT.replace('checks: []', 'checks:\n  - command: test\n    execution_status: not_run\n    result: passed'))
+        self.assert_error('unexecuted check requires null result and reason')
+
+    def test_report_malformed_check_types_are_errors(self):
+        self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT.replace('checks: []', 'checks:\n  - command: test\n    execution_status: []\n    result: []'))
+        self.assert_error('invalid execution_status')
+
+    def test_exact_sets_and_required_types(self):
+        self.write('skills/codex-extra/SKILL.md', '---\nname: codex-extra\ndescription: 123\n---\n')
+        self.write('agents/extra.toml', 'name = "extra"\n')
+        self.assert_error('skill set mismatch')
+        self.assert_error('exactly eight')
+        self.assert_error('description must be str')
+
+    def test_runtime_ignore_and_tracking(self):
+        self.write('.gitignore', '')
+        self.assert_error('runtime path is not ignored')
+        self.write('.gitignore', '\n'.join(RUNTIME_PROBES) + '\n')
+        self.write('traces/probe.txt', 'trace')
+        subprocess.run(['git', '-C', str(self.root), 'add', '-f', 'traces/probe.txt'], check=True)
+        self.assert_error('runtime artifact is tracked')
+
+    def test_missing_skill_and_profile_model(self):
+        (self.root / 'skills/codex-debugging/SKILL.md').unlink()
+        self.append('agents/scout.toml', 'model = "some-model"\n')
+        self.assert_error('missing YAML front matter')
+        self.assert_error('must inherit model/reasoning')
+
+    def test_explicit_unknown_skill_and_role(self):
+        self.write('README.md', 'Apply $codex-unknown.\nrole: `unknown`\n')
+        self.assert_error('unknown explicit skill')
+        self.assert_error('unknown explicit role')
+
+    def test_client_name_and_empty_legacy_directory_are_not_skills(self):
+        self.write('README.md', 'Version: codex-cli 0.152.0; `codex-cli 0.152.0`.\n')
+        (self.root / 'skills/codex-pacts/agents').mkdir(parents=True)
+        self.assertEqual([], self.validate().errors)
+        self.append('README.md', 'Apply skill `codex-unknown`.\n')
+        self.assert_error('unknown explicit skill')
+
+    def test_nonempty_unknown_skill_directory_is_rejected(self):
+        self.write('skills/codex-pacts/agents/openai.yaml', 'interface: {}\n')
+        self.assert_error('skill set mismatch')
+
+    def test_historical_map_excluded(self):
+        self.write('docs/refactoring-map.md', '$codex-historical\n[Old](gone.md)\n')
+        self.assertEqual([], self.validate().errors)
+
+    def test_budget_warning_does_not_fail(self):
+        self.append('skills/codex-communication-pact/SKILL.md', 'word ' * 251)
+        result = self.validate()
+        self.assertEqual([], result.errors)
+        self.assertEqual(1, len(result.warnings))
+
+    def test_cli_exit_code(self):
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(0, main(['--root', str(self.root)]))
+            self.write('agents/scout.toml', 'broken [')
+            self.assertEqual(1, main(['--root', str(self.root)]))
+
+
+if __name__ == '__main__':
+    unittest.main()

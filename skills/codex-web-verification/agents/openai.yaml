@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Web Verification"
+  short_description: "Проверяет работающий веб-сценарий и фиксирует наблюдаемые доказательства"
+  default_prompt: "Примени $codex-web-verification к проверке веб-сценария."
+policy:
+  allow_implicit_invocation: true

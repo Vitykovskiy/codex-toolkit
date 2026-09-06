@@ -1,10 +1,25 @@
 ---
 name: codex-documentation-pact
-description: Apply the shared cross-project documentation pact when creating, editing, reviewing, restructuring, or validating documentation and durable instruction text, when selected by the active repository AGENTS.md or the user.
+description: "Применяй при изменении документации и долговременных инструкций: результатом будет проверяемый актуальный текст; не применяй для правки кода без документируемого изменения."
 ---
 
-# Codex Documentation Pact
+# Пакт документации
 
-Read `references/documentation-pact.md` before applicable documentation work.
+## Процедура
 
-Apply the complete shared reference exactly. Project `AGENTS.md` determines project-specific paths and framework bindings. The strict reference text is not weakened. Do not infer, copy, or add project customization inside this skill.
+**Когда:** создаётся, изменяется, проверяется или реструктурируется документация, инструкция либо долговременная запись решения.
+
+**Входы:** цель текста, изменяемые факты, их первичные источники, существующие ссылки и правила проекта. Если факт, источник или ссылка недоступны, обозначь это как неизвестность вместо утверждения.
+
+**Действия:**
+
+1. Раздели текущий факт реализации, требование к будущему состоянию, решение и историческую запись.
+2. Меняй только текст, нужный для цели; подробное правило держи в одном основном источнике и ссылайся на него.
+3. Для каждого добавленного или изменённого факта прочитай источник; проверь относящиеся зависимости и ссылки.
+4. Сверь diff с целью и укажи выполненные проверки и непроверенные критерии раздельно.
+
+**Результат:** самостоятельный актуальный текст с источниками проверяемых утверждений и явно указанными границами знания.
+
+**Проверка:** изменённые факты и зависимости сверены, ссылки разрешаются, а целевое состояние не выдано за текущую реализацию.
+
+Для подробных критериев актуальности, источников и истории читай [reference](references/documentation-pact.md), когда они относятся к документу.

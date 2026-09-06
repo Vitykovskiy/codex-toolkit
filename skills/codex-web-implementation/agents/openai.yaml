@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Web Implementation"
+  short_description: "Реализует завершённый пользовательский сценарий веб-интерфейса"
+  default_prompt: "Примени $codex-web-implementation к реализации веб-сценария."
+policy:
+  allow_implicit_invocation: true

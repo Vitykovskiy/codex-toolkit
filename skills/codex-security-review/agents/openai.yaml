@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Security Review"
+  short_description: "Проверяет границы доверия и подтверждает достижимые риски"
+  default_prompt: "Примени $codex-security-review к проверке безопасности."
+policy:
+  allow_implicit_invocation: true

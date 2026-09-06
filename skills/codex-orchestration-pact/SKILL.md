@@ -1,16 +1,25 @@
 ---
 name: codex-orchestration-pact
-description: Apply the lean Codex custom-agent orchestration protocol. Use only when the user explicitly requests orchestration or delegation, an applicable mandatory skill or AGENTS.md requires subagents, or the task requires coordinated independent work.
+description: "Применяй для координации зависимых или независимых назначений: результатом будет доказательный граф и проверенная передача работ; не применяй для одной локальной задачи без потребности в координации."
 ---
 
-# Codex Orchestration Pact
+# Пакт оркестрации
 
-Read `references/complex-task-orchestration.md` — the sole canonical orchestration pact.
+## Процедура
 
-Use only these globally registered role names: `scout`, `analyst`, `architect`, `decomposer`, `mechanical`, `developer`, `reviewer`, and `integration_reviewer`.
+**Когда:** пользователь просит оркестрацию или результат требует координации нескольких независимых либо зависимых назначений.
 
-For a handoff command, read `references/continuity/create-handoff.md`. For a resume command, read `references/continuity/resume-orchestration.md`. Use the canonical files under `references/templates/` when those procedures require templates.
+**Входы:** дословные цель и ограничения, фактические контексты и инструменты, зависимости, доступные исполнители и критерии приёмки. Недоступный контекст или инструмент фиксируй как ограничение, не заменяй вымышленным.
 
-Preserve the canonical reference without weakening. Do not silently substitute a model or role.
+**Действия:**
 
-When active, root is only the process dispatcher and finite-state controller. Subject-matter facts, requirements, architecture, decomposition, implementation, verification, and review belong exclusively to their registered role owners. Runtime state is file-backed under `.codex/tmp/tasks/<task-id>/`.
+1. По умолчанию root выполняет задачу целиком: отвечает за решения, диагностику, план, интеграцию и окончательную проверку. Делегируй только при необходимости; root становится только диспетчером, когда этого прямо требует пользователь или действующее ограничение задачи.
+2. Назначь владельцев с непересекающимися write-set; чтение и независимая работа могут идти параллельно, конфликтующие записи координируй.
+3. Сохраняй цель, решения, зависимости, владельцев, разрешения, проверки, доказательства и следующее действие для длительной передачи. Используй доступные фактические средства ожидания или остановки.
+4. До повтора ошибки инструмента оцени идемпотентность: безопасное чтение повтори один раз, затем используй эквивалент либо укажи точную недоступность; перед повтором побочного действия проверь, не совершилось ли оно. После доказанного дефекта или изменения требования пользователя пересмотри относящееся назначение и его транзитивные результаты, затем повтори нужную реализацию и независимую проверку. Продолжай, пока дефект не устранён или не доказан `blocked`/`split_required`; повтор без нового доказательства не выполняй.
+
+**Результат:** воспроизводимый граф назначений и отчёты, где завершение исполнителя и независимое одобрение различаются.
+
+**Проверка:** каждое принятое доказательство актуально относительно изменённых релевантных входов, а непроверенные критерии отделены от пройденных.
+
+Для маршрутов, ролей, формата отчёта и восстановления читай [reference](references/complex-task-orchestration.md). Для handoff и возобновления читай условно [continuity instructions](references/continuity/), когда задача передаётся или возобновляется.

@@ -1,22 +1,38 @@
 # Codex toolkit instructions
 
-## Mandatory skills
+## Применимые процедуры
 
-- Apply skill `codex-communication-pact` for every task and every user-facing message.
-- Apply skill `codex-orchestration-pact` only when the user explicitly requests orchestration or delegation, an applicable mandatory skill or `AGENTS.md` requires subagents, or the task is genuinely complex under that pact.
-- Apply skill `codex-development-pact` to code, test, configuration, and agent-profile work.
-- Apply skill `codex-documentation-pact` to documentation, durable instructions, pact metadata, and migration maps.
-- Apply skill `codex-ui-analysis-pact` only to UI analysis or UI documentation.
+Применяй [codex-communication-pact](skills/codex-communication-pact/SKILL.md) к каждому заданию и каждому сообщению пользователю. Прочитай процедуру, если она ещё не загружена в текущей задаче или изменилась; далее применяй загруженные правила без повторного чтения. Это прямое правило toolkit; оно не зависит от неявного выбора скилла клиентом.
 
-## Preservation rules
+Остальные процедуры подключай по задаче, без автоматической загрузки всего каталога:
 
-- Treat `backup/**` as immutable source evidence.
-- Preserve canonical pact text without shortening, paraphrasing, reordering, deduplication, or weakening.
-- Keep obvious project-specific rules unchanged in backup sources and move them to detailed project `AGENTS.md` only in a separately assigned task.
-- Keep project customization and project rules out of all pact skills and compatibility shims.
-- Keep absolute project paths and machine-specific toolkit paths out of permanent instructions, skills, maps, and agent profiles.
-- Keep toolkit content canonical; install global skills and agents only through directory junctions.
-- Use only `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` in custom-agent profiles. Never silently substitute a model or role.
-- Do not add permanent validators, checkers, hooks, install scripts, or generated runtime state.
-- Do not commit, push, open a PR, publish, or modify product repositories without explicit user permission.
-- Do not treat this toolkit as a plugin. Codex `0.144.4` plugin API does not register custom agents.
+- Изменение кода, тестов, конфигурации или профилей: [codex-development-pact](skills/codex-development-pact/SKILL.md).
+- Документация, инструкции и метаданные пактов: [codex-documentation-pact](skills/codex-documentation-pact/SKILL.md).
+- Анализ и описание интерфейса: [codex-ui-analysis-pact](skills/codex-ui-analysis-pact/SKILL.md).
+- Реализация веб-интерфейса: [codex-web-implementation](skills/codex-web-implementation/SKILL.md).
+- Подтверждённый сбой или диагностика: [codex-debugging](skills/codex-debugging/SKILL.md).
+- Проверка работающего веб-интерфейса: [codex-web-verification](skills/codex-web-verification/SKILL.md).
+- Проверка безопасности заданной области: [codex-security-review](skills/codex-security-review/SKILL.md).
+- Прямой запрос делегирования, обязательная инструкция либо необходимость координации назначений: [codex-orchestration-pact](skills/codex-orchestration-pact/SKILL.md). Локальная правка сама по себе не требует подагентов.
+
+## Границы изменений
+
+- `skills/` и `agents/` — канонические источники. Сохраняй публичные имена и пути; изменения процедур согласуй с их справочниками, профилями, шаблонами и картой миграции. Рефакторинг текста допустим в границах задания с сохранением существенных инвариантов.
+- Сохраняй чужие изменения и существующий `backup/**` без изменений. Продуктовые правила оставляй проектам-потребителям; общие скиллы должны работать отдельно от toolkit.
+- Используй относительные ссылки. В постоянные файлы не добавляй абсолютные пути конкретного компьютера, секреты, локальные окружения и рабочие трассы.
+- Локальные validator, тесты, синтетические fixtures и минимальные зависимости разработки в `requirements-dev.txt` допустимы. Производственные зависимости, CI, hooks и установочные сценарии требуют отдельного задания.
+- Модель и reasoning задаются вызывающей конфигурацией, не общим текстом навыка; профили toolkit не фиксируют их. Фактическую поддержку клиента проверяй отдельно.
+- Способы подключения описаны в [совместимости](docs/compatibility.md). Глобальную установку и старую пользовательскую регистрацию изменяй только по явному запросу.
+- Commit, push, PR, публикация и изменение продуктовых репозиториев требуют явного разрешения пользователя.
+
+## Проверки toolkit
+
+Из корня, с Python 3.11+ и установленными зависимостями разработки:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_validate_toolkit.py'
+python3 tools/validate_toolkit.py --root .
+git diff --check
+```
+
+Подготовка окружения описана в [README](README.md). После локальной правки сначала проверь её факты, ссылки и diff; при изменении форматов запускай соответствующие тесты. Перед общей приёмкой выполни обе структурные команды и чтение согласованности процедур. Отдельно фиксируй структурную проверку, загрузку в Codex, поведение и сравнение эффективности; непроверенные критерии не получают положительный статус.

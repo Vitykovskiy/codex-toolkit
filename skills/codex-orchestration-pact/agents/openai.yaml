@@ -1,4 +1,6 @@
 interface:
   display_name: "Codex Orchestration Pact"
-  short_description: "Apply lean custom-agent orchestration"
-  default_prompt: "Apply the canonical orchestration pact and choose the minimal suitable route."
+  short_description: "Координация доказательных назначений"
+  default_prompt: "Примени $codex-orchestration-pact и выбери соразмерный маршрут."
+policy:
+  allow_implicit_invocation: true
