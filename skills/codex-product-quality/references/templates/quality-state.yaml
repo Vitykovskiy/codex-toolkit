@@ -10,7 +10,6 @@ findings_path: quality/findings.yaml
 current_batch_path: quality/current-batch.md
 decisions_path: quality/decisions.md
 evidence_path: quality/evidence
-budget_path: budget.yaml
 expected: null
 unresolved_questions: []
 next_step: "Наблюдать разрешённый сценарий и установить источники критериев."

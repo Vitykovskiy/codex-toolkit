@@ -22,4 +22,4 @@ description: "Применяй для координации зависимых 
 
 **Проверка:** каждое принятое доказательство актуально относительно изменённых релевантных входов, а непроверенные критерии отделены от пройденных.
 
-Для маршрутов, ролей, формата отчёта и восстановления читай [reference](references/complex-task-orchestration.md). Для handoff и возобновления читай условно [continuity instructions](references/continuity/), когда задача передаётся или возобновляется.
+Для маршрутов, модельной политики, ролей, формата отчёта и восстановления читай [reference](references/complex-task-orchestration.md). Для широкого исходного запроса сначала используй [intake](references/request-intake.md); для handoff и возобновления читай условно [continuity instructions](references/continuity/), когда задача передаётся или возобновляется.

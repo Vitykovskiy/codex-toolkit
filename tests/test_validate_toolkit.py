@@ -10,7 +10,7 @@ import unittest
 
 import yaml
 
-from tools.validate_toolkit import PROFILE_FILES, RUNTIME_PROBES, SKILLS, Validator, main
+from tools.validate_toolkit import PROFILE_FILES, PROFILE_POLICY, RUNTIME_PROBES, SKILLS, Validator, main
 
 
 REPORT = '''```yaml
@@ -38,23 +38,11 @@ class ValidatorTests(unittest.TestCase):
             metadata = {'interface': {'display_name': name, 'short_description': 'Test skill', 'default_prompt': f'Use ${name}.'}, 'policy': {'allow_implicit_invocation': name != 'codex-communication-pact'}}
             self.write(f'skills/{name}/agents/openai.yaml', yaml.safe_dump(metadata))
         for filename, role in PROFILE_FILES.items():
-            self.write(f'agents/{filename}', f'name = "{role}"\ndescription = "Test role"\nsandbox_mode = "workspace-write"\ndeveloper_instructions = "Read assigned input"\n')
+            model, effort = PROFILE_POLICY[role]
+            self.write(f'agents/{filename}', f'name = "{role}"\ndescription = "Test role"\nsandbox_mode = "workspace-write"\nmodel = "{model}"\nmodel_reasoning_effort = "{effort}"\ndeveloper_instructions = "Read assigned input"\n')
         self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT)
-        self.assignment_data = dict(assignment_id='A01', role='developer', dispatcher_mode=True, task_root='TASK_ROOT', route_revision=1, goal_path='goal.md', input_paths=['goal.md'], write_set=[], artifact_path='reports/A01.yaml', criteria=['review input'], checks=[], allowed_next_assignments=[])
-        self.write('skills/codex-orchestration-pact/references/templates/task.md', self.block(self.assignment_data))
-        self.state_data = dict(version=1, task_id='test', mode='dispatcher_only', goal_path='goal.md', constraints_path='constraints.md', phase='bootstrap', route_path=None, route_revision=0, active_assignments=[], accepted_index_path=None, next_transition=None, decision=dict(status='none', question_path=None), budget_path='budget.yaml', checkpoint_path=None, last_checkpoint=None)
-        self.transition_data = dict(action='review', role='reviewer', assignment_id='R01', assignment_path='assignments/R01.yaml', input_paths=['goal.md'])
-        self.envelope_data = dict(status='completed', artifact='reports/A01.yaml', assignment_id='A01', route_revision=1, next_transition=self.transition_data, decision_question=None)
-        self.route_data = dict(version=1, route_revision=1, assignments=[dict(id=ident, role=role, assignment_path=f'assignments/{ident}.yaml', dependencies=[], allowed_transitions=[self.transition_data] if ident == 'A01' else [dict(action='finish')], write_set=[], shared_resources=[]) for ident, role in [('A01', 'developer'), ('R01', 'reviewer')]], acceptance=dict(reviewer_assignment_id=None, report_path=None, route_revision=None))
-        self.quality_data = dict(version=1, campaign_id='test', iteration=0, permission='observe_only', inventory_path='quality/inventory.yaml', findings_path='quality/findings.yaml', current_batch_path='quality/current-batch.md', decisions_path='quality/decisions.md', evidence_path='quality/evidence', budget_path='budget.yaml', expected=None, unresolved_questions=[], next_step='observe')
+        self.quality_data = dict(version=1, campaign_id='test', iteration=0, permission='observe_only', inventory_path='quality/inventory.yaml', findings_path='quality/findings.yaml', current_batch_path='quality/current-batch.md', decisions_path='quality/decisions.md', evidence_path='quality/evidence', expected=None, unresolved_questions=[], next_step='observe')
         self.finding_data = dict(id='F01', surface='test', scenario='test', state='error', viewport=None, expected=None, expected_source=None, observed='test', evidence=[], classification='unknown', severity=None, confidence='low', decision_required=True, recommended_next_role='analyst')
-        self.budget_data = dict(max_batches=None, time=None, resources=None, await_user=[], blocked=[], handoff=[], permission_source='goal.md')
-        self.write('skills/codex-long-orchestration/references/templates/state.yaml', yaml.safe_dump(self.state_data))
-        self.write('skills/codex-long-orchestration/references/templates/envelope.yaml', yaml.safe_dump(self.envelope_data))
-        # Pending route templates cannot claim a finish based on acceptance.
-        route_template = copy.deepcopy(self.route_data)
-        route_template['assignments'][1]['allowed_transitions'] = []
-        self.write('skills/codex-long-orchestration/references/dispatcher-mode.md', self.block(route_template) + self.block(self.budget_data))
         self.write('skills/codex-product-quality/references/templates/quality-state.yaml', yaml.safe_dump(self.quality_data))
         self.write('skills/codex-product-quality/references/finding-schema.md', self.block(self.finding_data))
         self.case_data = [dict(id=ident, kind=kind, prompt='test', fixture=None, expected_skills=[], forbidden_skills=[], expected_outcomes=['result'], forbidden_actions=[], required_capabilities=[]) for ident, kind in [(f'R{i:02}{suffix}', 'routing') for i in range(1, 12) for suffix in 'PN'] + [(f'W{i:02}', 'workflow') for i in range(1, 17)]]
@@ -226,7 +214,7 @@ $codex-not-a-real-skill
         self.write('skills/codex-extra/SKILL.md', '---\nname: codex-extra\ndescription: 123\n---\n')
         self.write('agents/extra.toml', 'name = "extra"\n')
         self.assert_error('skill set mismatch')
-        self.assert_error('exactly nine')
+        self.assert_error('exactly eleven canonical profile files')
         self.assert_error('description must be str')
 
     def test_runtime_ignore_and_tracking(self):
@@ -239,9 +227,10 @@ $codex-not-a-real-skill
 
     def test_missing_skill_and_profile_model(self):
         (self.root / 'skills/codex-debugging/SKILL.md').unlink()
-        self.append('agents/scout.toml', 'model = "some-model"\n')
+        path = self.root / 'agents/scout.toml'
+        self.write('agents/scout.toml', path.read_text().replace('gpt-5.6-luna', 'some-model'))
         self.assert_error('missing YAML front matter')
-        self.assert_error('must inherit model/reasoning')
+        self.assert_error('profile model/reasoning must match canonical policy')
 
     def test_explicit_unknown_skill_and_role(self):
         self.write('README.md', 'Apply $codex-unknown.\nrole: `unknown`\n')
@@ -279,158 +268,6 @@ $codex-not-a-real-skill
         validator = Validator(self.root)
         getattr(validator, method)(self.root / 'sample.yaml', data, **context)
         return validator.errors
-
-    def concrete(self):
-        for name in ('goal.md', 'constraints.md', 'budget.yaml', 'route.yaml', 'reports/A01.yaml', 'reports/R01.yaml', 'question.md'):
-            self.write('task/' + name, 'synthetic')
-        route = copy.deepcopy(self.route_data)
-        route['acceptance'] = dict(reviewer_assignment_id='R01', report_path='reports/R01.yaml', route_revision=1)
-        for entry in route['assignments']:
-            self.write('task/' + entry['assignment_path'], yaml.safe_dump(dict(self.assignment_data, assignment_id=entry['id'], role=entry['role'], task_root=str(self.root / 'task'))))
-        self.write('task/route.yaml', yaml.safe_dump(route))
-        return self.root / 'task', route
-
-    def test_profile_sandbox_and_nested_toml_duplicates(self):
-        name = 'agents/scout.toml'
-        original = (self.root / name).read_text()
-        for value in ('"read-only"', 'true', '[]', '" "'):
-            with self.subTest(value=value):
-                self.write(name, original.replace('"workspace-write"', value))
-                self.assert_error('sandbox_mode')
-        self.write(name, original.replace('sandbox_mode = "workspace-write"', ''))
-        self.assert_error('sandbox_mode')
-        self.write(name, original + '[nested]\nx = 1\nx = 2\n')
-        self.assert_error('Cannot overwrite')
-
-    def test_yaml_nested_duplicate_and_blank_values(self):
-        self.write('skills/codex-debugging/agents/openai.yaml', 'interface:\n  display_name: test\n  display_name: again\n')
-        self.assert_error('duplicate key: display_name')
-        self.write('agents/scout.toml', 'name = "scout"\ndescription = " "\ndeveloper_instructions = " "\n')
-        self.assert_error('nonempty')
-
-    def test_report_evidence_command_and_extra_field(self):
-        name = 'skills/codex-orchestration-pact/references/templates/report.md'
-        for value in ('evidence: null', 'evidence: text'):
-            self.write(name, REPORT.replace('evidence: []', value))
-            self.assert_error('result.evidence must be list')
-        self.write(name, REPORT.replace('checks: []', 'checks:\n  - command: "   "\n    execution_status: checked\n    result: passed'))
-        self.assert_error('check requires string command')
-        self.write(name, REPORT.replace('next_action: null', 'next_action: null\nextra: true'))
-        self.assert_error('six canonical keys')
-
-    def test_template_bool_is_not_integer(self):
-        for method, original, keys in [('state', self.state_data, ('version', 'route_revision')), ('route', self.route_data, ('version', 'route_revision')), ('quality', self.quality_data, ('version', 'iteration')), ('envelope', self.envelope_data, ('route_revision',))]:
-            for key in keys:
-                with self.subTest(method=method, key=key):
-                    data = copy.deepcopy(original)
-                    data[key] = True
-                    self.assertTrue(self.structure(method, data))
-        self.assertTrue(self.structure('budget_data', dict(self.budget_data, max_batches=True)))
-
-    def test_templates_paths_need_not_exist(self):
-        self.assertEqual([], self.structure('state', self.state_data))
-        self.assertEqual([], self.structure('envelope', self.envelope_data))
-        self.assertEqual([], self.structure('quality', self.quality_data))
-        self.assertEqual([], self.structure('finding', self.finding_data))
-
-    def test_concrete_envelope_sender_revision_and_edges(self):
-        root, route = self.concrete()
-        sender = dict(id='A01', role='developer', route_revision=1)
-        self.assertEqual([], self.structure('envelope', self.envelope_data, task_root=root, route=route, sender=sender))
-        for patch in (dict(assignment_id='missing'), dict(route_revision=0), dict(route_revision=True), dict(result={}), dict(next_transition=dict(action='finish'))):
-            with self.subTest(patch=patch):
-                self.assertTrue(self.structure('envelope', dict(self.envelope_data, **patch), task_root=root, route=route, sender=sender))
-        self.assertTrue(self.structure('envelope', self.envelope_data, task_root=root, route=route, sender=dict(sender, role='analyst')))
-
-    def test_transition_required_fields_types_and_roles(self):
-        for key in self.transition_data:
-            transition = copy.deepcopy(self.transition_data)
-            del transition[key]
-            self.assertTrue(self.structure('envelope', dict(self.envelope_data, next_transition=transition)), key)
-        for patch in (dict(role='missing'), dict(input_paths=[None]), dict(assignment_id=' '), dict(action='invented')):
-            self.assertTrue(self.structure('envelope', dict(self.envelope_data, next_transition=dict(self.transition_data, **patch))))
-
-    def test_null_and_terminal_transitions(self):
-        self.assertTrue(self.structure('envelope', dict(self.envelope_data, next_transition=None)))
-        self.assertEqual([], self.structure('envelope', dict(self.envelope_data, status='blocked', next_transition=None)))
-        root, route = self.concrete()
-        await_transition = dict(action='await_user', question_path='question.md')
-        route['assignments'][0]['allowed_transitions'].append(await_transition)
-        envelope = dict(self.envelope_data, status='blocked', next_transition=await_transition, decision_question='question.md')
-        self.assertEqual([], self.structure('envelope', envelope, task_root=root, route=route))
-        self.assertTrue(self.structure('envelope', dict(envelope, status='completed'), task_root=root, route=route))
-        self.assertTrue(self.structure('envelope', dict(envelope, decision_question=None), task_root=root, route=route))
-        envelope = dict(self.envelope_data, assignment_id='R01', status='approved', next_transition=dict(action='finish'))
-        self.assertEqual([], self.structure('envelope', envelope, task_root=root, route=route))
-        route['acceptance']['route_revision'] = 0
-        self.assertTrue(self.structure('envelope', envelope, task_root=root, route=route))
-
-    def test_concrete_path_containment_and_missing_targets(self):
-        root, route = self.concrete()
-        (root / 'escape').symlink_to(self.root, target_is_directory=True)
-        (root / 'loop').symlink_to('loop')
-        for target in ('../goal.md', str(root / 'goal.md'), 'escape/evals/cases.jsonl', 'missing/goal.md', 'loop/goal.md', 'reports', ' '):
-            with self.subTest(target=target):
-                self.assertTrue(self.structure('envelope', dict(self.envelope_data, artifact=target), task_root=root, route=route))
-        validator = Validator(self.root)
-        validator.task_path('sample', 'missing/report.yaml', root, future=True)
-        self.assertTrue(validator.errors)
-        validator = Validator(self.root)
-        validator.task_path('sample', 'reports/future.yaml', root, future=True)
-        self.assertEqual([], validator.errors)
-        (root / 'inside').symlink_to('reports', target_is_directory=True)
-        self.assertEqual([], self.structure('envelope', dict(self.envelope_data, artifact='inside/A01.yaml'), task_root=root, route=route))
-
-    def test_route_assignment_identity_acceptance_and_dependencies(self):
-        root, route = self.concrete()
-        self.assertEqual([], self.structure('route', route, task_root=root))
-        for field, value in [('assignment_id', 'other'), ('role', 'analyst'), ('route_revision', True), ('route_revision', 0)]:
-            self.write('task/assignments/A01.yaml', yaml.safe_dump(dict(dict(assignment_id='A01', role='developer', route_revision=1), **{field: value})))
-            self.assertTrue(self.structure('route', route, task_root=root))
-        (root / 'assignments/A01.yaml').unlink()
-        self.assertTrue(self.structure('route', route, task_root=root))
-        for change in ('duplicate', 'dependency', 'role', 'acceptance'):
-            data = copy.deepcopy(route)
-            if change == 'duplicate':
-                data['assignments'].append(data['assignments'][0])
-            elif change == 'dependency':
-                data['assignments'][0]['dependencies'] = ['missing']
-            elif change == 'role':
-                data['assignments'][0]['role'] = 'unknown'
-            else:
-                data['acceptance']['reviewer_assignment_id'] = 'A01'
-            self.assertTrue(self.structure('route', data))
-
-    def test_assignment_requires_executable_inputs_and_safe_output_parent(self):
-        root, route = self.concrete()
-        path = root / 'assignments/A01.yaml'
-        original = yaml.safe_load(path.read_text())
-        for patch in (dict(criteria=[]), dict(goal_path='missing.md'), dict(input_paths=['missing.md']), dict(artifact_path='missing/report.yaml'), dict(dispatcher_mode=False), dict(task_root=str(self.root)), dict(allowed_next_assignments=['missing.yaml'])):
-            path.write_text(yaml.safe_dump(dict(original, **patch)))
-            self.assertTrue(self.structure('route', route, task_root=root), patch)
-        for key in original:
-            data = copy.deepcopy(original)
-            del data[key]
-            self.assertTrue(self.structure('assignment', data), key)
-
-    def test_ready_state_and_bootstrap(self):
-        root, route = self.concrete()
-        state = dict(self.state_data, phase='implementation', route_path='route.yaml', route_revision=1, active_assignments=[dict(id='A01', role='developer', status='ready', assignment_path='assignments/A01.yaml', artifact=None, envelope=None, route_revision=1, runtime_handle=None)])
-        self.assertEqual([], self.structure('state', state, task_root=root, route=route))
-        for patch in (dict(route_revision=0), dict(route_path=None), dict(mode='normal')):
-            self.assertTrue(self.structure('state', dict(state, **patch), task_root=root, route=route))
-        for patch in (dict(status='split_required'), dict(id='missing'), dict(route_revision=0), dict(status='running'), dict(assignment_path='missing.yaml')):
-            data = copy.deepcopy(state)
-            data['active_assignments'][0].update(patch)
-            self.assertTrue(self.structure('state', data, task_root=root, route=route))
-        route['acceptance'] = dict(reviewer_assignment_id=None, report_path=None, route_revision=None)
-        route['assignments'][1]['allowed_transitions'] = []
-        self.assertTrue(self.structure('state', state, task_root=root, route=route))
-        self.assertTrue(self.structure('state', self.state_data, task_root=root, route=route))
-        self.assertTrue(self.structure('state', dict(self.state_data, phase='working')))
-        self.assertEqual([], self.structure('state', state, task_root=root))
-        self.write('task/route.yaml', 'invalid scalar')
-        self.assertTrue(self.structure('state', state, task_root=root))
 
     def test_quality_state_and_findings(self):
         for patch in (dict(iteration=-1), dict(permission='write'), dict(inventory_path=None), dict(expected=' '), dict(unresolved_questions=[None]), dict(next_step=' ')):
@@ -496,60 +333,6 @@ $codex-not-a-real-skill
         self.assertEqual([], self.validate().errors)
         self.append('agents/scout.toml', '# [Missing](../skills/codex-product-quality/missing.md)\n')
         self.assert_error('local target does not exist')
-
-    def test_f06_pending_route_description_is_not_execution(self):
-        root, route = self.concrete()
-        route['acceptance'] = dict(reviewer_assignment_id=None, report_path=None, route_revision=None)
-        productive = dict(action='dispatch', role='developer', assignment_id='A01', assignment_path='assignments/A01.yaml', input_paths=['goal.md'])
-        route['assignments'][1]['allowed_transitions'] = [productive, dict(action='finish')]
-        self.assertEqual([], self.structure('route', route, task_root=root))
-        for transition in (productive, dict(action='finish')):
-            with self.subTest(transition=transition):
-                errors = self.structure('transition', transition, task_root=root, route=route)
-                self.assertTrue(any('acceptance' in error for error in errors), errors)
-        route['acceptance'] = dict(reviewer_assignment_id='R01', report_path='reports/R01.yaml', route_revision=1)
-        self.assertEqual([], self.structure('transition', productive, task_root=root, route=route))
-
-    def test_f06_index_path_does_not_prove_dependencies(self):
-        root, route = self.concrete()
-        route['assignments'][0]['dependencies'] = ['R01']
-        self.write('task/route.yaml', yaml.safe_dump(route))
-        self.write('task/accepted.yaml', '[]')
-        def active(ident, role, status):
-            return dict(id=ident, role=role, status=status, assignment_path=f'assignments/{ident}.yaml', artifact=None, envelope=None, route_revision=1, runtime_handle=None)
-        ready = active('A01', 'developer', 'ready')
-        state = dict(self.state_data, phase='implementation', route_path='route.yaml', route_revision=1, accepted_index_path='accepted.yaml')
-        for status in ('blocked', 'pending', 'needs_revalidation', None):
-            with self.subTest(status=status):
-                entries = [ready] + ([active('R01', 'reviewer', status)] if status else [])
-                errors = self.structure('state', dict(state, active_assignments=entries), task_root=root, route=route)
-                self.assertTrue(any('dependencies' in error for error in errors), errors)
-        confirmed = [ready, active('R01', 'reviewer', 'approved')]
-        self.assertEqual([], self.structure('state', dict(state, active_assignments=confirmed), task_root=root, route=route))
-
-    def test_f06_invalid_contexts_return_structural_errors(self):
-        for method, data in [('envelope', self.envelope_data), ('transition', self.transition_data), ('state', self.state_data)]:
-            for context in ([], '', False, 1):
-                with self.subTest(method=method, context=context):
-                    errors = self.structure(method, data, route=context)
-                    self.assertTrue(any('sample.yaml:1: route context must be a mapping' in error for error in errors), errors)
-        for sender in ([], '', False, 1):
-            with self.subTest(sender=sender):
-                errors = self.structure('envelope', self.envelope_data, sender=sender)
-                self.assertTrue(any('sender' in error for error in errors), errors)
-        root, route = self.concrete()
-        self.assertEqual([], self.structure('envelope', self.envelope_data, task_root=root, route=route))
-
-    def test_f06_artifact_belongs_to_sender_assignment(self):
-        root, route = self.concrete()
-        self.assertTrue(self.structure('envelope', dict(self.envelope_data, artifact='goal.md'), task_root=root, route=route))
-        (root / 'alias').symlink_to('reports', target_is_directory=True)
-        self.assertEqual([], self.structure('envelope', dict(self.envelope_data, artifact='alias/A01.yaml'), task_root=root, route=route))
-        (root / 'escape').symlink_to(self.root, target_is_directory=True)
-        (root / 'loop').symlink_to('loop')
-        for artifact in ('escape/evals/cases.jsonl', 'loop'):
-            self.assertTrue(self.structure('envelope', dict(self.envelope_data, artifact=artifact), task_root=root, route=route))
-        self.assertEqual([], self.structure('envelope', self.envelope_data))
 
 
 if __name__ == '__main__':

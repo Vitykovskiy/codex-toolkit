@@ -108,4 +108,4 @@ Git blobs и SHA-256 manifest. Недоступность SHA больше не 
 | Runtime вне исходников | §§6,9,11 | Toolkit/потребитель | Сохранить и уточнить ignore | .gitignore; project-local | Конкретные check-ignore --no-index; templates остаются исходниками |
 | Один следующий отдельный smoke-check | §14 | Будущая доверенная сессия | Добавить текст запроса | docs/project-local.md | Готовый bootstrap, бюджет и реальные события; сейчас не запускался |
 
-Принятые уточнения схем в реализации сохраняют контракт v3: envelope содержит sender assignment_id/route_revision; route фиксирует независимую acceptance; template и concrete validation различаются. Они не добавляют root предметных полномочий и не являются runtime executor. Связанный дефект требует пересмотра decomposer и независимой перепроверки затронутых входов; бюджет не выдаёт approved.
+Специализированные route/state/envelope/budget-схемы v3 заменены краткими Markdown-протоколами и каноническим шестиполевым отчётом. Они не создают runtime executor и не добавляют root предметных полномочий. Связанный дефект требует пересмотра decomposer и независимой перепроверки затронутых входов; расход не выдаёт approved.

@@ -33,14 +33,31 @@ SKILLS = frozenset('codex-' + name for name in (
     'long-orchestration', 'product-quality'))
 ROLES = frozenset(('scout', 'analyst', 'architect', 'decomposer', 'developer',
                    'mechanical', 'reviewer', 'integration_reviewer', 'quality_owner'))
-PROFILE_FILES = {role.replace('_', '-') + '.toml': role for role in ROLES}
+PROFILE_FILES = {
+    **{role.replace('_', '-') + '.toml': role for role in ROLES},
+    'architect-astra.toml': 'architect_astra',
+    'quality-owner-astra.toml': 'quality_owner_astra',
+}
+PROFILE_POLICY = {
+    'scout': ('gpt-5.6-luna', 'low'),
+    'mechanical': ('gpt-5.6-luna', 'low'),
+    'developer': ('gpt-5.6-terra', 'medium'),
+    'decomposer': ('gpt-5.6-terra', 'medium'),
+    'reviewer': ('gpt-5.6-terra', 'medium'),
+    'integration_reviewer': ('gpt-5.6-sol', 'medium'),
+    'analyst': ('gpt-6-astra', 'medium'),
+    'architect': ('gpt-5.6-sol', 'medium'),
+    'architect_astra': ('gpt-6-astra', 'medium'),
+    'quality_owner': ('gpt-5.6-sol', 'medium'),
+    'quality_owner_astra': ('gpt-6-astra', 'medium'),
+}
 RUNTIME_DIRS = frozenset(('runtime', 'traces', 'cache', '.cache', '__pycache__',
                           '.venv', 'venv', 'env', '.pytest_cache', 'screenshots'))
 RUNTIME_PROBES = [name + '/probe.txt' for name in sorted(RUNTIME_DIRS)] + [
     '.codex/tmp/probe.txt', 'evals/runtime/probe.txt', 'evals/traces/probe.txt',
     'evals/screenshots/probe.txt', 'tests/__pycache__/probe.pyc', '.env']
 REPORT_KEYS = {'status', 'changed_files', 'checks', 'result', 'risks', 'next_action'}
-STATUSES = {'completed', 'approved', 'blocked', 'split_required', 'baseline_failure'}
+STATUSES = {'completed', 'approved', 'blocked', 'split_required', 'baseline_failure', 'paused'}
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -217,12 +234,13 @@ class Validator:
         except tomllib.TOMLDecodeError as error:
             self.error(path, str(error), getattr(error, 'lineno', 1))
             return None
-        if not self.fields(path, data, {'name': str, 'description': str, 'developer_instructions': str}):
+        if not self.fields(path, data, {'name': str, 'description': str, 'developer_instructions': str,
+                                        'model': str, 'model_reasoning_effort': str}):
             return None
         if data['name'] != PROFILE_FILES.get(path.name):
             self.error(path, 'profile name must match role (integration_reviewer uses underscore)')
-        if any(key == 'model' or 'reasoning' in key or key.startswith('model_') for key in data):
-            self.error(path, 'canonical profile must inherit model/reasoning settings')
+        if (data['model'], data['model_reasoning_effort']) != PROFILE_POLICY.get(data['name']):
+            self.error(path, 'profile model/reasoning must match canonical policy')
         self.budget(path, data['developer_instructions'], 250)
         if data.get('sandbox_mode') != 'workspace-write':
             self.error(path, 'sandbox_mode must be workspace-write')
@@ -305,246 +323,6 @@ class Validator:
             self.error(path, f'unsafe or missing task path {value}: {error}')
             return None
 
-    def transition(self, path, data, task_root=None, route=None, status=None, *, route_edge=False):
-        # Describing a future route edge does not authorize executing it.
-        if route is not None and type(route) is not dict:
-            self.error(path, 'route context must be a mapping')
-            return
-        if data is None:
-            if status != 'blocked':
-                self.error(path, 'null transition requires blocked status')
-            return
-        if not self.fields(path, data, {'action': str}, 'transition.'):
-            return
-        action = data['action']
-        self.choice(path, action, {'dispatch', 'review', 'fix', 'integrate', 'revalidate', 'await_user', 'finish'}, 'transition action')
-        if action == 'await_user':
-            if status != 'blocked':
-                self.error(path, 'await_user requires blocked status')
-            self.task_path(path, data.get('question_path'), task_root)
-        elif action == 'finish':
-            if not route_edge and route is not None and not self.accepted(route):
-                self.error(path, 'finish requires independent route acceptance')
-        elif action in {'dispatch', 'review', 'fix', 'integrate', 'revalidate'}:
-            if not self.fields(path, data, {'role': str, 'assignment_id': str, 'assignment_path': str, 'input_paths': list}, 'transition.'):
-                return
-            self.choice(path, data['role'], ROLES, 'transition role')
-            self.task_path(path, data['assignment_path'], task_root)
-            for item in data['input_paths']:
-                self.task_path(path, item, task_root)
-            if not route_edge and task_root is not None and route is not None and data['role'] in {'developer', 'mechanical', 'quality_owner'} and not self.accepted(route):
-                self.error(path, 'productive transition requires route acceptance')
-            if route is not None:
-                entry = self.route_entries(route).get(data['assignment_id'])
-                if entry is None or any(entry.get(key) != data[key] for key in ('role', 'assignment_path')):
-                    self.error(path, 'transition unknown assignment ID or mismatched role/path')
-
-    @staticmethod
-    def route_entries(route):
-        assignments = route.get('assignments', [])
-        if type(assignments) is not list:
-            return {}
-        return {x['id']: x for x in assignments
-                if isinstance(x, dict) and type(x.get('id')) is str}
-
-    @staticmethod
-    def accepted(route):
-        acceptance = route.get('acceptance')
-        if not isinstance(acceptance, dict):
-            return False
-        entry = Validator.route_entries(route).get(acceptance.get('reviewer_assignment_id')) if type(acceptance.get('reviewer_assignment_id')) is str else None
-        return bool(entry and type(entry.get('role')) is str and entry.get('role') in {'reviewer', 'integration_reviewer'}
-                    and type(acceptance.get('report_path')) is str
-                    and type(acceptance.get('route_revision')) is int
-                    and acceptance['route_revision'] == route.get('route_revision'))
-
-    def assignment(self, path, data, task_root=None):
-        schema = {'assignment_id': str, 'role': str, 'dispatcher_mode': bool, 'task_root': str, 'route_revision': int, 'goal_path': str, 'input_paths': list, 'write_set': list, 'artifact_path': str, 'criteria': list, 'checks': list, 'allowed_next_assignments': list}
-        if not self.fields(path, data, schema):
-            return
-        self.choice(path, data['role'], ROLES, 'assignment role')
-        self.integer(path, data['route_revision'], 'route_revision')
-        if data['dispatcher_mode'] is not True:
-            self.error(path, 'dispatcher assignment requires dispatcher_mode true')
-        if task_root is not None:
-            try:
-                if Path(data['task_root']).resolve(strict=True) != Path(task_root).resolve(strict=True):
-                    self.error(path, 'assignment task_root mismatch')
-            except (OSError, RuntimeError, ValueError) as error:
-                self.error(path, f'invalid assignment task_root: {error}')
-        self.task_path(path, data['goal_path'], task_root)
-        self.task_path(path, data['artifact_path'], task_root, future=True)
-        for key in ('input_paths', 'allowed_next_assignments'):
-            for item in data[key]:
-                self.task_path(path, item, task_root)
-        for key in ('write_set', 'criteria'):
-            self.strings(path, data[key], key)
-        if not data['criteria']:
-            self.error(path, 'executable assignment requires criteria')
-
-    def route(self, path, data, task_root=None):
-        if not self.fields(path, data, {'version': int, 'route_revision': int, 'assignments': list, 'acceptance': dict}):
-            return
-        self.integer(path, data['route_revision'], 'route_revision')
-        if data['version'] != 1:
-            self.error(path, 'unsupported version')
-        entries = self.route_entries(data)
-        if len(entries) != len(data['assignments']):
-            self.error(path, 'invalid or duplicate assignment ID')
-        for entry in data['assignments']:
-            if not self.fields(path, entry, {'id': str, 'role': str, 'assignment_path': str, 'dependencies': list, 'allowed_transitions': list, 'write_set': list, 'shared_resources': list}, 'assignment.'):
-                continue
-            self.choice(path, entry['role'], ROLES, 'assignment role')
-            target = self.task_path(path, entry['assignment_path'], task_root)
-            if target:
-                assignment = self.parse_yaml(target, self.read(target))
-                self.assignment(target, assignment, task_root)
-                if not isinstance(assignment, dict) or assignment.get('assignment_id') != entry['id'] or assignment.get('role') != entry['role'] or type(assignment.get('route_revision')) is not int or assignment['route_revision'] != data['route_revision']:
-                    self.error(path, 'assignment file ID/role/revision mismatch')
-            for key in ('dependencies', 'write_set', 'shared_resources'):
-                self.strings(path, entry[key], key)
-            if any(type(x) is not str or x not in entries for x in entry['dependencies']):
-                self.error(path, 'unknown dependency ID')
-            for transition in entry['allowed_transitions']:
-                self.transition(path, transition, task_root, data, status='blocked' if isinstance(transition, dict) and transition.get('action') == 'await_user' else None, route_edge=True)
-        acceptance = data['acceptance']
-        if set(acceptance) != {'reviewer_assignment_id', 'report_path', 'route_revision'}:
-            self.error(path, 'invalid acceptance fields')
-        if any(value is not None for value in acceptance.values()):
-            if not self.accepted(data):
-                self.error(path, 'invalid independent route acceptance')
-            self.task_path(path, acceptance.get('report_path'), task_root)
-
-    def envelope(self, path, data, task_root=None, route=None, sender=None):
-        if route is not None and type(route) is not dict:
-            self.error(path, 'route context must be a mapping')
-            return
-        if sender is not None and not self.fields(path, sender, {'id': str, 'role': str, 'route_revision': int}, 'sender.'):
-            return
-        required = {'status', 'artifact', 'assignment_id', 'route_revision', 'next_transition', 'decision_question'}
-        if not self.fields(path, data, {'status': str, 'artifact': str, 'assignment_id': str, 'route_revision': int}):
-            return
-        if set(data) != required:
-            self.error(path, 'envelope must contain only six envelope fields, never full report')
-        self.choice(path, data['status'], STATUSES, 'envelope status')
-        self.integer(path, data['route_revision'], 'route_revision')
-        artifact = self.task_path(path, data['artifact'], task_root)
-        transition = data.get('next_transition')
-        self.transition(path, transition, task_root, route, data['status'])
-        question = data.get('decision_question')
-        if isinstance(transition, dict) and transition.get('action') == 'await_user':
-            if question != transition.get('question_path'):
-                self.error(path, 'decision_question must match question_path')
-        elif question is not None:
-            self.error(path, 'decision_question must be null for ordinary transition')
-        if route is not None and type(route) is not dict:
-            self.error(path, 'route context must be a mapping')
-            return
-        if task_root is not None and route is None:
-            self.error(path, 'concrete envelope requires route context')
-        if route is not None:
-            before = len(self.errors)
-            self.route(path, route, task_root)
-            if len(self.errors) != before:
-                return
-        if sender is not None and (data['assignment_id'] != sender.get('id') or data['route_revision'] != sender.get('route_revision')):
-            self.error(path, 'unknown sender or stale revision')
-        if route is not None:
-            entry = self.route_entries(route).get(data['assignment_id'])
-            if entry is None or data['route_revision'] != route.get('route_revision'):
-                self.error(path, 'unknown sender or stale revision')
-            elif transition is not None and transition not in entry.get('allowed_transitions', []):
-                self.error(path, 'transition is not an accepted route edge')
-            if task_root is not None and entry is not None:
-                assignment_path = self.task_path(path, entry.get('assignment_path'), task_root)
-                if assignment_path:
-                    assignment = self.parse_yaml(assignment_path, self.read(assignment_path))
-                    if isinstance(assignment, dict):
-                        allowed_artifact = self.task_path(path, assignment.get('artifact_path'), task_root)
-                        if artifact is not None and allowed_artifact is not None and artifact != allowed_artifact:
-                            self.error(path, 'artifact differs from sender assignment artifact_path')
-            if sender is not None and entry is not None and sender.get('role') != entry.get('role'):
-                self.error(path, 'sender role mismatch')
-
-    def state(self, path, data, task_root=None, route=None):
-        required = {'version', 'task_id', 'mode', 'goal_path', 'constraints_path', 'phase', 'route_path', 'route_revision', 'active_assignments', 'accepted_index_path', 'next_transition', 'decision', 'budget_path', 'checkpoint_path', 'last_checkpoint'}
-        if not self.fields(path, data, {'version': int, 'task_id': str, 'mode': str, 'phase': str, 'route_revision': int, 'active_assignments': list, 'decision': dict}):
-            return
-        if set(data) != required or data['version'] != 1 or data['mode'] != 'dispatcher_only':
-            self.error(path, 'invalid state fields/version/mode')
-        self.integer(path, data['route_revision'], 'route_revision')
-        for key in ('goal_path', 'constraints_path', 'budget_path'):
-            self.task_path(path, data.get(key), task_root)
-        for key in ('route_path', 'accepted_index_path', 'checkpoint_path'):
-            self.task_path(path, data.get(key), task_root, nullable=True)
-        if data.get('last_checkpoint') is not None and (type(data['last_checkpoint']) is not str or not data['last_checkpoint'].strip()):
-            self.error(path, 'last_checkpoint must be nonblank string or null')
-        if task_root is not None and data.get('route_path') is not None:
-            target = self.task_path(path, data['route_path'], task_root)
-            if target:
-                stored_route = self.parse_yaml(target, self.read(target))
-                if type(stored_route) is not dict:
-                    self.error(path, 'stored route must be a mapping')
-                elif route is None:
-                    route = stored_route
-                elif route != stored_route:
-                    self.error(path, 'route context differs from route_path content')
-        if route is not None and type(route) is not dict:
-            self.error(path, 'route context must be a mapping')
-            return
-        bootstrap = data['phase'] == 'bootstrap' and data.get('route_path') is None
-        if data.get('route_path') is None and (not bootstrap or data['route_revision'] != 0 or route is not None or data['active_assignments']):
-            self.error(path, 'incomplete bootstrap only before accepted route')
-        if task_root is not None and not bootstrap and route is None:
-            self.error(path, 'concrete state requires route context')
-        if route is not None:
-            before = len(self.errors)
-            self.route(path, route, task_root)
-            if len(self.errors) != before:
-                return
-        if route is not None and data['route_revision'] != route.get('route_revision'):
-            self.error(path, 'stale state revision')
-        decision = data['decision']
-        self.choice(path, decision.get('status'), {'none', 'await_user'}, 'decision status')
-        self.task_path(path, decision.get('question_path'), task_root, nullable=decision.get('status') == 'none')
-        if decision.get('status') == 'none' and decision.get('question_path') is not None:
-            self.error(path, 'none decision requires null question')
-        if data.get('next_transition') is not None:
-            self.transition(path, data['next_transition'], task_root, route, 'blocked' if decision.get('status') == 'await_user' else None)
-        seen = set()
-        for entry in data['active_assignments']:
-            if not self.fields(path, entry, {'id': str, 'role': str, 'status': str, 'assignment_path': str, 'route_revision': int}, 'active.'):
-                continue
-            if not {'artifact', 'envelope', 'runtime_handle'} <= set(entry):
-                self.error(path, 'missing active assignment fields')
-            if entry['id'] in seen:
-                self.error(path, 'duplicate active assignment ID')
-            seen.add(entry['id'])
-            self.choice(path, entry['role'], ROLES, 'active role')
-            self.choice(path, entry['status'], {'pending', 'ready', 'running', 'completed', 'approved', 'blocked', 'needs_revalidation', 'cancelled'}, 'active status')
-            self.task_path(path, entry['assignment_path'], task_root)
-            for key in ('artifact', 'envelope'):
-                self.task_path(path, entry.get(key), task_root, nullable=True)
-            handle = entry.get('runtime_handle')
-            if handle is not None and (type(handle) is not str or not handle.strip()):
-                self.error(path, 'runtime_handle must be nonblank string or null')
-            if entry['status'] == 'running' and handle is None:
-                self.error(path, 'running assignment requires runtime_handle')
-            if entry['route_revision'] != data['route_revision']:
-                self.error(path, 'stale active revision')
-            if route is not None:
-                actual = self.route_entries(route).get(entry['id'])
-                if actual is None or any(actual.get(k) != entry[k] for k in ('role', 'assignment_path')):
-                    self.error(path, 'unknown active assignment or role/path mismatch')
-                if entry['status'] in {'ready', 'running'} and not self.accepted(route):
-                    self.error(path, 'ready/running requires accepted executable assignment')
-                if entry['status'] == 'ready' and actual:
-                    statuses = {x.get('id'): x.get('status') for x in data['active_assignments'] if isinstance(x, dict) and type(x.get('id')) is str}
-                    # An index path alone supplies no addressed dependency evidence.
-                    # Without a declared index schema, missing active evidence stays unconfirmed.
-                    if any(type(dep) is not str or statuses.get(dep) not in ('approved', 'completed') for dep in actual.get('dependencies', [])):
-                        self.error(path, 'ready assignment has unsatisfied or unconfirmed dependencies')
-
     def quality(self, path, data, task_root=None):
         schema = {'version': int, 'campaign_id': str, 'iteration': int, 'permission': str, 'unresolved_questions': list, 'next_step': str}
         if not self.fields(path, data, schema):
@@ -556,7 +334,7 @@ class Validator:
         if 'expected' not in data or (data['expected'] is not None and (type(data['expected']) is not str or not data['expected'].strip())):
             self.error(path, 'expected must be nonblank string or null')
         self.strings(path, data['unresolved_questions'], 'unresolved_questions')
-        for key in ('inventory_path', 'findings_path', 'current_batch_path', 'decisions_path', 'evidence_path', 'budget_path'):
+        for key in ('inventory_path', 'findings_path', 'current_batch_path', 'decisions_path', 'evidence_path'):
             self.task_path(path, data.get(key), task_root, directory=key == 'evidence_path')
 
     def finding(self, path, data, concrete=False):
@@ -600,16 +378,12 @@ class Validator:
 
     def templates(self):
         for name, method in (
-            ('codex-long-orchestration/references/templates/state.yaml', self.state),
-            ('codex-long-orchestration/references/templates/envelope.yaml', self.envelope),
             ('codex-product-quality/references/templates/quality-state.yaml', self.quality),
         ):
             path = self.root / 'skills' / name
             method(path, self.parse_yaml(path, self.read(path)))
         for name, methods in (
-            ('codex-long-orchestration/references/dispatcher-mode.md', (self.route, self.budget_data)),
             ('codex-product-quality/references/finding-schema.md', (self.finding,)),
-            ('codex-orchestration-pact/references/templates/task.md', (self.assignment,)),
         ):
             path = self.root / 'skills' / name
             blocks = re.findall(r'^```yaml\s*\n(.*?)^```', self.read(path), re.M | re.S)
@@ -617,21 +391,6 @@ class Validator:
                 self.error(path, 'missing or extra canonical YAML schema blocks')
             for block, method in zip(blocks, methods):
                 method(path, self.parse_yaml(path, block))
-
-    def budget_data(self, path, data):
-        if not self.fields(path, data, {'await_user': list, 'blocked': list, 'handoff': list, 'permission_source': str}):
-            return
-        for key in ('max_batches', 'time', 'resources'):
-            if key not in data:
-                self.error(path, f'missing budget {key}')
-        if data.get('max_batches') is not None:
-            self.integer(path, data['max_batches'], 'max_batches', 1)
-        for key in ('await_user', 'blocked', 'handoff'):
-            self.strings(path, data[key], key)
-        for key in ('time', 'resources'):
-            if data.get(key) is not None and (type(data[key]) is not str or not data[key].strip()):
-                self.error(path, f'{key} must be nonblank string or null')
-        self.task_path(path, data['permission_source'])
 
     def cases(self):
         path = self.root / 'evals/cases.jsonl'
@@ -709,7 +468,7 @@ class Validator:
         names = [self.skill(path) for path in directories]
         profiles = sorted((self.root / 'agents').glob('*.toml'))
         if {path.name for path in profiles} != set(PROFILE_FILES):
-            self.error(self.root / 'agents', 'expected exactly nine canonical profile files')
+            self.error(self.root / 'agents', 'expected exactly eleven canonical profile files')
         roles = [self.profile(path) for path in profiles]
         for values, path in ((names, self.root / 'skills'), (roles, self.root / 'agents')):
             known = [value for value in values if value is not None]
