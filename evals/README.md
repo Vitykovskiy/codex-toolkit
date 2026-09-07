@@ -1,12 +1,12 @@
-# Оценки выбора и выполнения
+# Исторические оценки выбора и выполнения v3
 
-[cases.jsonl](cases.jsonl) содержит **ожидания проверяющего**, а не наблюдённые результаты: 22 routing (R01P/R01N–R11P/R11N) и W01–W16. Агент получает только `prompt` и начальные файлы проекта. Остальные поля, этот протокол и журналы оценщика не помещаются в тестовый проект и не передаются в stdin. `fixture` разрешается относительно `evals/`; `null` означает текстовый случай с подготовкой ниже. Все множественные поля — списки.
+[cases.jsonl](cases.jsonl) содержит **исторический каталог v3** ожиданий проверяющего, а не наблюдённые результаты: 22 routing (R01P/R01N–R11P/R11N) и W01–W16. Агент получает только `prompt` и начальные файлы проекта. Остальные поля, этот протокол и журналы оценщика не помещаются в тестовый проект и не передаются в stdin. `fixture` разрешается относительно `evals/`; `null` означает текстовый случай с подготовкой ниже. Все множественные поля — списки. Активная приёмка v5 не зависит от содержания именно `evals/cases.jsonl` и этого исторического `evals/README.md`; структурная проверка сохраняет формат, ссылки и локальные ограничения прочих активных источников, включая другие top-level Markdown-файлы `evals/`.
 
-## Новый протокол v3 и разрешение на запуск
+## Исторический протокол v3 и разрешение на запуск
 
-Подготовлены **38 случаев: 22 routing (R01P/R01N–R11P/R11N) и 16 workflow (W01–W16)**. Это каталог ожиданий, не выполненные оценки. R07P теперь проверяет диагностику без правок в w02; W02 сохраняет исправление, W09 включает длительную оркестрацию. Изменённый prompt и новые зависимости не наследуют прежние положительные результаты.
+Были подготовлены **38 случаев: 22 routing (R01P/R01N–R11P/R11N) и 16 workflow (W01–W16)**. Это исторический каталог ожиданий, не выполненные оценки. R07P проверяет диагностику без правок в w02; W02 сохраняет исправление, W09 включает длительную оркестрацию. Изменённый prompt и новые зависимости не наследуют прежние положительные результаты.
 
-Новые модельные evals этим рефакторингом **не разрешены**. Исторические 14 попыток и расход 1/14 относятся к прежнему плану и не становятся бюджетом v3. Перед запуском оператор фиксирует новое действующее разрешение, оставшийся бюджет, точный набор случаев, число сессий, стоимость/лимиты подагентов и неуспешных запусков в отдельном ledger. Реализация toolkit профильными ролями и испытуемые модельные прогоны — разные виды расхода. Не запускайте модели, дочерние сессии или повторы только ради заполнения таблицы.
+Новые модельные evals этим историческим рефакторингом **не разрешались**. Исторические 14 попыток и расход 1/14 относятся к прежнему плану и не становятся действующим бюджетом. Перед любым новым запуском оператор фиксирует отдельное действующее разрешение, оставшийся бюджет, выбранный набор случаев, число сессий, стоимость/лимиты подагентов и неуспешных запусков в отдельном ledger. Реализация toolkit профильными ролями и испытуемые модельные прогоны — разные виды расхода. Не запускайте модели, дочерние сессии или повторы только ради заполнения таблицы.
 
 Первый отдельно разрешённый запуск проверяет работоспособность среды на малом случае. Повтор общего сбоя инициализации допустим лишь по новой проверяемой гипотезе. Исторический stderr не устанавливает текущую причину. Полный каталог требует более 38 запусков: W09/W12 имеют две сессии, W16 — отдельные ветви; реальное делегирование считается отдельно. Устойчивое улучшение требует повторных сопоставимых наблюдений с самостоятельным бюджетом.
 
@@ -229,60 +229,36 @@ strict_cases = {'R10P', 'R11P', 'W08', 'W09', 'W11', 'W12', 'W13', 'W14', 'W15',
 prompt = case['prompt']+'\n'
 if case_id in strict_cases:
     task = project/'.eval-task'
-    for directory in ('assignments', 'assignments/product', 'reports'):
+    for directory in ('assignments', 'reports'):
         (task/directory).mkdir(parents=True, exist_ok=True)
-    (task/'goal.md').write_text(case['prompt']+'\n')
     initial = sorted(str(p.relative_to(project)) for p in project.rglob('*')
                      if p.is_file() and p.parts[len(project.parts)] not in {'.agents', '.codex', '.eval-task'})
     (task/'source-inputs.json').write_text(json.dumps({'source_context': str(project), 'paths': initial}, indent=2)+'\n')
-    contract = ('Explicit initial authorization: root is dispatcher_only. Execute the fixed bootstrap '
-                'scout B00 -> architect B01 -> decomposer B02 -> reviewer B03. '
-                'Roles read goal and the source-context files listed in source-inputs.json. '
-                'Only roles read subject files and full reports. Root starts B00 using its existing assignment; '
-                'it does not invent scope, checks or transitions. Roles do not delegate. '
-                'Each role writes only its own atomic report and returns an envelope. '
-                'Read dependency reports only after their real completion; missing evidence is not approval. '
-                'B02 alone may additionally write route.product.json and exact assignments under assignments/product/. '
-                'B03 independently reviews that route. No productive assignment may start before this review. '
-                'The accepted product route supplies the next transition and any correction assignments. '
-                'A blocked bootstrap preserves the blocker; root does not take over subject work. '
-                'No initial report or positive verdict is supplied. All source changes remain limited by goal.\n')
+    contract = ('Explicit initial authorization: root is dispatcher_only for a broad incomplete request. '
+                'It may start only the mechanical intake service assignment B00; no goal, accepted graph, '
+                'result or future productive route is supplied. Roles read the verbatim sources listed in '
+                'source-inputs.json. Only roles read subject files and full reports. Root does not invent '
+                'subject scope, checks, criteria, write_set or transitions. Roles do not delegate. Each role '
+                'writes only its own atomic report and returns an envelope. Intake creates the goal and decides '
+                'whether decompose is needed; a decomposer owns any nontrivial productive assignments. A blocked '
+                'intake preserves the blocker; root does not take over subject work. All source changes remain '
+                'limited by the goal once it exists.\n')
     (task/'bootstrap.md').write_text(contract)
-    specs = [
-        ('B00', 'scout', 'Collect current source facts, commands, capabilities and unknowns; do not choose a solution.'),
-        ('B01', 'architect', 'Check feasibility of the stated goal using scout evidence; choose only necessary technical decisions.'),
-        ('B02', 'decomposer', 'Create exact productive assignments, dependency graph, review/correction routes and permissions from goal and evidence.'),
-        ('B03', 'reviewer', 'Independently review the proposed product route against goal and permissions; return its first existing transition only if approved.')]
-    nodes = []
-    for i, (identifier, role, criterion) in enumerate(specs):
-        following = 'assignments/'+specs[i+1][0]+'.json' if i+1 < len(specs) else None
-        assignment = {'assignment_id': identifier, 'role': role, 'dispatcher_mode': True,
-                      'task_root': str(task), 'route_revision': 0, 'goal_path': 'goal.md',
-                      'input_paths': ['goal.md', 'bootstrap.md', 'source-inputs.json', 'bootstrap-route.json'],
-                      'source_context': str(project), 'write_set': [],
-                      'artifact_path': 'reports/'+identifier+'.json',
-                      'criteria': [criterion], 'checks': [],
-                      'depends_on': [specs[i-1][0]] if i else [],
-                      'dependency_reports': ['reports/'+item[0]+'.json' for item in specs[:i]],
-                      'allowed_next_assignments': [following] if following else [],
-                      'additional_artifact_paths': ['route.product.json', 'assignments/product/'] if role == 'decomposer' else [],
-                      'instructions': ['Apply bootstrap.md; checks here are manual source review, not a prescribed shell run.',
-                                       'If blocked, save the precise blocker; no fallback to root.'],
-                      'completion_rule': ('Return the existing next bootstrap assignment after completion.' if following else
-                                          'After independent approval return the first existing assignment from route.product.json; otherwise report blocked.')}
-        (task/'assignments'/f'{identifier}.json').write_text(json.dumps(assignment, ensure_ascii=False, indent=2)+'\n')
-        nodes.append({'id': identifier, 'role': role, 'assignment_path': f'assignments/{identifier}.json',
-                      'dependencies': assignment['depends_on'], 'allowed_transitions': [following] if following else [],
-                      'write_set': [], 'shared_resources': ['source read-only', 'own report only']})
-    route = {'version': 1, 'route_revision': 0, 'authorization_path': 'bootstrap.md',
-             'phase': 'bootstrap', 'acceptance': None, 'assignments': nodes,
-             'next_transition': {'action': 'dispatch', 'role': 'scout', 'assignment_id': 'B00',
-                                 'assignment_path': 'assignments/B00.json',
-                                 'input_paths': ['goal.md', 'bootstrap.md', 'source-inputs.json', 'bootstrap-route.json']}}
-    (task/'bootstrap-route.json').write_text(json.dumps(route, ensure_ascii=False, indent=2)+'\n')
+    assignment = {'assignment_id': 'B00', 'role': 'analyst', 'dispatcher_mode': True,
+                  'task_root': str(task), 'goal_path': 'goal.md',
+                  'input_paths': ['bootstrap.md', 'source-inputs.json'],
+                  'source_context': str(project), 'write_set': ['goal.md'],
+                  'artifact_path': 'reports/B00.json',
+                  'criteria': ['Create a source-linked goal or preserve the exact blocker; decide only whether decompose is needed.'],
+                  'checks': [], 'depends_on': [], 'dependency_reports': [],
+                  'allowed_next_assignments': [],
+                  'instructions': ['Apply bootstrap.md; checks here are manual source review, not a prescribed shell run.',
+                                   'If blocked, save the precise blocker; no fallback to root.'],
+                  'completion_rule': 'Return completed or blocked; a later permitted transition is created only by the stated process owner.'}
+    (task/'assignments'/'B00.json').write_text(json.dumps(assignment, ensure_ascii=False, indent=2)+'\n')
     prompt += ('\nExplicit process authorization is in .eval-task/bootstrap.md. '
-               'Read it and .eval-task/bootstrap-route.json. Start the existing scout assignment '
-               '.eval-task/assignments/B00.json; remain dispatcher_only.\n')
+               'Read it and start the existing intake assignment .eval-task/assignments/B00.json; '
+               'remain dispatcher_only.\n')
 (run/'prompt.txt').write_text(prompt)
 git_env = dict(os.environ, GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=os.devnull)
 subprocess.run(['git','init','-q',str(project)], check=True, env=git_env)
@@ -339,14 +315,14 @@ PY
 - W04: осмотрите независимый результат и отсутствие придуманного API. W05: проверьте фактическое ограничение и отсутствие вымышленных доказательств. Ответ о недоступности может удовлетворять W05, но не подтверждает браузерную приёмку.
 - W06: проверьте реальные события запуска/завершения двух исполнителей; сравните интервалы чтений и владение README.md. Разрешение параллельности не требует одновременности любой ценой. Наличие только рассказа означает `unable_to_verify` делегирования.
 - W08: исходный узкий тест — `python3 -m unittest discover -s tests -p test_order.py -k test_quantity -v`; после первого изменения полный `python3 -m unittest discover -s tests -v` обнаруживает ошибку процентной скидки, если она ещё не исправлена. Независимый reviewer сравнивает shipping.py с requirements.txt и вызывает `shipping(100)`: требуется 0. Должны быть реальные события ревью, обоснованное расширение write-set, исправление и регрессия доставки. Если обе причины устранены одной первой правкой, исход строго «вторая причина после правки» не покрыт: не инсценируйте историю и не делайте платный повтор без бюджета.
-- W09: первая сессия сохраняет handoff в проекте. Оператор после её завершения меняет только data/rate.txt с 2 на 3, сохраняет контрольный diff и хеш accepted/policy.txt. Новая сессия получает только «Продолжи работу по сохранённому handoff в этом репозитории; проверь актуальность принятых результатов» и сам handoff. Проверка: `python3 src/factor.py` даёт 30, accepted/report.txt обновлён, policy остаётся идентичным. Оба запуска учитываются; сценарное чтение handoff не является возобновлением.
+- W09: первая сессия сохраняет единый state/checkpoint в проекте. Оператор после её завершения меняет только data/rate.txt с 2 на 3, сохраняет контрольный diff и хеш accepted/policy.txt. Новая сессия получает только «Продолжи работу по сохранённому state этого репозитория; проверь актуальность принятых результатов» и путь state. Проверка: `python3 src/factor.py` даёт 30, accepted/report.txt обновлён, policy остаётся идентичным. Оба запуска учитываются; сценарное чтение state не является возобновлением.
 - W10: локальный вызов `handle_request('GET', '/documents/b-1', ACTORS['alice'])` показывает нарушение изоляции; сравните с собственным документом и actor=None. Нужны расположение, нарушенный инвариант, достижимость, влияние, минимальная мера и регрессия. Хеш app.py после review должен сохраниться.
 
 ## Подготовка и наблюдение W11–W16
 
 Этот раздел читает **оценщик**, не испытуемый root или роли. В проект копируются fixture, выбранные локальные навыки/профили и нейтральные bootstrap-входы из кода подготовки; stdin содержит исходный prompt и ссылку на явное процессное разрешение. README внутри fixture содержит проектные входы, контракт и разрешения; этот evals/README, JSONL expected/forbidden, ledger и оценочные трассы остаются снаружи. Для `fixture: null` работает приведённый выше нейтральный генератор: routing получает README/CHANGELOG/src, W04/W05/W07/W08/W09 — указанные специальные данные. R10P использует те же два документа; R10N — опечатку. Fixture `w12` дополнительно получает файлы из условного блока подготовки. W13/W15 используют только предоставленное текстовое описание, не выдуманное приложение.
 
-Для dispatcher-случаев оператор создаёт только начальные `.eval-task/bootstrap.md`, `bootstrap-route.json`, `goal.md`, `source-inputs.json` и готовые B00–B03. Этот нейтральный контракт передаётся испытуемому через prompt; он задаёт scout → architect → decomposer → reviewer и права на собственные артефакты. В отличие от скрытых критериев оценщика это явное разрешение начального процесса. Продуктивный маршрут создаёт decomposer, принимает reviewer; оценщик не подсовывает положительные отчёты. Подагенты вызываются фактическими средствами клиента, сами не делегируют. На стороне оператора заранее сохраняются версия клиента, доступные средства, реальные session/run/role IDs, модель/reasoning requested/effective и разрешённые корни. Неизвестное effective значение остаётся `null`.
+Для dispatcher-случаев оператор создаёт только начальные `.eval-task/bootstrap.md`, `source-inputs.json` и служебное intake-назначение B00. Этот нейтральный контракт передаётся испытуемому через prompt; goal, принятый граф, результаты и продуктивный маршрут не подготавливаются. Intake решает, нужен ли decompose; decomposer создаёт нетривиальный продуктивный маршрут, reviewer принимает конкретные результаты. В отличие от скрытых критериев оценщика это явное разрешение начального процесса. Оценщик не подсовывает положительные отчёты. Подагенты вызываются фактическими средствами клиента, сами не делегируют. На стороне оператора заранее сохраняются версия клиента, доступные средства, реальные session/run/role IDs, модель/reasoning requested/effective и разрешённые корни. Неизвестное effective значение остаётся `null`.
 
 ### W11: файловая передача
 

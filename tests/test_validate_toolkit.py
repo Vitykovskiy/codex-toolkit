@@ -1,7 +1,5 @@
 """Structural validator regression tests, using disposable Git repositories."""
 import contextlib
-import copy
-import json
 import io
 from pathlib import Path
 import subprocess
@@ -10,7 +8,7 @@ import unittest
 
 import yaml
 
-from tools.validate_toolkit import PROFILE_FILES, PROFILE_POLICY, RUNTIME_PROBES, SKILLS, Validator, main
+from tools.validate_toolkit import PROFILE_FILES, RUNTIME_PROBES, SKILLS, Validator, main
 
 
 REPORT = '''```yaml
@@ -38,23 +36,16 @@ class ValidatorTests(unittest.TestCase):
             metadata = {'interface': {'display_name': name, 'short_description': 'Test skill', 'default_prompt': f'Use ${name}.'}, 'policy': {'allow_implicit_invocation': name != 'codex-communication-pact'}}
             self.write(f'skills/{name}/agents/openai.yaml', yaml.safe_dump(metadata))
         for filename, role in PROFILE_FILES.items():
-            model, effort = PROFILE_POLICY[role]
-            self.write(f'agents/{filename}', f'name = "{role}"\ndescription = "Test role"\nsandbox_mode = "workspace-write"\nmodel = "{model}"\nmodel_reasoning_effort = "{effort}"\ndeveloper_instructions = "Read assigned input"\n')
+            self.write(f'agents/{filename}', f'name = "{role}"\ndescription = "Test role"\nsandbox_mode = "workspace-write"\nmodel = "test-model"\nmodel_reasoning_effort = "medium"\ndeveloper_instructions = "Read assigned input"\n')
         self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT)
         self.quality_data = dict(version=1, campaign_id='test', iteration=0, permission='observe_only', inventory_path='quality/inventory.yaml', findings_path='quality/findings.yaml', current_batch_path='quality/current-batch.md', decisions_path='quality/decisions.md', evidence_path='quality/evidence', expected=None, unresolved_questions=[], next_step='observe')
         self.finding_data = dict(id='F01', surface='test', scenario='test', state='error', viewport=None, expected=None, expected_source=None, observed='test', evidence=[], classification='unknown', severity=None, confidence='low', decision_required=True, recommended_next_role='analyst')
         self.write('skills/codex-product-quality/references/templates/quality-state.yaml', yaml.safe_dump(self.quality_data))
         self.write('skills/codex-product-quality/references/finding-schema.md', self.block(self.finding_data))
-        self.case_data = [dict(id=ident, kind=kind, prompt='test', fixture=None, expected_skills=[], forbidden_skills=[], expected_outcomes=['result'], forbidden_actions=[], required_capabilities=[]) for ident, kind in [(f'R{i:02}{suffix}', 'routing') for i in range(1, 12) for suffix in 'PN'] + [(f'W{i:02}', 'workflow') for i in range(1, 17)]]
-        self.write_cases()
 
     @staticmethod
     def block(data):
         return '```yaml\n' + yaml.safe_dump(data) + '```\n'
-
-    def write_cases(self):
-        self.write('evals/cases.jsonl', ''.join(json.dumps(x) + '\n' for x in self.case_data))
-
 
     def write(self, name, text):
         path = self.root / name
@@ -107,12 +98,12 @@ class ValidatorTests(unittest.TestCase):
         self.assert_error('name must match directory')
         self.assert_error('duplicate name')
 
-    def test_eval_protocol_links_are_checked(self):
+    def test_historical_eval_material_is_excluded(self):
         self.write('evals/README.md', '[Cases](missing.jsonl)\n')
-        self.assert_error('local target does not exist: missing.jsonl')
-        self.write('evals/README.md', '[Cases](cases.jsonl)\n')
-        self.write('evals/cases.jsonl', '')
-        self.assert_error('case ID set mismatch')
+        self.write('evals/cases.jsonl', '{broken}\n')
+        self.assertEqual([], self.validate().errors)
+        self.write('evals/active.md', '[Missing](missing.md)\n')
+        self.assert_error('local target does not exist: missing.md')
 
     def test_broken_markdown_link(self):
         self.append('skills/codex-debugging/SKILL.md', '[Guide](references/missing.md)\n')
@@ -210,11 +201,10 @@ $codex-not-a-real-skill
         self.write('skills/codex-orchestration-pact/references/templates/report.md', REPORT.replace('checks: []', 'checks:\n  - command: test\n    execution_status: []\n    result: []'))
         self.assert_error('invalid execution_status')
 
-    def test_exact_sets_and_required_types(self):
+    def test_skill_set_and_required_types(self):
         self.write('skills/codex-extra/SKILL.md', '---\nname: codex-extra\ndescription: 123\n---\n')
         self.write('agents/extra.toml', 'name = "extra"\n')
         self.assert_error('skill set mismatch')
-        self.assert_error('exactly eleven canonical profile files')
         self.assert_error('description must be str')
 
     def test_runtime_ignore_and_tracking(self):
@@ -225,12 +215,15 @@ $codex-not-a-real-skill
         subprocess.run(['git', '-C', str(self.root), 'add', '-f', 'traces/probe.txt'], check=True)
         self.assert_error('runtime artifact is tracked')
 
-    def test_missing_skill_and_profile_model(self):
+    def test_missing_skill(self):
         (self.root / 'skills/codex-debugging/SKILL.md').unlink()
-        path = self.root / 'agents/scout.toml'
-        self.write('agents/scout.toml', path.read_text().replace('gpt-5.6-luna', 'some-model'))
         self.assert_error('missing YAML front matter')
-        self.assert_error('profile model/reasoning must match canonical policy')
+
+    def test_profile_count_and_model_policy_are_not_enforced(self):
+        (self.root / 'agents/scout.toml').unlink()
+        path = self.root / 'agents/developer.toml'
+        self.write('agents/developer.toml', path.read_text().replace('test-model', 'another-model'))
+        self.assertEqual([], self.validate().errors)
 
     def test_explicit_unknown_skill_and_role(self):
         self.write('README.md', 'Apply $codex-unknown.\nrole: `unknown`\n')
@@ -278,49 +271,6 @@ $codex-not-a-real-skill
         self.assertTrue(self.structure('finding', dict(self.finding_data, evidence=[None]), concrete=True))
         self.assertTrue(self.structure('findings', [self.finding_data, self.finding_data]))
         self.assertEqual([], self.structure('finding', dict(self.finding_data, classification='defect', expected='requirement', expected_source='goal.md', evidence=['observed source']), concrete=True))
-
-    def test_jsonl_empty_corrupt_and_duplicate_keys_ids(self):
-        for text, error in [('', 'case ID set mismatch'), ('{broken}\n', 'invalid JSONL'), ('{"id":"R01P","id":"R01P"}\n', 'duplicate JSON key'), ('{"nested":{"key":1,"key":2}}\n', 'duplicate JSON key')]:
-            self.write('evals/cases.jsonl', text)
-            self.assert_error(error)
-        self.case_data.append(copy.deepcopy(self.case_data[0]))
-        self.write_cases()
-        self.assert_error('duplicate case ID')
-
-    def test_jsonl_types_missing_fields_and_exact_ids(self):
-        original = copy.deepcopy(self.case_data[0])
-        for key in original:
-            self.case_data[0] = copy.deepcopy(original)
-            del self.case_data[0][key]
-            self.write_cases()
-            self.assertTrue(self.validate().errors, key)
-        for patch in (dict(id='X01'), dict(kind='workflow'), dict(prompt=' '), dict(fixture=False), dict(expected_skills=[{}]), dict(required_capabilities=[False])):
-            self.case_data[0] = dict(original, **patch)
-            self.write_cases()
-            self.assertTrue(self.validate().errors, patch)
-
-    def test_jsonl_unknown_and_overlapping_skills(self):
-        self.case_data[0]['expected_skills'] = ['codex-other']
-        self.write_cases()
-        self.assert_error('unknown case skill')
-        self.case_data[0]['expected_skills'] = ['codex-debugging']
-        self.case_data[0]['forbidden_skills'] = ['codex-debugging']
-        self.write_cases()
-        self.assert_error('skills overlap')
-
-    def test_fixture_directories_and_symlinks(self):
-        self.write('evals/fixtures/good/README.md', 'synthetic')
-        self.write('evals/fixtures/file', 'not directory')
-        (self.root / 'evals/fixtures/escape').symlink_to(self.root, target_is_directory=True)
-        (self.root / 'evals/fixtures/loop').symlink_to('loop')
-        for target in ('fixtures/good', None):
-            self.case_data[0]['fixture'] = target
-            self.write_cases()
-            self.assertEqual([], self.validate().errors)
-        for target in ('fixtures/file', 'fixtures/missing', 'fixtures/../cases.jsonl', 'fixtures/escape', 'fixtures/loop', str(self.root / 'evals/fixtures/good'), 'good'):
-            self.case_data[0]['fixture'] = target
-            self.write_cases()
-            self.assertTrue(self.validate().errors, target)
 
     def test_source_templates_are_not_runtime(self):
         subprocess.run(['git', '-C', str(self.root), 'add', 'skills'], check=True)

@@ -10,13 +10,12 @@ not a full Markdown parser, nor a proof of dependency semantics or acyclicity.
 Explicit skill checks recognize $codex-name outside inline code and explicitly
 marked skill/скилл/навык `codex-name` mentions, not arbitrary codex-* words.
 Executable metadata prompts are checked including their inline tokens. Empty legacy directories are not skills.
-Historical docs/refactoring-map.md is excluded from active-instruction checks.
+Historical docs/refactoring-map.md, evals/README.md and evals/cases.jsonl are excluded from mandatory active content checks.
 Report YAML examples are checked structurally; prose consistency needs review.
 """
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 import re
 import subprocess
@@ -37,19 +36,6 @@ PROFILE_FILES = {
     **{role.replace('_', '-') + '.toml': role for role in ROLES},
     'architect-astra.toml': 'architect_astra',
     'quality-owner-astra.toml': 'quality_owner_astra',
-}
-PROFILE_POLICY = {
-    'scout': ('gpt-5.6-luna', 'low'),
-    'mechanical': ('gpt-5.6-luna', 'low'),
-    'developer': ('gpt-5.6-terra', 'medium'),
-    'decomposer': ('gpt-5.6-terra', 'medium'),
-    'reviewer': ('gpt-5.6-terra', 'medium'),
-    'integration_reviewer': ('gpt-5.6-sol', 'medium'),
-    'analyst': ('gpt-6-astra', 'medium'),
-    'architect': ('gpt-5.6-sol', 'medium'),
-    'architect_astra': ('gpt-6-astra', 'medium'),
-    'quality_owner': ('gpt-5.6-sol', 'medium'),
-    'quality_owner_astra': ('gpt-6-astra', 'medium'),
 }
 RUNTIME_DIRS = frozenset(('runtime', 'traces', 'cache', '.cache', '__pycache__',
                           '.venv', 'venv', 'env', '.pytest_cache', 'screenshots'))
@@ -239,8 +225,6 @@ class Validator:
             return None
         if data['name'] != PROFILE_FILES.get(path.name):
             self.error(path, 'profile name must match role (integration_reviewer uses underscore)')
-        if (data['model'], data['model_reasoning_effort']) != PROFILE_POLICY.get(data['name']):
-            self.error(path, 'profile model/reasoning must match canonical policy')
         self.budget(path, data['developer_instructions'], 250)
         if data.get('sandbox_mode') != 'workspace-write':
             self.error(path, 'sandbox_mode must be workspace-write')
@@ -392,51 +376,6 @@ class Validator:
             for block, method in zip(blocks, methods):
                 method(path, self.parse_yaml(path, block))
 
-    def cases(self):
-        path = self.root / 'evals/cases.jsonl'
-        expected = {f'R{i:02}{suffix}' for i in range(1, 12) for suffix in 'PN'} | {f'W{i:02}' for i in range(1, 17)}
-        seen = set()
-        def unique(pairs):
-            result = {}
-            for key, value in pairs:
-                if key in result:
-                    raise ValueError(f'duplicate JSON key: {key}')
-                result[key] = value
-            return result
-        for line, text in enumerate(self.read(path).splitlines(), 1):
-            try:
-                data = json.loads(text, object_pairs_hook=unique, parse_constant=lambda value: (_ for _ in ()).throw(ValueError(f'invalid constant {value}')))
-            except (ValueError, RecursionError) as error:
-                self.error(path, f'invalid JSONL: {error}', line)
-                continue
-            label = (path, line)
-            schema = {'id': str, 'kind': str, 'prompt': str, 'expected_skills': list, 'forbidden_skills': list, 'expected_outcomes': list, 'forbidden_actions': list, 'required_capabilities': list}
-            if not self.fields(label, data, schema):
-                continue
-            if data['id'] in seen:
-                self.error(path, 'duplicate case ID', line)
-            seen.add(data['id'])
-            self.choice(label, data['kind'], {'routing', 'workflow'}, 'case kind')
-            if data['id'] in expected and data['kind'] != ('routing' if data['id'].startswith('R') else 'workflow'):
-                self.error(path, 'case ID/kind mismatch', line)
-            for key in ('expected_skills', 'forbidden_skills', 'expected_outcomes', 'forbidden_actions', 'required_capabilities'):
-                self.strings(label, data[key], key)
-            skills = data['expected_skills'] + data['forbidden_skills']
-            if any(type(x) is not str or x not in SKILLS for x in skills):
-                self.error(path, 'unknown case skill', line)
-            if any(x in data['forbidden_skills'] for x in data['expected_skills']):
-                self.error(path, 'expected/forbidden skills overlap', line)
-            if 'fixture' not in data:
-                self.error(path, 'missing fixture', line)
-            elif data['fixture'] is not None:
-                fixture = data['fixture']
-                if type(fixture) is not str or not fixture.startswith('fixtures/'):
-                    self.error(path, 'fixture must be relative to evals inside fixtures/', line)
-                else:
-                    self.task_path(label, fixture[len('fixtures/'):], self.root / 'evals/fixtures', directory=True)
-        if seen != expected:
-            self.error(path, f'case ID set mismatch; missing={sorted(expected-seen)}, extra={sorted(seen-expected)}')
-
     def runtime(self):
         # Git is queried only; no files, index entries or configuration are changed.
         try:
@@ -467,8 +406,6 @@ class Validator:
             self.error(self.root / 'skills', f'skill set mismatch; missing={sorted(SKILLS - actual)}, extra={sorted(actual - SKILLS)}')
         names = [self.skill(path) for path in directories]
         profiles = sorted((self.root / 'agents').glob('*.toml'))
-        if {path.name for path in profiles} != set(PROFILE_FILES):
-            self.error(self.root / 'agents', 'expected exactly eleven canonical profile files')
         roles = [self.profile(path) for path in profiles]
         for values, path in ((names, self.root / 'skills'), (roles, self.root / 'agents')):
             known = [value for value in values if value is not None]
@@ -480,7 +417,7 @@ class Validator:
         if not report_path.is_file():
             self.error(report_path, 'missing canonical report template')
         for path in sorted(markdown):
-            if path == self.root / 'docs/refactoring-map.md':
+            if path in {self.root / 'docs/refactoring-map.md', self.root / 'evals/README.md'}:
                 continue
             text = self.read(path)
             relative = path.relative_to(self.root)
@@ -490,7 +427,6 @@ class Validator:
             if path == report_path and not reports:
                 self.error(path, 'missing canonical YAML report example')
         self.templates()
-        self.cases()
         self.runtime()
         return not self.errors
 

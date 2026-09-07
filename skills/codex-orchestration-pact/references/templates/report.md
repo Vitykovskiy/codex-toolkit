@@ -7,6 +7,12 @@ status: completed
 changed_files: []
 checks: []
 result:
+  assignment:
+    id: A01
+    attempt: 1
+    goal_version: 1
+    snapshot: "<immutable snapshot identifier>"
+  accepts: null
   evidence: []
   findings: []
 risks: []
@@ -15,7 +21,9 @@ next_action: null
 
 Ровно шесть верхних ключей обязательны. `status`: `completed | approved | blocked | split_required | baseline_failure | paused`. `completed` означает окончание назначенной работы; `approved` присваивает только независимый reviewer или integration_reviewer по подтверждённым критериям. `paused` фиксирует известную паузу бюджета или контекста и не является успехом. Неизвестность и исчерпание бюджета не дают `approved`.
 
-`result` — объект; `changed_files`, `checks`, `result.evidence`, `result.findings`, `risks` — списки, включая пустые. `next_action` — строка либо `null`. `changed_files` перечисляет собственные изменённые, новые и удалённые исходники. Дополнительные сведения помещаются внутри `result`, без новых верхних полей.
+`result` — объект и обязательно содержит `assignment` с собственными `id`, `attempt`, `goal_version` и неизменяемым `snapshot`; эта четвёрка идентифицирует именно данный результат. `changed_files`, `checks`, `result.evidence`, `result.findings`, `risks` — списки, включая пустые. `next_action` — строка либо `null`. `changed_files` перечисляет собственные изменённые, новые и удалённые исходники. Дополнительные сведения помещаются внутри `result`, без новых верхних полей.
+
+`result.accepts` равен `null` для не-приёмочного отчёта. При `status: approved` независимый reviewer или integration_reviewer обязан указать объект с `assignment_id`, `attempt`, `goal_version` и `snapshot` принимаемого результата. Он сверяется с предъявленным completed-отчётом и его снимком; другой assignment, попытка, версия goal или снимок не принимают текущий результат. Нельзя одобрять собственный результат, а `paused` и `blocked` не могут быть успешно финализированы или указаны в `accepts`. Начатое назначение и его отчёт не заменяют: новая попытка получает отдельный assignment result с новым `attempt`.
 
 Каждый элемент `checks` содержит непустую после trim строку `command`, `execution_status: checked | not_run | unable_to_verify`, `result: passed | failed | null`. Для `not_run` и `unable_to_verify` обязательны `result: null` и непустая `reason`. Для выполненной проверки фиксируй фактический результат; когда доступны — `cwd`, `exit_code`, ссылку на доказательство. Пустой список не заменяет обязательную проверку. Ручное чтение записывай в `result.evidence`, без выдуманной shell-команды; `path:line` допустим только после чтения.
 
