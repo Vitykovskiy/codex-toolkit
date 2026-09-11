@@ -30,12 +30,13 @@ SKILLS = frozenset('codex-' + name for name in (
     'orchestration-pact', 'ui-analysis-pact', 'web-implementation',
     'debugging', 'web-verification', 'security-review',
     'long-orchestration', 'product-quality'))
-ROLES = frozenset(('scout', 'analyst', 'architect', 'decomposer', 'developer',
+ROLES = frozenset(('scout', 'analyst', 'analyst_standard', 'architect', 'decomposer', 'developer',
                    'mechanical', 'reviewer', 'integration_reviewer', 'quality_owner'))
 PROFILE_FILES = {
     **{role.replace('_', '-') + '.toml': role for role in ROLES},
     'architect-astra.toml': 'architect_astra',
     'quality-owner-astra.toml': 'quality_owner_astra',
+    'analyst-standard.toml': 'analyst_standard',
 }
 RUNTIME_DIRS = frozenset(('runtime', 'traces', 'cache', '.cache', '__pycache__',
                           '.venv', 'venv', 'env', '.pytest_cache', 'screenshots'))
@@ -44,6 +45,8 @@ RUNTIME_PROBES = [name + '/probe.txt' for name in sorted(RUNTIME_DIRS)] + [
     'evals/screenshots/probe.txt', 'tests/__pycache__/probe.pyc', '.env']
 REPORT_KEYS = {'status', 'changed_files', 'checks', 'result', 'risks', 'next_action'}
 STATUSES = {'completed', 'approved', 'blocked', 'split_required', 'baseline_failure', 'paused'}
+ENVELOPE_KEYS = {'status', 'artifact', 'assignment_id', 'attempt', 'profile', 'accepts',
+                 'finding_id', 'progress', 'no_progress', 'next_transition'}
 
 
 class UniqueLoader(yaml.SafeLoader):
@@ -66,6 +69,18 @@ def unique_mapping(loader, node, deep=False):
 
 
 UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, unique_mapping)
+
+
+def canonical_accepts(accepts):
+    """Render report accepts in the canonical compact envelope representation."""
+    if accepts is None:
+        return None
+    if not isinstance(accepts, dict) or type(accepts.get('assignment_id')) is not str or not accepts['assignment_id'].strip() or type(accepts.get('attempt')) is not int or accepts['attempt'] < 1 or type(accepts.get('goal_version')) is not int:
+        raise ValueError('invalid report accepts')
+    snapshot = accepts.get('snapshot')
+    if snapshot is not None and (type(snapshot) is not str or not snapshot.strip()):
+        raise ValueError('invalid accepts snapshot')
+    return f"{accepts['assignment_id']}/{accepts['attempt']}" + (f"@{snapshot}" if snapshot else '')
 
 
 def prose_lines(text):
@@ -307,6 +322,95 @@ class Validator:
             self.error(path, f'unsafe or missing task path {value}: {error}')
             return None
 
+    def task_artifacts(self, task_root, manifest_name):
+        """Validate explicit task artifact correlations; never infer Markdown workflow."""
+        root = Path(task_root).resolve()
+        manifest_path = self.task_path(root / manifest_name, manifest_name, root)
+        if manifest_path is None:
+            return {'status': 'not_verified', 'errors': self.errors}
+        manifest = self.parse_yaml(manifest_path, self.read(manifest_path))
+        if not self.fields(manifest_path, manifest, {'version': int, 'reports': list}):
+            return {'status': 'not_verified', 'errors': self.errors}
+        if manifest['version'] != 1:
+            self.error(manifest_path, 'unsupported task manifest version')
+        owners = manifest.get('owners')
+        if owners is not None and (not isinstance(owners, dict) or any(type(key) is not str or type(value) is not str for key, value in owners.items())):
+            self.error(manifest_path, 'owners must map assignment IDs to owner IDs')
+            owners = None
+        not_verified = owners is None
+        for item in manifest['reports']:
+            if not self.fields(manifest_path, item, {'path': str, 'assignment_id': str, 'attempt': int, 'goal_version': int, 'next_transition': str}):
+                continue
+            report_path = self.task_path(manifest_path, item['path'], root)
+            transition = self.task_path(manifest_path, item['next_transition'], root)
+            if report_path is None or transition is None:
+                continue
+            report = self.parse_yaml(report_path, self.read(report_path))
+            if not self.fields(report_path, report, {'status': str, 'changed_files': list, 'checks': list, 'result': dict, 'risks': list}):
+                continue
+            if set(report) != REPORT_KEYS or report['status'] not in STATUSES:
+                self.error(report_path, 'report must have six canonical keys and valid status')
+                continue
+            assignment = report['result'].get('assignment')
+            if not isinstance(assignment, dict) or any(assignment.get(name) != item[key] for name, key in (('id', 'assignment_id'), ('attempt', 'attempt'), ('goal_version', 'goal_version'))):
+                self.error(report_path, 'report assignment does not match explicit expectation')
+            if report.get('next_action') != item['next_transition']:
+                self.error(report_path, 'report next_action is stale or differs from explicit transition')
+            accepts = report['result'].get('accepts')
+            if report['status'] == 'approved':
+                if not isinstance(accepts, dict) or not all(name in accepts for name in ('assignment_id', 'attempt', 'goal_version')):
+                    self.error(report_path, 'approved report requires accepts correlation')
+                else:
+                    expected_accepts = item.get('accepts')
+                    if expected_accepts is None:
+                        not_verified = True
+                    elif not isinstance(expected_accepts, dict) or any(expected_accepts.get(name) != accepts.get(name) for name in ('assignment_id', 'attempt', 'goal_version')):
+                        self.error(report_path, 'accepts does not match explicit accepted-result expectation')
+                    if owners is not None:
+                        current = owners.get(item['assignment_id'])
+                        accepted = owners.get(accepts['assignment_id'])
+                        if current is None or accepted is None:
+                            not_verified = True
+                        elif current == accepted:
+                            self.error(report_path, 'self-approval in supplied owner map')
+            elif accepts is not None:
+                self.error(report_path, 'non-approved report must have null accepts')
+            envelope_name = item.get('envelope')
+            if envelope_name is None:
+                continue
+            envelope_path = self.task_path(manifest_path, envelope_name, root)
+            if envelope_path is None:
+                continue
+            envelope = self.parse_yaml(envelope_path, self.read(envelope_path))
+            if not isinstance(envelope, dict) or set(envelope) != ENVELOPE_KEYS:
+                self.error(envelope_path, 'invalid envelope keys')
+                continue
+            if envelope.get('status') not in STATUSES or type(envelope.get('artifact')) is not str or type(envelope.get('assignment_id')) is not str or type(envelope.get('attempt')) is not int or envelope['attempt'] < 1 or type(envelope.get('profile')) is not str or (envelope.get('next_transition') is not None and type(envelope.get('next_transition')) is not str):
+                self.error(envelope_path, 'invalid envelope field types')
+            finding_id = envelope.get('finding_id')
+            progress = envelope.get('progress')
+            no_progress = envelope.get('no_progress')
+            if finding_id is None:
+                if progress is not None or no_progress is not None:
+                    self.error(envelope_path, 'non-blocker envelope must use null progress and no_progress')
+            elif type(finding_id) is not str or not finding_id.strip() or progress not in {'confirmed', 'none', 'unknown'}:
+                self.error(envelope_path, 'blocker envelope requires finding_id and valid progress')
+            elif progress in {'none', 'unknown'}:
+                if not isinstance(no_progress, dict) or any(type(no_progress.get(key)) is not str or not no_progress[key].strip() for key in ('missing_input', 'next_check')):
+                    self.error(envelope_path, 'none or unknown progress requires nonblank no_progress fields')
+            elif no_progress is not None:
+                self.error(envelope_path, 'confirmed progress must use null no_progress')
+            if envelope.get('artifact') != item['path'] or envelope.get('assignment_id') != item['assignment_id'] or envelope.get('attempt') != item['attempt'] or envelope.get('next_transition') != item['next_transition']:
+                self.error(envelope_path, 'envelope is stale or does not correlate with report expectation')
+            try:
+                expected_envelope_accepts = canonical_accepts(accepts)
+            except ValueError as error:
+                self.error(report_path, str(error))
+                expected_envelope_accepts = None
+            if envelope.get('status') != report.get('status') or envelope.get('accepts') != expected_envelope_accepts:
+                self.error(envelope_path, 'envelope does not correlate with report')
+        return {'status': 'not_verified' if not_verified else 'checked', 'errors': self.errors}
+
     def quality(self, path, data, task_root=None):
         schema = {'version': int, 'campaign_id': str, 'iteration': int, 'permission': str, 'unresolved_questions': list, 'next_step': str}
         if not self.fields(path, data, schema):
@@ -434,7 +538,18 @@ class Validator:
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path('.'))
+    parser.add_argument('--task-root', type=Path)
+    parser.add_argument('--manifest')
     args = parser.parse_args(argv)
+    if (args.task_root is None) != (args.manifest is None):
+        parser.error('--task-root and --manifest must be supplied together')
+    if args.task_root is not None:
+        validator = Validator(args.task_root)
+        result = validator.task_artifacts(args.task_root, args.manifest)
+        for message in validator.errors:
+            print(message, file=sys.stderr)
+        print(f"Task artifact validation: {result['status']}; {len(validator.errors)} errors. Semantic approval and runtime sender remain unverified.")
+        return 0 if not validator.errors else 1
     validator = Validator(args.root)
     passed = validator.run()
     for message in validator.errors:

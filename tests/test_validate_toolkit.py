@@ -225,6 +225,10 @@ $codex-not-a-real-skill
         self.write('agents/developer.toml', path.read_text().replace('test-model', 'another-model'))
         self.assertEqual([], self.validate().errors)
 
+    def test_profile_inventory_includes_standard_analyst(self):
+        self.assertEqual(12, len(PROFILE_FILES))
+        self.assertEqual('analyst_standard', PROFILE_FILES['analyst-standard.toml'])
+
     def test_explicit_unknown_skill_and_role(self):
         self.write('README.md', 'Apply $codex-unknown.\nrole: `unknown`\n')
         self.assert_error('unknown explicit skill')
@@ -283,6 +287,131 @@ $codex-not-a-real-skill
         self.assertEqual([], self.validate().errors)
         self.append('agents/scout.toml', '# [Missing](../skills/codex-product-quality/missing.md)\n')
         self.assert_error('local target does not exist')
+
+    def artifact_report(self, assignment_id='P01', attempt=1, goal_version=1, status='completed', accepts=None):
+        return dict(status=status, changed_files=[], checks=[], result=dict(
+            assignment=dict(id=assignment_id, attempt=attempt, goal_version=goal_version, snapshot=None),
+            accepts=accepts, evidence=[], findings=[]), risks=[], next_action='assignments/R01.yaml')
+
+    def artifact_manifest(self, report='reports/P01.yaml', envelope=None, owners=None, accepts=None):
+        entry = dict(path=report, assignment_id='P01', attempt=1, goal_version=1, next_transition='assignments/R01.yaml')
+        if envelope is not None:
+            entry['envelope'] = envelope
+        if accepts is not None:
+            entry['accepts'] = accepts
+        data = dict(version=1, reports=[entry])
+        if owners is not None:
+            data['owners'] = owners
+        self.write('manifest.yaml', yaml.safe_dump(data))
+        self.write('assignments/R01.yaml', '{}\n')
+
+    def artifact_validate(self):
+        validator = Validator(self.root)
+        result = validator.task_artifacts(self.root, 'manifest.yaml')
+        return result, validator.errors
+
+    def test_task_artifacts_valid_and_missing_trust(self):
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report()))
+        self.artifact_manifest()
+        result, errors = self.artifact_validate()
+        self.assertEqual('not_verified', result['status'])
+        self.assertEqual([], errors)
+
+    def test_task_artifacts_rejects_malformed_stale_and_self_approval(self):
+        self.write('reports/P01.yaml', '[\n')
+        self.artifact_manifest()
+        _, errors = self.artifact_validate()
+        self.assertTrue(errors)
+
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=dict(assignment_id='P02', attempt=1, goal_version=1))))
+        self.artifact_manifest(owners={'P01': 'developer', 'P02': 'developer'}, accepts=dict(assignment_id='P02', attempt=1, goal_version=1))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('self-approval' in error for error in errors), errors)
+
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(goal_version=2)))
+        self.artifact_manifest()
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('does not match explicit expectation' in error for error in errors), errors)
+
+    def test_task_artifacts_correlates_accepted_result_triple(self):
+        accepts = dict(assignment_id='P02', attempt=1, goal_version=1)
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepts)))
+        self.artifact_manifest(owners={'P01': 'reviewer', 'P02': 'developer'}, accepts=accepts)
+        result, errors = self.artifact_validate()
+        self.assertEqual('checked', result['status'])
+        self.assertEqual([], errors)
+        self.artifact_manifest(owners={'P01': 'reviewer', 'P02': 'developer'}, accepts=dict(assignment_id='P02', attempt=2, goal_version=1))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted-result expectation' in error for error in errors), errors)
+        self.artifact_manifest(owners={'P01': 'reviewer', 'P02': 'developer'}, accepts=dict(assignment_id='P02', attempt=1, goal_version=2))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted-result expectation' in error for error in errors), errors)
+
+    def test_task_artifacts_rejects_envelope_path_and_symlink_escape(self):
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report()))
+        self.artifact_manifest(report='../outside.yaml')
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('unsafe task path' in error for error in errors), errors)
+
+        outside = Path(self.temp.name).parent / 'outside-report.yaml'
+        outside.write_text(yaml.safe_dump(self.artifact_report()), encoding='utf-8')
+        (self.root / 'reports').mkdir(exist_ok=True)
+        (self.root / 'reports/P01.yaml').unlink()
+        (self.root / 'reports/P01.yaml').symlink_to(outside)
+        self.artifact_manifest()
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('unsafe or missing task path' in error for error in errors), errors)
+
+    def test_task_artifacts_rejects_stale_envelope_and_missing_report(self):
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report()))
+        envelope = dict(status='completed', artifact='reports/P01.yaml', assignment_id='P01', attempt=2,
+                        profile='developer', accepts=None, finding_id=None, progress=None, no_progress=None,
+                        next_transition='assignments/R01.yaml')
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        self.artifact_manifest(envelope='envelopes/P01.yaml')
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('envelope is stale' in error for error in errors), errors)
+
+        self.artifact_manifest(report='reports/missing.yaml')
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('unsafe or missing task path' in error for error in errors), errors)
+
+    def test_task_artifacts_validates_canonical_envelope_accepts_and_progress(self):
+        accepts = dict(assignment_id='P02', attempt=1, goal_version=1, snapshot='sha256:abc')
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepts)))
+        envelope = dict(status='approved', artifact='reports/P01.yaml', assignment_id='P01', attempt=1,
+                        profile='reviewer', accepts='P02/1@sha256:abc', finding_id=None, progress=None,
+                        no_progress=None, next_transition='assignments/R01.yaml')
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        self.artifact_manifest(envelope='envelopes/P01.yaml', owners={'P01': 'reviewer', 'P02': 'developer'}, accepts=accepts)
+        result, errors = self.artifact_validate()
+        self.assertEqual('checked', result['status'])
+        self.assertEqual([], errors)
+        for value in ('P99/1@sha256:abc', 'P02/2@sha256:abc', 'P02/1@sha256:wrong'):
+            with self.subTest(value=value):
+                envelope['accepts'] = value
+                self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+                _, errors = self.artifact_validate()
+                self.assertTrue(any('does not correlate' in error for error in errors), errors)
+
+    def test_task_artifacts_validates_blocker_progress_shape(self):
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report()))
+        envelope = dict(status='completed', artifact='reports/P01.yaml', assignment_id='P01', attempt=1,
+                        profile='developer', accepts=None, finding_id='F01', progress='none', no_progress=None,
+                        next_transition='assignments/R01.yaml')
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        self.artifact_manifest(envelope='envelopes/P01.yaml')
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('requires nonblank no_progress' in error for error in errors), errors)
+        envelope.update(finding_id=None, progress='none', no_progress=dict(missing_input='x', next_check='y'))
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('non-blocker envelope' in error for error in errors), errors)
+        envelope.update(progress=None, no_progress=None)
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        result, errors = self.artifact_validate()
+        self.assertEqual('not_verified', result['status'])
+        self.assertEqual([], errors)
 
 
 if __name__ == '__main__':

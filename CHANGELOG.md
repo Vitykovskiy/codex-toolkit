@@ -2,6 +2,12 @@
 
 Версии относятся к согласованному комплекту по [правилу версионирования](docs/versioning.md).
 
+## 2.0.0 — 2026-09-11
+
+Несовместимое изменение политики: любой Astra-профиль разрешён только при дословном прямом применимом указании пользователя для конкретной роли и задачи. Сложность, budget, retry, resume, рекомендация и наличие профиля не создают разрешения. Добавлен `analyst_standard` как обычный non-Astra профиль; комплект содержит 11 skills и 12 профилей.
+
+Уточнены ordinary/dispatcher границы, единый continuity state, минимальные fresh/continue/retry пакеты, evidence/review и адресная передача tool output. Добавлены offline `token_usage/v1` accounting, optional read-only structured task-artifact validator и synthetic active-v6 eval preparation. Эти локальные артефакты не подтверждают effective model, client loading, runtime behavior, billed usage или token efficiency; model run не выполнялся.
+
 ## 1.0.0 — 2026-09-07
 
 Первая версия: 11 скиллов и согласованные с ними 11 профилей из [каталога](README.md#состав). Во всех скиллах задано `metadata.version: "1.0.0"`; имена, пути, модели и reasoning сохранены.
