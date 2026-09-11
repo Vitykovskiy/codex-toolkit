@@ -1,7 +1,17 @@
 # Assignment
 
-An ordinary assignment carries only the role, literal goal, relevant inputs, allowed scope, and checks. It does not require a graph, decomposer, persistent state, file report, or envelope.
+In ordinary mode, send one compact English assignment containing the role, goal, relevant evidence, permitted scope, acceptance criteria and execution limits. Keep exact source requirements and quoted strings unchanged. Missing requirements stay unknown.
 
-In `dispatcher_only`, an assignment also names its ID/profile, exact write-set, criteria, dependencies and shared resources, `artifact_path`, and one permitted next transition. A ready user specification may be copied mechanically with its literal goal, scope, and checks. The architect may supply a graph and write-set; `decomposer` is optional and remains compatible for explicitly requested decomposition or legacy import.
+Use this layout only as a prose guide, not a new machine schema:
 
-The owner may choose relevant tests and a related test or documentation file inside the approved scope. A normal fix returns to the same owner. Public-contract changes or scope expansion require one decision owner. The owner never accepts its own result. A strict role atomically writes its report and returns only the [envelope](../../../codex-long-orchestration/references/templates/envelope.md).
+Role and goal: the one requested outcome.
+Scope: permitted files or responsibility, and preserved behaviour.
+Evidence: the necessary facts and precise source locations.
+Criteria: the existing conditions for the result.
+Limits: user restrictions on execution, verification, tools and side effects.
+
+An ordinary assignment needs no persistent graph, report file or envelope. The owner may select relevant implementation, test and documentation details within authorized scope, while respecting explicit exclusions. A fix remains with its owner. A new auxiliary process tool needs a separate direct user request; an assignment cannot manufacture that permission.
+
+In `dispatcher_only`, also keep the existing assignment identity, attempt, goal version, required snapshot, dependencies, shared resources, write-set, `artifact_path` and permitted transition. A prepared user specification can be copied into this structure without a planning relay. A material decision owner may prepare the graph; standalone `decomposer` remains optional.
+
+The owner does not grant independent approval of its own result. A strict owner writes its [report](report.md) atomically and returns only the [envelope](../../../codex-long-orchestration/references/templates/envelope.md).

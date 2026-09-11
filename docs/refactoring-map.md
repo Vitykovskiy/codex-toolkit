@@ -49,8 +49,7 @@ Git blobs и SHA-256 manifest. Недоступность SHA больше не 
 | `skills/codex-web-verification/{SKILL.md,agents/openai.yaml,references/browser-checklist.md}` | перенесено | новый skill | Выделить браузерную проверку, которая не реализует интерфейс и явно сообщает отсутствие браузера. | YAML/ссылки и W03/W05: semantic locators, keyboard/focus, console/network, или `unable_to_verify`. |
 | `skills/codex-security-review/{SKILL.md,agents/openai.yaml,references/security-checklist.md}` | перенесено | новый skill | Выделить проверку явной границы доверия и достижимых рисков без активных действий во внешних системах. | YAML/ссылки и W10: достижимый сценарий, доказательство, влияние, минимальная мера без секретов. |
 | отсутствующие `docs/compatibility.md` и `docs/sources.md` | перенесено | новые документы | Отделить формат/обнаружение/проверенную среду/непроверенные варианты и происхождение решений. | Проверка ссылок и ручная сверка статуса/даты/источника каждого существенного утверждения. |
-| отсутствующие `tools/validate_toolkit.py`, `tests/test_validate_toolkit.py`, `requirements-dev.txt` | перенесено | новые средства локальной разработки | Ввести только разрешённую read-only проверку YAML/TOML, путей и метаданных с PyYAML как dev dependency. | `python tools/validate_toolkit.py --root .` и `python -m unittest discover -s tests -v`. |
-| отсутствующие `evals/README.md`, `evals/cases.jsonl`, `evals/fixtures/` | перенесено | новые материалы оценки | Сделать воспроизводимыми 18 routing и 10 workflow случаев, не подменяя наблюдаемое поведение текстовой имитацией. | Проверка схемы/числа 28; первичный предел 14 запусков и отдельный статус трасс, артефактов, времени и кода возврата. |
+| отсутствующие `tools/validate_toolkit.py`, `tests/test_validate_toolkit.py`, `requirements-dev.txt` | перенесено | новые средства локальной разработки | Ввести необязательную read-only проверку YAML/TOML, путей и метаданных с PyYAML как dev dependency. | Validator проверяет снимок; его unit-тест отдельно проверяет изменение валидатора. |
 
 ## Исторически снятые ограничения
 
@@ -84,10 +83,6 @@ Git blobs и SHA-256 manifest. Недоступность SHA больше не 
 - Примеры API, URL, данных, секретов и UI-состояний остаются входами конкретного
   проекта; специализированные skills обнаруживают их, а не создают.
 
-## Исторические проверки
-
-Подробный журнал последующих R-B02/G01/F01/F02 исправлений, состава снимков, дат тестов, попыток и ограничений перенесён в единственный источник — [историю evals](../evals/README.md). Версия 2.0.0 добавляет direct-user Astra policy, `analyst_standard`, offline accounting, optional structured artifact validation и synthetic active-v6 preparation; это не переписывает исторические результаты. Старые положительные структурные результаты не подтверждают изменённые процедуры; загрузка, поведение и сравнительная эффективность требуют новых доказательств. Начальное сравнение SHA и таблица выше остаются историей происхождения правил.
-
 ## Объединённое ТЗ v3
 
 Источник строк ниже — предоставленный `codex-toolkit-refactoring-prompt-v3-unified.md` от 2026-09-06, исходная ревизия `2aa634fd293ba236d4f03ca3d874d152cc0ea0e4`. Это baseline сравнения, не команда отката. Прежний `pending_source` снят консолидацией предоставленных источников; её происхождение и граница личного чтения экспортов — в [реестре](sources.md). Она заменяет предыдущие refactoring prompts, сохраняя исторические доказательства.
@@ -100,12 +95,10 @@ Git blobs и SHA-256 manifest. Недоступность SHA больше не 
 | Компактное состояние/ресурсы/resume | §§5.5–6 | Оркестрация | Добавить state; сохранить public continuity | long references; orchestration continuity | Схемы/пути, stale/duplicate/ready; W12 отдельно |
 | Сменяемый quality_owner, малая партия | §7 | Универсальная кампания | Добавить | product-quality; quality-owner profile | Finding/quality-state, происхождение expected, observe_only; W13–W15 отдельно |
 | Пустые команды/evidence/sandbox/JSONL | §§8,11 | Структура | Изменить существующие средства | tools/validate_toolkit.py; tests/test_validate_toolkit.py | Unit tests, validator; offline/read-only и индекс |
-| Диагностика без разрешения правки | §8 | Скилл и eval | Изменить | debugging; cases R07P/W02 | Различие diagnosis/fix, новые prompts не наследуют результат |
-| Каталог 38 и бюджет | §12 | Оценка | Сохранить историю; добавить 10 случаев | evals/cases.jsonl; fixtures; README | 22 routing/16 workflow; preparation отдельно от запуска |
+| Диагностика без разрешения правки | §8 | Скилл | Изменить | debugging | Различие diagnosis/fix, новые prompts не наследуют результат |
 | Безопасный локальный импорт | §9 | Будущий потребитель | Добавить процедуру | docs/project-local.md; AGENTS.fragment.md | Snapshot/manifest, transitive closure, bytes, links, preflight/ignore/tracked |
 | Expressa criteria и таблицы моделей | §§7.6,10,15 | Только проектные примеры | Сохранить provenance, не универсализировать | docs/project-local.md | Таблица v2 дословно, отличия Luna/Terra/Sol, adoption unknown, old 9-skill SHA |
 | Источники и уровни доказательств | §§13–14 | Документация | Изменить | docs/sources.md; compatibility.md; README | Официальные разделы/help, дата чтения отдельно от даты теста |
 | Runtime вне исходников | §§6,9,11 | Toolkit/потребитель | Сохранить и уточнить ignore | .gitignore; project-local | Конкретные check-ignore --no-index; templates остаются исходниками |
-| Один следующий отдельный smoke-check | §14 | Будущая доверенная сессия | Добавить текст запроса | docs/project-local.md | Готовый bootstrap, бюджет и реальные события; сейчас не запускался |
 
 Специализированные route/state/envelope/budget-схемы v3 заменены краткими Markdown-протоколами и каноническим шестиполевым отчётом. Они не создают runtime executor и не добавляют root предметных полномочий. Связанный дефект требует пересмотра decomposer и независимой перепроверки затронутых входов; расход не выдаёт approved.

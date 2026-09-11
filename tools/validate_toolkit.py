@@ -10,7 +10,7 @@ not a full Markdown parser, nor a proof of dependency semantics or acyclicity.
 Explicit skill checks recognize $codex-name outside inline code and explicitly
 marked skill/скилл/навык `codex-name` mentions, not arbitrary codex-* words.
 Executable metadata prompts are checked including their inline tokens. Empty legacy directories are not skills.
-Historical docs/refactoring-map.md, evals/README.md and evals/cases.jsonl are excluded from mandatory active content checks.
+Historical docs/refactoring-map.md is excluded from mandatory active content checks.
 Report YAML examples are checked structurally; prose consistency needs review.
 """
 from __future__ import annotations
@@ -30,19 +30,18 @@ SKILLS = frozenset('codex-' + name for name in (
     'orchestration-pact', 'ui-analysis-pact', 'web-implementation',
     'debugging', 'web-verification', 'security-review',
     'long-orchestration', 'product-quality'))
-ROLES = frozenset(('scout', 'analyst', 'analyst_standard', 'architect', 'decomposer', 'developer',
+ROLES = frozenset(('scout', 'analyst', 'architect', 'decomposer', 'developer',
                    'mechanical', 'reviewer', 'reviewer_fast', 'integration_reviewer', 'quality_owner'))
 PROFILE_FILES = {
     **{role.replace('_', '-') + '.toml': role for role in ROLES},
     'architect-astra.toml': 'architect_astra',
     'quality-owner-astra.toml': 'quality_owner_astra',
-    'analyst-standard.toml': 'analyst_standard',
+    'analyst-astra.toml': 'analyst_astra',
 }
 RUNTIME_DIRS = frozenset(('runtime', 'traces', 'cache', '.cache', '__pycache__',
                           '.venv', 'venv', 'env', '.pytest_cache', 'screenshots'))
 RUNTIME_PROBES = [name + '/probe.txt' for name in sorted(RUNTIME_DIRS)] + [
-    '.codex/tmp/probe.txt', 'evals/runtime/probe.txt', 'evals/traces/probe.txt',
-    'evals/screenshots/probe.txt', 'tests/__pycache__/probe.pyc', '.env']
+    '.codex/tmp/probe.txt', 'tests/__pycache__/probe.pyc', '.env']
 REPORT_KEYS = {'status', 'changed_files', 'checks', 'result', 'risks', 'next_action'}
 STATUSES = {'completed', 'approved', 'blocked', 'split_required', 'baseline_failure', 'paused'}
 ENVELOPE_KEYS = {'status', 'artifact', 'assignment_id', 'attempt', 'profile', 'accepts',
@@ -588,13 +587,13 @@ class Validator:
             known = [value for value in values if value is not None]
             if len(known) != len(set(known)):
                 self.error(path, 'duplicate name')
-        markdown = list((self.root / 'skills').rglob('*.md')) + list((self.root / 'docs').rglob('*.md')) + list((self.root / 'evals').glob('*.md'))
+        markdown = list((self.root / 'skills').rglob('*.md')) + list((self.root / 'docs').rglob('*.md'))
         markdown += [path for path in (self.root / 'README.md', self.root / 'AGENTS.md') if path.exists()]
         report_path = self.root / 'skills/codex-orchestration-pact/references/templates/report.md'
         if not report_path.is_file():
             self.error(report_path, 'missing canonical report template')
         for path in sorted(markdown):
-            if path in {self.root / 'docs/refactoring-map.md', self.root / 'evals/README.md'}:
+            if path == self.root / 'docs/refactoring-map.md':
                 continue
             text = self.read(path)
             relative = path.relative_to(self.root)

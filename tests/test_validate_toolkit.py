@@ -98,13 +98,6 @@ class ValidatorTests(unittest.TestCase):
         self.assert_error('name must match directory')
         self.assert_error('duplicate name')
 
-    def test_historical_eval_material_is_excluded(self):
-        self.write('evals/README.md', '[Cases](missing.jsonl)\n')
-        self.write('evals/cases.jsonl', '{broken}\n')
-        self.assertEqual([], self.validate().errors)
-        self.write('evals/active.md', '[Missing](missing.md)\n')
-        self.assert_error('local target does not exist: missing.md')
-
     def test_broken_markdown_link(self):
         self.append('skills/codex-debugging/SKILL.md', '[Guide](references/missing.md)\n')
         self.assert_error('local target does not exist')
@@ -225,9 +218,10 @@ $codex-not-a-real-skill
         self.write('agents/developer.toml', path.read_text().replace('test-model', 'another-model'))
         self.assertEqual([], self.validate().errors)
 
-    def test_profile_inventory_includes_standard_analyst(self):
+    def test_profile_inventory_uses_base_and_astra_analyst_names(self):
         self.assertEqual(13, len(PROFILE_FILES))
-        self.assertEqual('analyst_standard', PROFILE_FILES['analyst-standard.toml'])
+        self.assertEqual('analyst', PROFILE_FILES['analyst.toml'])
+        self.assertEqual('analyst_astra', PROFILE_FILES['analyst-astra.toml'])
 
     def test_explicit_unknown_skill_and_role(self):
         self.write('README.md', 'Apply $codex-unknown.\nrole: `unknown`\n')

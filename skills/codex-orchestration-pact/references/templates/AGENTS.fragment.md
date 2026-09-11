@@ -1,24 +1,32 @@
-# Фрагмент для корневого AGENTS.md потребителя
+# Consumer AGENTS.md fragment
 
-Пример ниже копируется в корневой AGENTS.md после проверенного импорта. Пути внутри блока рассчитаны от корня проекта, а не от этого файла шаблона. Удаляйте неприменимые пункты только вместе с проверкой зависимостей выбранного комплекта; процедуру project-local подключения оператор читает в документации исходного снимка toolkit, которая не является runtime-зависимостью потребителя.
+Copy the block below only during an authorized project-local import. Its paths are relative to the consumer repository root. Preserve the consumer's unrelated rules. Import procedures and provenance requirements remain in toolkit documentation, not runtime dependencies.
 
 ```markdown
-## Процедуры
+## Procedures
 
-Применяй [коммуникацию](.agents/skills/codex-communication-pact/SKILL.md) к каждому сообщению; прочитай один раз и повторно при изменении. Остальные процедуры выбирай по ситуации; доступность каталога не требует загрузки всего его текста.
+Use [communication](.agents/skills/codex-communication-pact/SKILL.md) for replies and internal messages. Read an applicable pact once and again when its content changes or the required detail is no longer available. A listed skill does not need its full text loaded automatically.
 
-- Изменение/функциональное ревью/проверка кода: [разработка](.agents/skills/codex-development-pact/SKILL.md).
-- Долговременные тексты: [документация](.agents/skills/codex-documentation-pact/SKILL.md).
-- Анализ интерфейса: [UI-анализ](.agents/skills/codex-ui-analysis-pact/SKILL.md).
-- Реализация принятого веб-сценария: [web-implementation](.agents/skills/codex-web-implementation/SKILL.md).
-- Диагностика либо разрешённое исправление: [debugging](.agents/skills/codex-debugging/SKILL.md); режим диагностики сохраняет исходники.
-- Проверка работающего UI: [web-verification](.agents/skills/codex-web-verification/SKILL.md).
-- Проверка заданной границы доверия: [security-review](.agents/skills/codex-security-review/SKILL.md).
-- Координация назначений: [orchestration](.agents/skills/codex-orchestration-pact/SKILL.md).
-- Root-диспетчер, несколько предметных итераций, handoff незавершённой оркестрации: [long-orchestration](.agents/skills/codex-long-orchestration/SKILL.md), обязательный dispatcher_only.
-- Кампания качества/выбор следующей партии: [product-quality](.agents/skills/codex-product-quality/SKILL.md), включая long-orchestration и quality_owner. Разовая проверка известного состояния не запускает кампанию.
+Choose only relevant procedures:
 
-Маршрут выбирай по [portable route table](.agents/skills/codex-orchestration-pact/SKILL.md#portable-route-table): обычная локальная задача не становится strict из-за числа файлов, fix/review-пары или измерения. В dispatcher_only root ведёт процесс и запускает существующие принятые назначения; предметные решения, собственные полные файловые отчёты и независимую приёмку выполняют роли. Root получает только envelope; fallback, handoff и финальная проверка не расширяют его полномочий. Роли не запускают подагентов. Недоступная роль/запись — процессный блокер.
+- Code and technical configuration: [development](.agents/skills/codex-development-pact/SKILL.md).
+- Documentation and durable instructions: [documentation](.agents/skills/codex-documentation-pact/SKILL.md).
+- Interface analysis: [UI analysis](.agents/skills/codex-ui-analysis-pact/SKILL.md).
+- An accepted web scenario: [web implementation](.agents/skills/codex-web-implementation/SKILL.md).
+- A defect: [debugging](.agents/skills/codex-debugging/SKILL.md), preserving the difference between diagnosis and authorized repair.
+- Observed UI behaviour: [web verification](.agents/skills/codex-web-verification/SKILL.md).
+- An assigned trust boundary: [security review](.agents/skills/codex-security-review/SKILL.md).
+- Actual coordination: [orchestration](.agents/skills/codex-orchestration-pact/SKILL.md#portable-route-table).
+- Explicit strict dispatch, active strict continuation or required durable coordination: [long orchestration](.agents/skills/codex-long-orchestration/SKILL.md).
+- An explicitly authorized product-quality campaign: [product quality](.agents/skills/codex-product-quality/SKILL.md).
 
-Upstream в .agents/skills сохраняй по байтам; проектные правила и charter/preferences держи отдельно со ссылками на источники. Происхождение импорта — .agents/SOURCE.md и .agents/upstream.sha256; адаптации — .agents/LOCAL-ADAPTATIONS.md. Локальные источники не подменяй глобальными одноимёнными. Runtime задачи — в проверенном безопасном task-root; перед записью проверь ссылки и Git-контекст .agents/.codex. Исходники отслеживаются, .codex/tmp игнорируется. Команды приложения и разрешения определяются самим проектом.
+The portable route table is authoritative. A ready local task can be done directly. File count, a fix/review pair, broad wording and an iteration number do not activate strict mode. Use existing profiles; do not add a role merely to restate a specification.
+
+Use existing tools. New auxiliary automation or measurement infrastructure requires a separate direct user request. Honor explicit limits on testing and other execution; report omitted verification as unrun.
+
+User-facing output follows the user's language. Internal agent prose uses concise English; exact source wording, code, identifiers and schema values remain unchanged.
+
+In `dispatcher_only`, root owns process state, subject roles own their reports and decisions, and an independent reviewer owns acceptance. Roles do not spawn roles. Missing mandatory capabilities produce an exact checkpoint, not expanded authority.
+
+Keep upstream skills byte-identical to their imported snapshot. Project extensions remain separate. Provenance is in `.agents/SOURCE.md` and `.agents/upstream.sha256`; local adaptations are in `.agents/LOCAL-ADAPTATIONS.md`. Preserve local-source precedence, safe path/Git boundaries and the existing runtime/tracked-file policy. Commands and permissions come from the consumer project.
 ```
