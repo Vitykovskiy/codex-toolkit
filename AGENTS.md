@@ -4,6 +4,8 @@ Use [codex-communication-pact](skills/codex-communication-pact/SKILL.md) for eve
 
 ## Delivery policy
 
+The consumer-portable [orchestration route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table) is canonical. This repository section adds only toolkit-maintenance constraints.
+
 | Task condition | Route |
 |---|---|
 | Exact text, config, or mechanical edit from a ready specification | One owner and targeted checks. Independent review only when the contract or a risky meaning change requires it. A coordinated multi-file edit remains one assignment. |

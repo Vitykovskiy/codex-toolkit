@@ -2,7 +2,7 @@
 name: codex-communication-pact
 description: Communicate results, evidence, material risks, and the necessary next action clearly.
 metadata:
-  version: "2.1.0"
+  version: "2.1.1"
 ---
 
 # Communication pact
