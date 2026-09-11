@@ -1,27 +1,18 @@
 ---
 name: codex-orchestration-pact
-description: "Применяй для координации зависимых или независимых назначений: результатом будет доказательный граф и проверенная передача работ; не применяй для одной локальной задачи без потребности в координации."
+description: Coordinate dependent or independent assignments with an evidence-backed route and independent acceptance.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
-# Пакт оркестрации
+# Orchestration pact
 
-## Процедура
+Use this pact only for an explicit orchestration request or real coordination. The route table in [AGENTS.md](../../AGENTS.md) is canonical. A ready local task does not need a planning relay.
 
-**Когда:** пользователь просит оркестрацию или результат требует координации нескольких независимых либо зависимых назначений.
+Give an owner the literal goal, constraints, criteria, write-set, short required facts, and primary-evidence paths. Use one owner for a connected result; group independent work by responsibility, with no more than two writers, then use one independent packet review. An architect consultation replaces a mandatory analyst/decomposer chain when the decision is materially uncertain. `decomposer` remains available for an explicitly requested standalone decomposition or legacy import.
 
-**Входы:** дословные цель и ограничения, фактические контексты и инструменты, зависимости, доступные исполнители и критерии приёмки. Недоступный контекст или инструмент фиксируй как ограничение, не заменяй вымышленным.
+An independent `reviewer` accepts one result. Use `integration_reviewer` instead when cross-part compatibility, security, or another stated integration criterion is material. The first sufficient review covers requirements, implementation, relevant risks, and connections; do not add a reviewer-of-reviewers. A fix returns to its owner and the reviewer checks only the fix, affected dependencies, and regressions.
 
-**Действия:**
+Packet approval preserves the six report keys. `result.accepts` is either the legacy one accepted-result object or a nonempty list; every list entry has `assignment_id`, `attempt`, `goal_version`, and `snapshot`. The envelope mirrors this as one legacy compact string or a nonempty list. Every entry is validated: no self-approval, duplicate result, stale attempt, version mismatch, paused/blocked/incomplete result, or missing evidence. A packet is accepted only when every listed result passes.
 
-1. Для ясной локальной задачи root использует исходный запрос или готовое review непосредственно; `analyst_standard` не переписывает готовое ТЗ ради оформления. Делегируй только при необходимости. Широкую действительно неоднозначную цель сначала передай `analyst_standard` для минимальной рабочей постановки. Профиль с Astra разрешён только при дословном прямом применимом указании пользователя, сохранённом в назначении; сложность, бюджет, retry, наличие профиля, resume и рекомендация роли не заменяют это указание. Прямой запрос root-диспетчера, несколько предметных итераций, передача незавершённой оркестрации или кампания качества обязательно подключают [codex-long-orchestration](../codex-long-orchestration/SKILL.md); в его `dispatcher_only` предметная работа root запрещена, включая fallback, восстановление и финальную приёмку.
-2. Decomposer нужен для реального разделения работ, зависимостей или конфликтующих областей; architect — для конкретного технического выбора. Он оформляет необходимые назначения, их зависимости, write-set, критерии, проверки и корректирующие назначения. Отдельный граф создаётся только когда он нужен и не требует самостоятельной предварительной приёмки перед исполнением. Независимый reviewer принимает завершённый результат. Учитывай общие ресурсы наряду с файлами. Роли не делегируют; запускает их root по готовому разрешённому переходу.
-3. Передай роли [назначение](references/templates/task.md) с входами и правами. В dispatcher-mode роль сама атомарно сохраняет полный [канонический отчёт](references/templates/report.md), а root получает только envelope. Полный отчёт читает следующая предметная роль. В dispatcher-mode при недоступности записи или делегирования фиксируй точный блокер; root не переписывает отчёт и не заменяет исполнителя. В обычном режиме допустим непосредственный компактный отчёт. Используй фактические средства ожидания/остановки.
-4. До повтора ошибки инструмента оцени идемпотентность: безопасное чтение повтори один раз, затем используй существующую эквивалентную возможность либо укажи точную недоступность; перед повтором побочного действия проверь, не совершилось ли оно. После доказанного дефекта или изменения требования пользователя пересмотри относящееся назначение и его транзитивные результаты, затем повтори нужную реализацию и независимую проверку. Продолжай, пока доступно различающее наблюдение или безопасное исправление в пределах полномочий и бюджета; повтор без нового доказательства не выполняй. `blocked` или `split_required` фиксируй, только когда владелец после исследования не может обосновать продолжение либо действительно нужен внешний вход.
-
-**Результат:** воспроизводимый граф назначений и отчёты, где завершение исполнителя и независимое одобрение различаются.
-
-**Проверка:** каждое принятое доказательство актуально относительно изменённых релевантных входов, а непроверенные критерии отделены от пройденных.
-
-Для маршрутов, модельной политики, ролей, формата отчёта и восстановления читай [reference](references/complex-task-orchestration.md). Для широкого исходного запроса сначала используй [intake](references/request-intake.md); для handoff и возобновления читай условно [continuity instructions](references/continuity/), когда задача передаётся или возобновляется.
+Use [long orchestration](../codex-long-orchestration/SKILL.md) only for strict durable state. In ordinary mode return a compact result: outcome, changes, checks, material risks, and next action. If an unavailable tool blocks a required fact, record the exact limitation rather than inventing an equivalent result.

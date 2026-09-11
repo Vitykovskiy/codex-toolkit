@@ -1,13 +1,5 @@
-# Возобновление оркестрации
+# Resume orchestration
 
-Применяй для передачи из установленного безопасного task_root, например `.codex/tmp/tasks/<task-id>/`; не применяй, если нет сохранённого состояния или задача уже завершена.
+Resume from the current strict state only after checking its source revision, safe paths, referenced artifacts, and permitted next transition. Continue the first incomplete action with its existing assignment and accepted evidence. Do not recreate approved work, launch a duplicate event, or turn root into a technical fallback.
 
-Для dispatcher-задачи обязательно следуй [строгому continuity](../../../codex-long-orchestration/references/continuity.md): этот режим сохраняется, root не читает полные отчёты/доказательства, предметную сверку выполняет назначенная роль. Передача незавершённого процесса требует [long-orchestration](../../../codex-long-orchestration/SKILL.md). Следующие общие критерии распределяются по этим полномочиям.
-
-1. Назначенная профильная роль читает единый state, совместимый handoff/журнал решений только как его представление, назначения и сохранённые доказательства. Проверь, что цель, решения и первое следующее действие присутствуют.
-2. Повторно обнаружь доступные Git-контексты, индекс и процессы; не предполагай репозиторий `.codex` или конкретный инструмент остановки.
-3. Сверь сохранённые отпечатки с релевантными входами, результатами и новыми файлами. При несовпадении определи прямые и транзитивные зависимые результаты и отметь их `needs_revalidation`.
-4. Сохрани незатронутые результаты. Если снимок был неустойчивым, перепроверь только затронутые доказательства до новых назначений.
-5. Прежний running проверь по реальной связи с сессией/процессом; иначе needs_revalidation. Не повторяй побочное действие по дубликату envelope. Возобнови первое существующее допустимое назначение принятой ревизии по зависимостям; изменение цели, решения, критериев или write-set требует явного пересмотра.
-
-Результат — обновлённое состояние с причинами `needs_revalidation` и отчёт по [шаблону отчёта](../templates/report.md).
+If a required role, report, telemetry, or safe transition is unavailable, preserve an exact blocker and wait for the smallest subject-owner action. Unknown cost or coverage remains `unknown`; it is not made zero on resume.

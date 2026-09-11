@@ -1,8 +1,6 @@
-# Envelope dispatcher_only
+# Dispatcher envelope
 
-Это короткое процессное извещение, а не полный отчёт. Оно содержит ID/попытку, профиль, статус, путь собственного отчёта и существующий следующий переход; root проверяет форму, путь, runtime-отправителя и разрешённое ребро, не читая предметное содержание. При `status: approved` обязательный `accepts` связывает approval с конкретным принимаемым результатом в форме `<assignment_id>/<attempt>`; суффикс `@<snapshot>` добавляется, только когда снимок обязателен для этой передачи. Для прочих статусов `accepts` равен `null`.
-
-Если результат относится к blocker, `finding_id` — его устойчивый ID, а `progress` — ровно `confirmed`, `none` или `unknown`; для результата без blocker оба поля равны `null`. `confirmed` сообщает только независимый reviewer после материальной ожидаемой проверки; новый diff или объяснение не являются progress. При `none` или `unknown` поле `no_progress` обязательно содержит непустые `missing_input` и `next_check`; иначе оно равно `null`. Root переносит эти короткие сведения в state и не выводит их из полного отчёта.
+An envelope is a compact process notification, not a subject report. Root validates its shape, path, sender, and permitted transition without accepting technical content.
 
 ```yaml
 status: completed
@@ -16,3 +14,7 @@ progress: null
 no_progress: null
 next_transition: assignments/R01.yaml
 ```
+
+For `approved`, `accepts` is the legacy string `<assignment_id>/<attempt>` (with `@<snapshot>` when required) or a nonempty list of those strings for a packet. Other statuses use `null`. It must correlate exactly with the full report.
+
+A blocker has a stable `finding_id` and `progress` of `confirmed`, `none`, or `unknown`. `none` and `unknown` require nonblank `no_progress.missing_input` and `no_progress.next_check`; a non-blocker uses null progress fields.

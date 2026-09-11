@@ -226,7 +226,7 @@ $codex-not-a-real-skill
         self.assertEqual([], self.validate().errors)
 
     def test_profile_inventory_includes_standard_analyst(self):
-        self.assertEqual(12, len(PROFILE_FILES))
+        self.assertEqual(13, len(PROFILE_FILES))
         self.assertEqual('analyst_standard', PROFILE_FILES['analyst-standard.toml'])
 
     def test_explicit_unknown_skill_and_role(self):
@@ -299,7 +299,19 @@ $codex-not-a-real-skill
             entry['envelope'] = envelope
         if accepts is not None:
             entry['accepts'] = accepts
-        data = dict(version=1, reports=[entry])
+        entries = [entry]
+        accepted_items = accepts if isinstance(accepts, list) else [accepts] if accepts is not None else []
+        for accepted in accepted_items:
+            if not isinstance(accepted, dict):
+                continue
+            accepted_path = f"reports/{accepted['assignment_id']}.yaml"
+            if not (self.root / accepted_path).exists():
+                completed = self.artifact_report(accepted['assignment_id'], accepted['attempt'], accepted['goal_version'])
+                completed['result']['assignment']['snapshot'] = accepted.get('snapshot')
+                completed['result']['evidence'] = ['accepted evidence']
+                self.write(accepted_path, yaml.safe_dump(completed))
+            entries.append(dict(path=accepted_path, assignment_id=accepted['assignment_id'], attempt=accepted['attempt'], goal_version=accepted['goal_version'], next_transition='assignments/R01.yaml'))
+        data = dict(version=1, reports=entries)
         if owners is not None:
             data['owners'] = owners
         self.write('manifest.yaml', yaml.safe_dump(data))
@@ -393,6 +405,76 @@ $codex-not-a-real-skill
                 self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
                 _, errors = self.artifact_validate()
                 self.assertTrue(any('does not correlate' in error for error in errors), errors)
+
+    def test_task_artifacts_accepts_packet_with_snapshots(self):
+        accepts = [
+            dict(assignment_id='P02', attempt=1, goal_version=1, snapshot='sha256:first'),
+            dict(assignment_id='P03', attempt=2, goal_version=1, snapshot='sha256:second'),
+        ]
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepts)))
+        envelope = dict(status='approved', artifact='reports/P01.yaml', assignment_id='P01', attempt=1,
+                        profile='reviewer', accepts=['P02/1@sha256:first', 'P03/2@sha256:second'],
+                        finding_id=None, progress=None, no_progress=None, next_transition='assignments/R01.yaml')
+        self.write('envelopes/P01.yaml', yaml.safe_dump(envelope))
+        self.artifact_manifest(envelope='envelopes/P01.yaml', owners={'P01': 'reviewer', 'P02': 'developer', 'P03': 'mechanical'}, accepts=accepts)
+        result, errors = self.artifact_validate()
+        self.assertEqual('checked', result['status'])
+        self.assertEqual([], errors)
+
+    def test_task_artifacts_rejects_packet_without_snapshot_or_duplicate(self):
+        accepts = [dict(assignment_id='P02', attempt=1, goal_version=1), dict(assignment_id='P02', attempt=1, goal_version=1, snapshot='sha256:x')]
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepts)))
+        self.artifact_manifest(owners={'P01': 'reviewer', 'P02': 'developer'}, accepts=accepts)
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('packet accepts requires snapshot' in error for error in errors), errors)
+
+    def test_task_artifacts_resolves_every_accepted_report(self):
+        accepted = dict(assignment_id='P02', attempt=1, goal_version=1)
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepted)))
+        completed = self.artifact_report(assignment_id='P02')
+        completed['result']['evidence'] = ['tests/test_feature.py']
+        self.write('reports/P02.yaml', yaml.safe_dump(completed))
+        manifest = dict(version=1, owners={'P01': 'reviewer', 'P02': 'developer'}, reports=[
+            dict(path='reports/P01.yaml', assignment_id='P01', attempt=1, goal_version=1, next_transition='assignments/R01.yaml', accepts=accepted),
+            dict(path='reports/P02.yaml', assignment_id='P02', attempt=1, goal_version=1, next_transition='assignments/R01.yaml'),
+        ])
+        self.write('manifest.yaml', yaml.safe_dump(manifest))
+        self.write('assignments/R01.yaml', '{}\n')
+        result, errors = self.artifact_validate()
+        self.assertEqual('checked', result['status'])
+        self.assertEqual([], errors)
+        completed['status'] = 'paused'
+        completed['result']['evidence'] = []
+        self.write('reports/P02.yaml', yaml.safe_dump(completed))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted result must be completed' in error for error in errors), errors)
+        self.assertTrue(any('accepted result requires evidence' in error for error in errors), errors)
+        completed['status'] = 'completed'
+        completed['result']['assignment']['attempt'] = 2
+        completed['result']['evidence'] = ['tests/test_feature.py']
+        self.write('reports/P02.yaml', yaml.safe_dump(completed))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted result is stale' in error for error in errors), errors)
+
+    def test_task_artifacts_rejects_packet_snapshot_mismatch_or_null(self):
+        accepted = [dict(assignment_id='P02', attempt=1, goal_version=1, snapshot='sha256:good')]
+        self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report(status='approved', accepts=accepted)))
+        completed = self.artifact_report(assignment_id='P02')
+        completed['result']['assignment']['snapshot'] = 'sha256:other'
+        completed['result']['evidence'] = ['tests/test_feature.py']
+        self.write('reports/P02.yaml', yaml.safe_dump(completed))
+        manifest = dict(version=1, owners={'P01': 'reviewer', 'P02': 'developer'}, reports=[
+            dict(path='reports/P01.yaml', assignment_id='P01', attempt=1, goal_version=1, next_transition='assignments/R01.yaml', accepts=accepted),
+            dict(path='reports/P02.yaml', assignment_id='P02', attempt=1, goal_version=1, next_transition='assignments/R01.yaml'),
+        ])
+        self.write('manifest.yaml', yaml.safe_dump(manifest))
+        self.write('assignments/R01.yaml', '{}\n')
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted result is stale' in error for error in errors), errors)
+        completed['result']['assignment']['snapshot'] = None
+        self.write('reports/P02.yaml', yaml.safe_dump(completed))
+        _, errors = self.artifact_validate()
+        self.assertTrue(any('accepted result is stale' in error for error in errors), errors)
 
     def test_task_artifacts_validates_blocker_progress_shape(self):
         self.write('reports/P01.yaml', yaml.safe_dump(self.artifact_report()))

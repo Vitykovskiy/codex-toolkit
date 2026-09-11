@@ -1,28 +1,16 @@
 ---
 name: codex-long-orchestration
-description: "Применяй для root-диспетчера, нескольких предметных итераций, передачи незавершённой оркестрации или кампании качества; результат — возобновляемый файловый процесс. Не применяй к одной локальной правке только из-за числа файлов."
+description: Run explicit strict dispatcher workflows with durable state, role-owned reports, and independent acceptance.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
-# Длительная оркестрация
+# Long orchestration
 
-## Когда и входы
+Use `dispatcher_only` only for an explicit strict dispatcher, a resumed strict workflow, or a process that genuinely needs durable cross-session state. It is not triggered by file count, a normal fix/review pair, or two ordinary stages.
 
-Прямой запрос root-диспетчера, широкая действительно неоднозначная цель, несколько предметных итераций, handoff незавершённой оркестрации и product-quality обязательно включают `dispatcher_only`. Он сохраняется до завершения, явной команды пользователя изменить режим либо остановки с контрольной точкой; handoff/resume восстанавливают тот же режим. Обязательная зависимость — [базовая оркестрация](../codex-orchestration-pact/SKILL.md), владелец общей приёмки и дефектных циклов. Отсутствующую зависимость обозначь точно, не подменяй глобальным одноимённым источником.
+Root owns process state only: it starts a prepared assignment, checks paths and envelope shape, records a transition, and waits for native completion. Subject roles own the decision, write-set, implementation, checks, and full report. Root does not replace an unavailable subject role, inspect full reports for technical acceptance, or create a final reviewer.
 
-Входы: дословная цель и ограничения, фактический task_root, доступные роли/инструменты/права, бюджет и существующее назначение либо компактный state. Для широкой действительно неоднозначной цели до intake не требуются goal, принятый граф, результаты или отдельный bootstrap-маршрут. До первой записи проверь тип, реальную цель и Git-контекст `.codex`, ссылки/reparse points и отдельные worktree. Небезопасную ссылку не демонтируй; используй разрешённый системный временный каталог и сохрани ограничение.
+The architect may prepare the graph and write-set; do not require a decomposer before or after it. For a ready user specification root may mechanically fill an assignment with its literal goal, scope, and checks. A completed implementation receives one independent review; use one packet review for multiple completed assignments. Preserve accepted evidence for unchanged work and recheck the fix and its dependencies only.
 
-## Необходимые действия
-
-1. Root читает инструкции управления, цель, компактное состояние/маршрут/envelope; сохраняет цель дословно, ведёт только процессное состояние, вызывает роли, проверяет форму и существование безопасных путей, выполняет механические Git-проверки и передаёт подготовленные вопросы. Он не читает исходники, снимки и полные отчёты для анализа, не выбирает архитектуру, write-set, проверки, причину сбоя или приоритет дефекта. Финал и handoff не дают исключения: root не принимает предметный вердикт и не пересказывает полные отчёты.
-2. Decomposer владеет нетривиальными назначениями, их зависимостями и корректирующими назначениями; независимый reviewer принимает конкретный результат. Root запускает готовый предусмотренный переход с существующим assignment_path, входами, ролью, ID и разрешённой записью. Astra-профиль допустим только если назначение ссылается на дословное прямое применимое указание пользователя для этой роли и задачи; root механически проверяет наличие этой ссылки, но не истолковывает её содержание. Сложность, budget, retry, resume, наличие профиля и рекомендация роли не дают разрешения. Исключение — служебные шаблоны `intake`, `decompose`, `review`, `fix`, `consult`, `escalate` и `revalidate` из [dispatcher-mode](references/dispatcher-mode.md): root может механически создать их подстановкой предписанных ID, попытки, роли, путей и уже зафиксированных входов. Такая подстановка не создаёт критерии, проверки, write_set, решение, причину сбоя, приоритет или предметный маршрут. Только широкая действительно неоднозначная цель начинает `intake`; `decompose` запускается лишь если intake установил потребность в нетривиальных назначениях. Предложение роли изменить маршрут не разрешает исполнение без оформления владельцем.
-3. Роль сама читает предметные входы и атомарно сохраняет [канонический полный отчёт](../codex-orchestration-pact/references/templates/report.md) по назначенному artifact_path; root получает только [envelope](references/templates/envelope.md). Роли не запускают подагентов. Root проверяет форму/пути/отправителя/ревизию/переход, следующая предметная роль — содержание. Существование отчёта не доказывает его качество. Один возврат на исправление сериализации; повторный сбой формы блокирует ветвь, без предметной замены root.
-4. Только root атомарно обновляет [state](references/templates/state.md) после запуска, ответа и смены перехода. Проверяй зависимости, общие ресурсы, попытку, runtime handle и сохранённое извещение; повтор события не запускает действие повторно, а старый ответ не заменяет текущий статус. Правила расходов, прогресса и проверок путей — в [dispatcher-mode](references/dispatcher-mode.md).
-5. Реализация completed проходит независимый review; уникальные связи — integration_reviewer по маршруту. Новый связанный дефект возвращается предусмотренному владельцу и decomposer; циклы идут по новым доказательствам в разрешённом бюджете согласно базовой оркестрации. Root не определяет принадлежность дефекта. Бизнес-вопрос готовит роль, root передаёт файл дословно и сохраняет ответ пользователя без пересказа.
-
-## Результат и проверка
-
-Результат — компактное актуальное состояние, собственные файловые отчёты ролей и ровно один допустимый следующий переход. Сверь актуальность ревизии, независимую приёмку, существование входов, права записи, ресурсы и неизвестности. Исходники/структура, смысловая приёмка, загрузка клиентом, наблюдаемое поведение и эффективность имеют раздельные статусы. Протокол не обещает бесконечный контекст, техническую изоляцию папки или runtime exactly-once.
-
-При недоступности делегирования, собственного файлового отчёта роли, инструмента или безопасного перехода фиксируй точное ограничение и контрольную точку; root не становится предметным fallback. Ошибку собственной ссылки, пути или сериализации исправляй механически либо верни её автору без новой декомпозиции; неизвестное содержание проверяет предметная роль. Для передачи и возобновления используй тот же [state-процесс](references/continuity.md), а не обязательный второй handoff-снимок. Прежний running без наблюдаемой связи и неполный снимок не объявляй продолженным или завершённым.
+Roles atomically write their own full reports and return a compact envelope. Root keeps one current state and resumes the first incomplete action without reissuing accepted work. Missing delegation, report storage, or a safe transition is a precise checkpoint, not permission for root to become the technical fallback.

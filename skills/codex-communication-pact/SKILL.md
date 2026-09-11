@@ -1,30 +1,14 @@
 ---
 name: codex-communication-pact
-description: Применяйте при подготовке ответа пользователю, чтобы ясно сообщить результат, доказательства и существенный риск; не подходит для исследования кода или выбора технического решения без пользовательского сообщения.
+description: Communicate results, evidence, material risks, and the necessary next action clearly.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
-# Пакт коммуникации
+# Communication pact
 
-## Когда применять
+Use this pact for every reply, status update, plan, result, risk, or request for a user decision. Start with the human outcome. Keep the user's language and do not compress requested code, documents, or instructions merely for brevity.
 
-Применяйте при ответе пользователю, обновлении статуса, плане, результате, риске или запросе решения. Правила, уже загруженные в этой задаче, применяйте далее без ритуального повторного чтения справочника.
+Separate requirement, verified fact, inference, and unknown. Name a missing material input, its effect, and the determinate work that can continue. Technical detail belongs only where it helps assess an action, proof, or risk. Do not represent a plan or assumption as a completed check.
 
-## Входы
-
-Установите цель сообщения, подтверждённые факты, непроверенные критерии и решения, которые должен принять пользователь. Если существенный вход отсутствует, назовите неизвестность, её влияние и продолжайте определённую часть работы.
-
-## Действия
-
-Начните с человеческого смысла и результата. Сохраняйте основной язык пользователя; не сокращайте запрошенные код, документ или инструкцию ради краткости. Добавляйте технические детали только когда они помогают оценить действие, доказательство или риск. Отделяйте требование, факт, гипотезу и неизвестность; не выдавайте план или предположение за выполненную проверку. Пишите кратко, но полностью, если цена ошибки, необратимость или порядок действий требуют ясности. При непонимании переформулируйте простым языком.
-
-В `dispatcher_only` сообщение root сообщает фазу, процессный статус, блокер или передаёт подготовленный вопрос. Полный предметный отчёт доступен по пути; стиль не требует его чтения или пересказа root и не расширяет [envelope long-orchestration](../codex-long-orchestration/references/templates/envelope.md). Роль возвращает только предусмотренную краткую форму, сохранив полный отчёт самостоятельно.
-
-## Результат
-
-Верните понятное сообщение с подтверждённым состоянием, релевантным доказательством, существенным ограничением и следующим действием, когда оно требуется.
-
-## Проверка
-
-Перед отправкой убедитесь, что пользователь поймёт смысл без знания внутренней структуры проекта, а статусы проверок названы точно. Примеры формулировок и правила для сложных сообщений читайте при необходимости в [справочнике](references/communication-pact.md).
+In `dispatcher_only`, root reports phase, process status, blocker, or a prepared user question. The subject owner keeps the full report at its artifact path; root does not reframe it as a technical acceptance. Before sending, make sure the user can understand the outcome without knowing the repository internals and that every verification status is precise.

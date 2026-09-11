@@ -1,20 +1,7 @@
-# Назначение
+# Assignment
 
-Decomposer оформляет нетривиальное точное назначение до исполнения; root передаёт его путь без реконструкции предметного тела. Короткое обычное поручение может содержать только достаточные для работы роль, цель, входы, разрешённую область и проверки; оно допускает непосредственный компактный результат. Для него не обязательны decomposer, граф или его приёмка, длительное состояние, файловый отчёт и envelope.
+An ordinary assignment carries only the role, literal goal, relevant inputs, allowed scope, and checks. It does not require a graph, decomposer, persistent state, file report, or envelope.
 
-В `dispatcher_only` назначение содержит ID, роль и профиль, дословную цель либо её путь, входы, точный `write_set`, критерии, проверки, зависимости/общие ресурсы, собственный `artifact_path` и единственный допустимый следующий шаг. Для Astra-профиля назначение также содержит точную ссылку на дословное прямое применимое указание пользователя для этой роли и задачи; без неё выбирают non-Astra профиль или передают запрос разрешения. `write_set: []` разрешает только анализ и собственный отчёт. Явно установленный строгий список записи сохраняется; недостающий необходимый файл требует пересмотра назначения до записи. Перечень известных файлов не запрещает прочитать необходимый соседний файл.
+In `dispatcher_only`, an assignment also names its ID/profile, exact write-set, criteria, dependencies and shared resources, `artifact_path`, and one permitted next transition. A ready user specification may be copied mechanically with its literal goal, scope, and checks. The architect may supply a graph and write-set; `decomposer` is optional and remains compatible for explicitly requested decomposition or legacy import.
 
-Для dispatcher-only применяй ровно нужный краткий вариант; результаты создают сами назначенные роли, а не заглушки:
-
-| Вариант | Обязательные входы и результат |
-|---|---|
-| `intake` | Дословные пользовательские источники/вложения; analyst может начать без `goal`, создаёт назначенную версию goal. |
-| `decompose` | Goal, принятые решения и наблюдения; decomposer оформляет назначения текущей партии. |
-| `review` | Исходное назначение, результат и отчёт исполнителя; независимый reviewer проверяет критерии по актуальной области, diff и проверкам. |
-| `fix` | То же назначение, устойчивые finding ID и новая попытка; исполнитель исправляет только прежний `write_set`. |
-| `consult` / `escalate` | Один точный вопрос, назначенный профиль и новые существенные факты/различающая проверка; роль возвращает решение или недостающий вход. |
-| `revalidate` | Активное назначение и извещение об изменении; владелец устанавливает влияние и узкие необходимые проверки. |
-
-В `dispatcher_only` `task_root` — явно установленный локальный якорь; пути задачи безопасно разрешаются внутри него, а исходный `write_set` относится к явно названному Git-контексту. Изменение цели, решения, критериев или write_set создаёт заменяющее назначение и требует независимой проверки затронутого результата. Роль не делегирует, атомарно пишет полный [отчёт](report.md) и возвращает root только [краткое извещение](../../../codex-long-orchestration/references/templates/envelope.md).
-
-Пакет нового назначения непосредственно содержит цель и версию, критерии, права и критические запреты; крупные условные источники указываются точными путями. Continue указывает базовую попытку и версии релевантных входов. Retry добавляет finding, новые факты, проверенные или отвергнутые гипотезы, последнюю проверку и неизвестный исход побочного действия. Неполная или stale база требует восстановления достаточного пакета до работы.
+The owner may choose relevant tests and a related test or documentation file inside the approved scope. A normal fix returns to the same owner. Public-contract changes or scope expansion require one decision owner. The owner never accepts its own result. A strict role atomically writes its report and returns only the [envelope](../../../codex-long-orchestration/references/templates/envelope.md).

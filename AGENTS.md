@@ -1,37 +1,32 @@
-# Codex toolkit instructions
+# Codex toolkit
 
-## Применимые процедуры
+Use [codex-communication-pact](skills/codex-communication-pact/SKILL.md) for every user message. User-facing replies remain in the user's language.
 
-Применяй [codex-communication-pact](skills/codex-communication-pact/SKILL.md) к каждому заданию и каждому сообщению пользователю. Прочитай процедуру, если она ещё не загружена в текущей задаче или изменилась; далее применяй загруженные правила без повторного чтения. Это прямое правило toolkit; оно не зависит от неявного выбора скилла клиентом.
+## Delivery policy
 
-Остальные процедуры подключай по задаче, без автоматической загрузки всего каталога:
+| Task condition | Route |
+|---|---|
+| Exact text, config, or mechanical edit from a ready specification | One owner and targeted checks. Independent review only when the contract or a risky meaning change requires it. A coordinated multi-file edit remains one assignment. |
+| Clear behaviour change in one connected area | One `developer`, then one independent `reviewer`. The developer reads relevant code, diagnoses local questions, and adds regression tests. |
+| Truly independent outcomes | A small number of responsibility-based assignments, at most two writers at once, then one packet review. |
+| Material uncertainty about solution or dependencies | One `architect` consultation combines fact finding, decision, and executable write-set. |
+| Explicit strict dispatcher, an existing strict orchestration, or durable cross-session state | `dispatcher_only` with file state and independent review; keep the same coarse assignments and packet review. |
 
-- Изменение кода, тестов, конфигурации или профилей: [codex-development-pact](skills/codex-development-pact/SKILL.md).
-- Документация, инструкции и метаданные пактов: [codex-documentation-pact](skills/codex-documentation-pact/SKILL.md).
-- Анализ и описание интерфейса: [codex-ui-analysis-pact](skills/codex-ui-analysis-pact/SKILL.md).
-- Реализация веб-интерфейса: [codex-web-implementation](skills/codex-web-implementation/SKILL.md).
-- Подтверждённый сбой или диагностика: [codex-debugging](skills/codex-debugging/SKILL.md).
-- Проверка работающего веб-интерфейса: [codex-web-verification](skills/codex-web-verification/SKILL.md).
-- Проверка безопасности заданной области: [codex-security-review](skills/codex-security-review/SKILL.md).
-- Прямой запрос делегирования, обязательная инструкция либо необходимость координации назначений: [codex-orchestration-pact](skills/codex-orchestration-pact/SKILL.md). Локальная правка сама по себе не требует подагентов.
-- Root-диспетчер, несколько предметных итераций или передача незавершённой оркестрации: [codex-long-orchestration](skills/codex-long-orchestration/SKILL.md), обязательный `dispatcher_only`, включая fallback, handoff и финальную приёмку.
-- Кампания качества и выбор следующей малой партии: [codex-product-quality](skills/codex-product-quality/SKILL.md), с long-orchestration и `quality_owner`; разовая проверка известного состояния остаётся web-verification.
+File count, a normal fix/review pair, and implementation followed by measurement do not require strict mode. `analyst_standard` investigates a concrete unknown; `decomposer` remains a compatible explicitly requested role, not a mandatory stage. A ready user specification may be copied mechanically into an assignment; root must not invent missing requirements. An owner selects relevant tests within its approved scope. A normal fix returns to that owner; a public-contract or scope change needs one decision owner. No role accepts its own implementation.
 
-## Границы изменений
+For a coordinated task use [codex-orchestration-pact](skills/codex-orchestration-pact/SKILL.md). Use the matching pact for code/config, documentation, UI analysis, web implementation, debugging, web verification, security review, long strict orchestration, or quality campaigns. Do not activate long orchestration merely because an edit spans several files.
 
-- При изменении поставляемых скиллов и согласованных профилей соблюдай [версионирование](docs/versioning.md): единый номер в `metadata.version` всех скиллов и запись в [CHANGELOG](CHANGELOG.md).
+## Profiles
 
-- `skills/` и `agents/` — канонические источники. Сохраняй публичные имена и пути; изменения процедур согласуй с их справочниками, профилями, шаблонами и картой миграции. Рефакторинг текста допустим в границах задания с сохранением существенных инвариантов.
-- Сохраняй чужие изменения и существующий `backup/**` без изменений. Продуктовые правила оставляй проектам-потребителям; общие скиллы должны работать отдельно от toolkit.
-- Используй относительные ссылки. В постоянные файлы не добавляй абсолютные пути конкретного компьютера, секреты, локальные окружения и рабочие трассы.
-- Локальные validator, тесты, синтетические fixtures и минимальные зависимости разработки в `requirements-dev.txt` допустимы. Производственные зависимости, CI, hooks и установочные сценарии требуют отдельного задания.
-- Профили toolkit содержат каноническую model/effort-политику; фактическую поддержку клиента и наблюдаемое применение проверяй отдельно.
-- Будущее локальное подключение описано в [project-local](docs/project-local.md), уровни доказательств — в [совместимости](docs/compatibility.md). Глобальную установку и старую пользовательскую регистрацию изменяй только по явному запросу.
-- Commit, push, PR, публикация и изменение продуктовых репозиториев требуют явного разрешения пользователя.
+Root-only dispatch uses `gpt-5.6-luna` / `low`. `mechanical` and `scout` use Luna/low; `developer` and `reviewer` use Terra/medium; `reviewer_fast` uses Terra/low only for literal non-semantic edits; `architect` and `analyst_standard` use Sol/medium; `integration_reviewer` uses Sol/medium for cross-part compatibility, security, or a complex review. TOML settings win over spawn suggestions. Do not silently inherit or substitute a more expensive model. Astra needs a direct, applicable user authorization.
 
-## Проверки toolkit
+## Repository boundaries
 
-Из корня, с Python 3.11+ и установленными зависимостями разработки:
+`skills/` and `agents/` are canonical sources. Preserve public names and paths; update related references, profiles, templates, migration material, and [CHANGELOG](CHANGELOG.md) when their contract changes. Keep one `metadata.version` across delivered skills according to [docs/versioning.md](docs/versioning.md). Preserve unrelated work and `backup/**`; do not add secrets, absolute machine paths, global installation, commits, pushes, PRs, publication, hooks, production dependencies, or product-repository changes without explicit user authorization.
+
+## Verification
+
+After a local change, inspect its facts, links, and diff. Before acceptance run:
 
 ```sh
 python3 -m unittest discover -s tests -p 'test_validate_toolkit.py'
@@ -39,4 +34,4 @@ python3 tools/validate_toolkit.py --root .
 git diff --check
 ```
 
-Подготовка окружения описана в [README](README.md). После локальной правки сначала проверь её факты, ссылки и diff; при изменении форматов запускай соответствующие тесты. Перед общей приёмкой выполни обе структурные команды и чтение согласованности процедур. Структурная проверка, загрузка в Codex, наблюдаемое поведение и сравнение эффективности имеют раздельные статусы; непроверенный уровень не получают положительный статус и сам по себе не требует нового платного эксперимента.
+Structural validity, client loading, observed runtime behaviour, and efficiency measurement have separate statuses. Never mark an unobserved level as verified.

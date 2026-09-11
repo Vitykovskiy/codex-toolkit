@@ -1,13 +1,5 @@
-# Создание handoff
+# Create a handoff
 
-Применяй для длительной или передаваемой оркестрации; короткая задача не требует состояния. Не создавай handoff как замену завершению работы.
+Create a handoff only for an active strict workflow that must continue in another session. Preserve one current state, the literal request/goal references, current assignment IDs and attempts, accepted report paths and snapshots, the first incomplete permitted transition, blockers, and known cost increments. Keep full subject reports at their artifact paths; do not copy the full conversation or reports into root context.
 
-Для dispatcher-задачи обязательно следуй [строгому continuity](../../../codex-long-orchestration/references/continuity.md): root не читает и не переписывает полные отчёты. Передача незавершённой оркестрации включает [long-orchestration](../../../codex-long-orchestration/SKILL.md). Следующие общие критерии снимка выполняются соответствующими владельцами в этих границах.
-
-1. Приостанови новые назначения и зафиксируй фактическое состояние доступными средствами. Не предполагай отдельный Git-контекст или средство остановки.
-2. Проверь безопасную реальную цель `.codex` и Git-контекст; при небезопасной ссылке используй разрешённый системный временный каталог, не демонтируя её. В установленном task_root используй единый authoritative state из strict continuity; совместимый handoff и decision-log допустимы только как его ссылка или представление, не как второй обязательный снимок. Заполни необходимые [task](../templates/task.md) из наблюдённых данных.
-3. Сохрани дословную цель, принятые изменения требований, решения, зависимости, владельцев, разрешённые изменения, проверки, доказательства и первое следующее действие. Каждая роль сама атомарно сохраняет собственный отчёт. Root сохраняет только своё компактное процессное состояние.
-4. Зафиксируй реально обнаруженные Git-контексты, отпечатки релевантных входов, результатов и новых файлов, ветку/detached, HEAD, staged/unstaged/untracked, отпечатки рабочего/индексного diff и незавершённые процессы. Манифесты учитывают удаления, новые файлы и отдельные игнорируемые артефакты. Наблюдённое не восстанавливай по памяти.
-5. Если остановку или ожидание процесса нельзя подтвердить, отметь снимок неустойчивым и затронутые результаты как требующие перепроверки. Не выдавай частичный файл за завершённый.
-
-Результат — путь к заполненному handoff и отчёт по [шаблону отчёта](../templates/report.md); `completed` означает созданную передачу, а `approved` присваивает только независимый reviewer.
+The handoff records facts and unknowns, never a new technical decision. A stale report, unsafe path, unknown runtime sender, or missing required capability is a checkpoint with the exact limitation. Do not call accepted work incomplete just to recreate it.

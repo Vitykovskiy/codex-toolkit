@@ -31,7 +31,7 @@ SKILLS = frozenset('codex-' + name for name in (
     'debugging', 'web-verification', 'security-review',
     'long-orchestration', 'product-quality'))
 ROLES = frozenset(('scout', 'analyst', 'analyst_standard', 'architect', 'decomposer', 'developer',
-                   'mechanical', 'reviewer', 'integration_reviewer', 'quality_owner'))
+                   'mechanical', 'reviewer', 'reviewer_fast', 'integration_reviewer', 'quality_owner'))
 PROFILE_FILES = {
     **{role.replace('_', '-') + '.toml': role for role in ROLES},
     'architect-astra.toml': 'architect_astra',
@@ -71,16 +71,42 @@ def unique_mapping(loader, node, deep=False):
 UniqueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, unique_mapping)
 
 
+def accepted_results(accepts):
+    """Validate legacy single or packet ``result.accepts`` correlations."""
+    if accepts is None:
+        raise ValueError('missing report accepts')
+    packet = isinstance(accepts, list)
+    items = accepts if packet else [accepts]
+    if not items:
+        raise ValueError('packet accepts must be nonempty')
+    normalized = []
+    seen = set()
+    for item in items:
+        if not isinstance(item, dict) or type(item.get('assignment_id')) is not str or not item['assignment_id'].strip() or type(item.get('attempt')) is not int or item['attempt'] < 1 or type(item.get('goal_version')) is not int:
+            raise ValueError('invalid report accepts')
+        snapshot = item.get('snapshot')
+        if snapshot is not None and (type(snapshot) is not str or not snapshot.strip()):
+            raise ValueError('invalid accepts snapshot')
+        if packet and snapshot is None:
+            raise ValueError('packet accepts requires snapshot for every result')
+        key = (item['assignment_id'], item['attempt'], item['goal_version'])
+        if key in seen:
+            raise ValueError('packet accepts must not repeat a result')
+        seen.add(key)
+        normalized.append(item)
+    return normalized
+
+
 def canonical_accepts(accepts):
-    """Render report accepts in the canonical compact envelope representation."""
+    """Render single or packet accepts in canonical envelope form."""
     if accepts is None:
         return None
-    if not isinstance(accepts, dict) or type(accepts.get('assignment_id')) is not str or not accepts['assignment_id'].strip() or type(accepts.get('attempt')) is not int or accepts['attempt'] < 1 or type(accepts.get('goal_version')) is not int:
-        raise ValueError('invalid report accepts')
-    snapshot = accepts.get('snapshot')
-    if snapshot is not None and (type(snapshot) is not str or not snapshot.strip()):
-        raise ValueError('invalid accepts snapshot')
-    return f"{accepts['assignment_id']}/{accepts['attempt']}" + (f"@{snapshot}" if snapshot else '')
+    items = accepted_results(accepts)
+    rendered = []
+    for item in items:
+        snapshot = item.get('snapshot')
+        rendered.append(f"{item['assignment_id']}/{item['attempt']}" + (f"@{snapshot}" if snapshot else ''))
+    return rendered if isinstance(accepts, list) else rendered[0]
 
 
 def prose_lines(text):
@@ -333,6 +359,12 @@ class Validator:
             return {'status': 'not_verified', 'errors': self.errors}
         if manifest['version'] != 1:
             self.error(manifest_path, 'unsupported task manifest version')
+        report_entries = {}
+        for item in manifest['reports']:
+            if isinstance(item, dict) and type(item.get('assignment_id')) is str:
+                if item['assignment_id'] in report_entries:
+                    self.error(manifest_path, 'duplicate assignment_id in reports manifest')
+                report_entries[item['assignment_id']] = item
         owners = manifest.get('owners')
         if owners is not None and (not isinstance(owners, dict) or any(type(key) is not str or type(value) is not str for key, value in owners.items())):
             self.error(manifest_path, 'owners must map assignment IDs to owner IDs')
@@ -358,21 +390,62 @@ class Validator:
                 self.error(report_path, 'report next_action is stale or differs from explicit transition')
             accepts = report['result'].get('accepts')
             if report['status'] == 'approved':
-                if not isinstance(accepts, dict) or not all(name in accepts for name in ('assignment_id', 'attempt', 'goal_version')):
+                try:
+                    accepted_items = accepted_results(accepts)
+                except ValueError as error:
+                    self.error(report_path, str(error))
+                    accepted_items = []
+                if not accepted_items:
                     self.error(report_path, 'approved report requires accepts correlation')
                 else:
                     expected_accepts = item.get('accepts')
                     if expected_accepts is None:
                         not_verified = True
-                    elif not isinstance(expected_accepts, dict) or any(expected_accepts.get(name) != accepts.get(name) for name in ('assignment_id', 'attempt', 'goal_version')):
-                        self.error(report_path, 'accepts does not match explicit accepted-result expectation')
+                    else:
+                        try:
+                            expected_items = accepted_results(expected_accepts)
+                        except ValueError as error:
+                            self.error(manifest_path, f'invalid accepted-result expectation: {error}')
+                            expected_items = []
+                        if len(expected_items) != len(accepted_items) or any(
+                                any(expected.get(name) != actual.get(name) for name in ('assignment_id', 'attempt', 'goal_version', 'snapshot'))
+                                for expected, actual in zip(expected_items, accepted_items)):
+                            self.error(report_path, 'accepts does not match explicit accepted-result expectation')
                     if owners is not None:
                         current = owners.get(item['assignment_id'])
-                        accepted = owners.get(accepts['assignment_id'])
-                        if current is None or accepted is None:
-                            not_verified = True
-                        elif current == accepted:
-                            self.error(report_path, 'self-approval in supplied owner map')
+                        for accepted_item in accepted_items:
+                            accepted = owners.get(accepted_item['assignment_id'])
+                            if current is None or accepted is None:
+                                not_verified = True
+                            elif current == accepted:
+                                self.error(report_path, 'self-approval in supplied owner map')
+                    for accepted_item in accepted_items:
+                        if accepted_item['assignment_id'] == item['assignment_id']:
+                            self.error(report_path, 'self-approval in accepts')
+                            continue
+                        accepted_entry = report_entries.get(accepted_item['assignment_id'])
+                        if accepted_entry is None:
+                            self.error(report_path, 'accepted result is absent from reports manifest')
+                            continue
+                        accepted_path = self.task_path(manifest_path, accepted_entry.get('path'), root)
+                        if accepted_path is None:
+                            continue
+                        accepted_report = self.parse_yaml(accepted_path, self.read(accepted_path))
+                        if not isinstance(accepted_report, dict):
+                            self.error(accepted_path, 'accepted result report must be a mapping')
+                            continue
+                        accepted_assignment = accepted_report.get('result', {}).get('assignment') if isinstance(accepted_report.get('result'), dict) else None
+                        if not isinstance(accepted_assignment, dict) or (
+                                accepted_assignment.get('id') != accepted_item.get('assignment_id') or
+                                accepted_assignment.get('attempt') != accepted_item.get('attempt') or
+                                accepted_assignment.get('goal_version') != accepted_item.get('goal_version') or
+                                accepted_assignment.get('snapshot') != accepted_item.get('snapshot')):
+                            self.error(accepted_path, 'accepted result is stale or does not match accepts')
+                        if accepted_report.get('status') != 'completed':
+                            self.error(accepted_path, 'accepted result must be completed')
+                        evidence = accepted_report.get('result', {}).get('evidence') if isinstance(accepted_report.get('result'), dict) else None
+                        if not isinstance(evidence, list) or not evidence:
+                            self.error(accepted_path, 'accepted result requires evidence')
             elif accepts is not None:
                 self.error(report_path, 'non-approved report must have null accepts')
             envelope_name = item.get('envelope')
