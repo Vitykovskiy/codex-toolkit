@@ -17,7 +17,7 @@ Choose only relevant procedures:
 - Observed UI behaviour: [web verification](.agents/skills/codex-web-verification/SKILL.md).
 - An assigned trust boundary: [security review](.agents/skills/codex-security-review/SKILL.md).
 - Actual coordination: [orchestration](.agents/skills/codex-orchestration-pact/SKILL.md#portable-route-table).
-- Explicit strict dispatch, active strict continuation or required durable coordination: [long orchestration](.agents/skills/codex-long-orchestration/SKILL.md).
+- Explicit strict dispatch or active strict continuation: [long orchestration](.agents/skills/codex-long-orchestration/SKILL.md).
 - An explicitly authorized product-quality campaign: [product quality](.agents/skills/codex-product-quality/SKILL.md).
 
 The portable route table is authoritative. A ready local task can be done directly. File count, a fix/review pair, broad wording and an iteration number do not activate strict mode. Use existing profiles; do not add a role merely to restate a specification.
@@ -26,7 +26,7 @@ Use existing tools. New auxiliary automation or measurement infrastructure requi
 
 User-facing output follows the user's language. Internal agent prose uses concise English; exact source wording, code, identifiers and schema values remain unchanged.
 
-In `dispatcher_only`, root owns process state, subject roles own their reports and decisions, and an independent reviewer owns acceptance. Roles do not spawn roles. Missing mandatory capabilities produce an exact checkpoint, not expanded authority.
+In `dispatcher_only`, root owns organization and process state, may read necessary result parts to assess progress, and preserves the separation of subject decisions from independent acceptance. Roles do not spawn roles. Missing mandatory capabilities produce an exact checkpoint, not expanded authority.
 
 Keep upstream skills byte-identical to their imported snapshot. Project extensions remain separate. Provenance is in `.agents/SOURCE.md` and `.agents/upstream.sha256`; local adaptations are in `.agents/LOCAL-ADAPTATIONS.md`. Preserve local-source precedence, safe path/Git boundaries and the existing runtime/tracked-file policy. Commands and permissions come from the consumer project.
 ```
