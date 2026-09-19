@@ -12,12 +12,12 @@ Use existing tools. Creating auxiliary automation or measurement infrastructure 
 
 ## Repository boundaries
 
-`skills/` and `agents/` are canonical sources. Preserve public names, paths, unrelated edits and `backup/**`. Keep one skill version under [versioning](docs/versioning.md), and document actual delivery changes in [CHANGELOG](CHANGELOG.md).
+`skills/` and `agents/` are canonical sources. Preserve public names, paths, unrelated edits and `backup/**`. The only release number lives in [CHANGELOG](CHANGELOG.md); [versioning](docs/versioning.md) describes how to read it.
 
 Installations, dependencies, hooks, external services, consumer-repository changes, commits, tags, pushes and PRs need their applicable user authorization. An instruction edit does not authorize installing or exercising the edited procedures.
 
 ## Verification status
 
-Follow the task's explicit execution limits. For authorized verification, use the optional project check documented in [README](README.md#необязательная-структурная-проверка). When the user excludes tests or verification, leave them unrun and report that boundary; do not replace them with an unsolicited validator or reviewer.
+Follow the task's explicit execution limits. Use existing permitted checks and ordinary reading; when excluded or unavailable, leave them unrun and report that boundary. The common verification-means rule is in the [orchestration pact](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 
 Implementation, independent approval and runtime observation are different facts. Never mark an unperformed check as passed or implementation completion as independent approval.
