@@ -1,8 +1,6 @@
 ---
 name: codex-communication-pact
 description: Report outcomes and evidence concisely, with explicit uncertainty and an audience-appropriate language.
-metadata:
-  version: "3.0.0"
 ---
 
 # Communication pact
