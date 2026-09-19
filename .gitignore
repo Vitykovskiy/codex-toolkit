@@ -5,16 +5,10 @@ runtime/
 traces/
 cache/
 .cache/
-__pycache__/
-.pytest_cache/
-.venv/
-venv/
-env/
 .env
 .env.*
 !.env.example
 screenshots/
-*.pyc
 
 .codex/checkpoints/
 .codex/quality/
