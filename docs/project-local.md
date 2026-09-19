@@ -21,7 +21,7 @@
 | Процедура/профиль | Необходимый локальный источник |
 |---|---|
 | long-orchestration | orchestration-pact |
-| product-quality | long-orchestration, orchestration-pact, UI-analysis-pact, web-verification |
+| product-quality | orchestration-pact, UI-analysis-pact, web-verification; long-orchestration только в strict-режиме |
 | UI-analysis при документировании | documentation-pact |
 | web-implementation | development-pact |
 | debugging при исправлении | development-pact |
