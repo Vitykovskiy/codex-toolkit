@@ -1,8 +1,6 @@
 ---
 name: codex-long-orchestration
 description: Run explicit strict dispatcher workflows with durable state, role-owned reports, and independent acceptance.
-metadata:
-  version: "3.0.0"
 ---
 
 # Long orchestration
