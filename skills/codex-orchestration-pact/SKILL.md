@@ -1,8 +1,6 @@
 ---
 name: codex-orchestration-pact
 description: Select a minimal coordination route with bounded scope and independent acceptance where required.
-metadata:
-  version: "3.0.0"
 ---
 
 # Orchestration pact
