@@ -8,6 +8,8 @@ The [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-rou
 
 Apply a ready instruction/profile specification as one connected editing task. File count, the word "optimization", and an iteration number do not require planning agents or strict dispatch. Use only the pacts relevant to the requested artifact.
 
+Read applicable user and project rules before dependent work, including direct work without delegation; use [Project requirements](skills/codex-orchestration-pact/SKILL.md#project-requirements). This reading does not activate strict dispatch.
+
 Use existing tools. Creating auxiliary automation or measurement infrastructure requires a separate direct user request for that deliverable. An agent-created assignment, forecast saving, or unavailable check does not grant that permission. Ordinary implementation code within a requested product change is not auxiliary process infrastructure.
 
 ## Repository boundaries

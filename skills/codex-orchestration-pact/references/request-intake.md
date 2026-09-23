@@ -2,6 +2,8 @@
 
 Use intake only when source requirements genuinely need reconciliation. A broad request alone does not activate `dispatcher_only`. A ready specification goes directly to its owner; do not restate it through intake.
 
+A ready specification does not waive applicable project rules: read them before dependent decisions under [Project requirements](../SKILL.md#project-requirements). Reuse a current set; if it is unknown or scattered in orchestrated work, the existing scout may collect it before the dependent step, without an analyst/decomposer relay. Keep the rule's primary source, scope and any unresolved conflict distinct from the analyst's conclusion.
+
 For one source or requirements uncertainty, use relevant reading or one assigned `analyst`. A material technical decision goes to `architect` under the [route table](../SKILL.md#portable-route-table). Neither path mandates the other or a subsequent decomposer. The Astra `analyst_astra` requires direct applicable user authorization.
 
 Ordinary intake returns the supported requirements, exact source references, material conflicts and missing decisions inline. Ask for a user decision only when it blocks the requested outcome; continue independent determinate work. Do not invent a requirement or a tool-building task to fill a gap.
