@@ -22,6 +22,8 @@ Choose only relevant procedures:
 
 The portable route table is authoritative. A ready local task can be done directly. File count, a fix/review pair, broad wording and an iteration number do not activate strict mode. Use existing profiles; do not add a role merely to restate a specification.
 
+Read applicable user and project rules before dependent work, including direct work without delegation; follow [Project requirements](.agents/skills/codex-orchestration-pact/SKILL.md#project-requirements). This reading does not activate strict dispatch.
+
 Use existing tools. New auxiliary automation or measurement infrastructure requires a separate direct user request. Honor explicit limits on testing and other execution; report omitted verification as unrun.
 
 User-facing output follows the user's language. Internal agent prose uses concise English; exact source wording, code, identifiers and schema values remain unchanged.

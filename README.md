@@ -34,7 +34,7 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 
 | Роль | Ответственность |
 |---|---|
-| [scout](agents/scout.toml) | Собирает проверяемые факты без изменения исходников |
+| [scout](agents/scout.toml) | Собирает проверяемые факты и порученные применимые требования проекта без изменения исходников |
 | [analyst](agents/analyst.toml) | Обычный аналитик для конкретной неопределённости |
 | [analyst_astra](agents/analyst-astra.toml) | Astra-аналитик по прямому применимому указанию пользователя |
 | [architect](agents/architect.toml) | Выбирает техническое решение |
@@ -47,6 +47,8 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [quality_owner](agents/quality-owner.toml) | Владеет одной фазой качества и следующей партией, сохраняет состояние |
 
 Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Обычный результат возвращается кратко в чате, если файл не назначен. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
+
+Применимые [требования проекта](skills/codex-orchestration-pact/SKILL.md#project-requirements) читаются до зависимых решений и передаются исполнителю и независимому проверяющему; для простой правки владелец читает их сам.
 
 ## Документация и границы
 

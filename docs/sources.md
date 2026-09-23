@@ -21,6 +21,10 @@
 
 Распределение конкретных ролей и уровней рассуждений задано ТЗ этой правки; сравнительных запусков моделей не было. Цены API сами по себе не устанавливают расход лимита ChatGPT Pro или стоимость выполнения задачи.
 
+## Проектные требования — 2026-09-23
+
+Прочитаны официальные [Custom instructions with AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), раздел How Codex discovers guidance, и [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), разделы Why subagent workflows help, Triggering subagent workflows и Orchestration and thread controls. Они описывают область обнаружения инструкций и передачу результатов при делегировании; само чтение ссылок не доказывает обнаружение всех норм проекта или их исполнение клиентом. Порядок сбора, передачи и актуализации требований — политика toolkit по данному ТЗ, без испытания исполнения.
+
 ## Происхождение заимствований
 
 Идея кратких результатов, точных ссылок на код и сохранения существенного содержания восходит к Caveman/Cavecrew, upstream JuliusBrussee/caveman, commit 15581d14007fd01fb3f132016741962f34936ca2. Использованы как источники идей [skills/caveman/SKILL.md](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/skills/caveman/SKILL.md), [cavecrew-investigator](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-investigator.md), [cavecrew-builder](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-builder.md) и [cavecrew-reviewer](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-reviewer.md). Отдельный пакет, движок, прокси, SDK, hooks и новые агенты не импортируются.
