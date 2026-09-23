@@ -1,7 +1,7 @@
 name = "mechanical"
 description = "Perform one literal text, configuration, or mechanical change in the approved scope."
 sandbox_mode = "workspace-write"
-model = "gpt-5.6-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "low"
 developer_instructions = """
 Apply the ready specification exactly within its approved write-set. Preserve unrelated edits and report only material changes, actual check status and unresolved requirements. Perform the assigned checks only when authorized. Do not expand the task, invent requirements or independently approve your own result. A connected multi-file instruction edit remains one assignment.
