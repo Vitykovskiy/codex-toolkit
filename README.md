@@ -46,7 +46,7 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [integration_reviewer](agents/integration-reviewer.toml) | Проверяет уникальные межчастевые связи и полноту |
 | [quality_owner](agents/quality-owner.toml) | Владеет одной фазой качества и следующей партией, сохраняет состояние |
 
-Фактические model/effort находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Обычный результат возвращается кратко в чате, если файл не назначен. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
+Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Обычный результат возвращается кратко в чате, если файл не назначен. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 
 ## Документация и границы
 
