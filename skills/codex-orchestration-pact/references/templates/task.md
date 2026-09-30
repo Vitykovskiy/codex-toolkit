@@ -1,18 +1,28 @@
-# Assignment
+# Assignment and dispatch
 
-In ordinary mode, send one compact English assignment containing the role, original goal, applicable project requirements with sources, relevant evidence, permitted scope, acceptance criteria and execution limits. Follow [Project requirements](../../SKILL.md#project-requirements). Keep exact source requirements and quoted strings unchanged. Missing requirements stay unknown.
+Apply the [mandatory dispatcher invariant](../../SKILL.md#dispatcher-invariant). Keep dispatcher launches separate from subject-owned assignments. A launch contains only the role and basic role instruction, original user text verbatim or its exact reference, task root, task/assignment ID, attempt and dependency identifiers/references. Never add a dispatcher summary, selected requirements, inferred scope, criteria or predecessor report text. The recipient finds that material itself.
 
-Use this layout only as a prose guide, not a new machine schema:
+Example launch; placeholders are references, not a task reformulation:
 
-Role and goal: the one requested outcome.
-Scope: permitted files or responsibility, and preserved behaviour.
-Evidence: the necessary facts and precise source locations.
-Project rules: applicable wording or accurate excerpts, source/section, scope and conditions; gaps and known currency.
-Criteria: the existing conditions for the result.
-Limits: user restrictions on execution, verification, tools and side effects.
+```text
+Role: reviewer. Perform the independent review defined by your role.
+Original request: sources/U001.md
+Task root: <task_root>
+Assignment: R01, attempt 1; assignments/R01.yaml
+Dependencies: A01, reports/A01.yaml
+Read the original request and applicable project rules, locate required predecessor artifacts, and record your working task before dependent work.
+```
 
-For a large rule set, name an exact accessible report or section and require the owner to read it before dependent work; a bare directory or another agent's inaccessible chat is insufficient. Include critical execution limits directly. A small set belongs in the assignment itself. An ordinary assignment needs no persistent graph, report file or envelope. The owner may select relevant implementation and documentation details within authorized scope, while respecting explicit exclusions and the [verification-means rule](../../SKILL.md#general-rule-for-verification-means). A fix remains with its owner. A new auxiliary process tool needs a separate direct user request; an assignment cannot manufacture that permission.
+Each subject owner independently reads primary requirements and necessary dependency reports, checks identity and currency, and records its own formulation in the existing assignment/result artifact or ordinary working context. Use this layout as a prose guide, not a new machine schema:
 
-In `dispatcher_only`, also keep the existing assignment identity, attempt, goal version, required snapshot, dependencies, shared resources, write-set, `artifact_path` and permitted transition. Carry applicable project rules in the existing assignment text or an exact readable reference; do not change the schema. A prepared user specification can be copied into this structure without a planning relay. A material decision owner may prepare the graph; standalone `decomposer` remains optional.
+Working task: the role's outcome, grounded in the original request.
+Sources: original request and applicable rule locations; distinguish exact quotes from your formulation.
+Scope and dependencies: authorized responsibility, work files and required predecessor artifacts.
+Criteria and limits: source-backed acceptance, evidence and execution restrictions.
+Gaps: unread inputs, conflicts and known currency.
 
-The owner does not grant independent approval of its own result. A strict owner writes its [report](report.md) atomically and returns only the [envelope](../../../codex-long-orchestration/references/templates/envelope.md).
+This formulation does not replace the original request or authorize new scope. Later agents ground their tasks independently in the same primary sources. A scout finds rules; an executor finds necessary predecessor reports; a reviewer finds original criteria and foreign evidence. Missing or ambiguous access is blocked, not a reason for dispatcher relay. New auxiliary process tooling requires the user's separate direct request.
+
+In `dispatcher_only`, preserve existing identity, attempt, goal version, required snapshot, dependencies, shared resources, write-set, artifact_path and permitted transition. A subject owner prepares assignment content; root forwards references without opening it. A ready specification goes directly to its executor; architect may prepare assignments for a material decision, and standalone decomposer remains optional.
+
+The owner writes its [report](report.md); strict work writes it atomically and returns only the [envelope](../../../codex-long-orchestration/references/templates/envelope.md). Ordinary dispatch keeps dependency material accessible at existing task locations and returns only a routing receipt, without adopting the full strict schema. Direct ordinary work may remain inline. No owner independently approves its own result.

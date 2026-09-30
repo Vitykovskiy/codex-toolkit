@@ -6,7 +6,7 @@ A ready specification does not waive applicable project rules: read them before 
 
 For one source or requirements uncertainty, use relevant reading or one assigned `analyst`. A material technical decision goes to `architect` under the [route table](../SKILL.md#portable-route-table). Neither path mandates the other or a subsequent decomposer. The Astra `analyst_astra` requires direct applicable user authorization.
 
-Ordinary intake returns the supported requirements, exact source references, material conflicts and missing decisions inline. Ask for a user decision only when it blocks the requested outcome; continue independent determinate work. Do not invent a requirement or a tool-building task to fill a gap.
+Ordinary direct intake may return its result inline. When dispatched, the analyst keeps supported requirements, source references, conflicts and missing decisions in an accessible role-owned artifact; root receives only routing metadata and references under the [dispatcher invariant](../SKILL.md#dispatcher-invariant). The analyst independently reads the original request and relevant predecessor artifacts, then formulates and records its own task. Ask for a user decision only when it blocks the requested outcome; continue independent determinate work. Do not invent a requirement or a tool-building task to fill a gap.
 
 For an explicitly assigned strict intake, preserve the existing source/goal structure and write permissions. Keep source IDs in order and use the established accuracy markers:
 
@@ -16,7 +16,7 @@ For an explicitly assigned strict intake, preserve the existing source/goal stru
 
 A hash identifies available bytes, not provenance or completeness. Preserve `coverage: complete | partial` and name unread material when partial. Keep exact source wording, requirement IDs, sources, criteria, contradictions, prohibitions and unknowns. Generate only new explanatory prose in concise English.
 
-The assigned analyst writes only the specifically authorized goal version and report, not architecture, implementation or an assignment graph. Choose the next owner from the actual unresolved responsibility; do not default to `decomposer`.
+The assigned analyst writes only the specifically authorized goal version and report, not architecture, implementation or an assignment graph. The subject owner prepares the next permitted role and assignment identifiers from the actual unresolved responsibility; root forwards those fields without reading this goal or report; do not default to `decomposer`.
 
 Example for strict intake that has resolved a ready implementation goal:
 
