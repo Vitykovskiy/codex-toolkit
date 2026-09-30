@@ -14,6 +14,10 @@
 | S10 | [Assertions](https://playwright.dev/docs/test-assertions) | Introduction; Auto-retrying assertions; Non-retrying assertions | Ожидание наблюдаемого состояния. | 2026-09-05 | Прочитан инструментом web |
 | S11 | [Evaluating Web Accessibility Overview](https://www.w3.org/WAI/test-evaluate/) | Introduction; Tools; People | Автоматические средства не подтверждают доступность целиком. | 2026-09-05 | Прочитан инструментом web |
 | S12 | [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/) | What is the ASVS?; More Details; How To Reference ASVS Requirements | Предметные требования безопасности и версионированные идентификаторы. Полный стандарт не изучался. | 2026-09-05 | Прочитан инструментом web |
+| S13 | [Playwright CLI installation](https://playwright.dev/agent-cli/installation) | Global installation; Initializing a workspace; Installing browsers | Глобальная установка CLI отдельно от инициализации `.playwright` в проекте, установки браузера и навыка агента. Установка в рамках этой правки не выполнялась. | 2026-09-30 | Прочитан инструментом web |
+| S14 | [Playwright CLI configuration](https://playwright.dev/agent-cli/configuration) | Headed and headless mode; Browser selection; Profile modes | Headless, Google Chrome и профиль в памяти — исходные значения CLI; настройки проекта и среды могут их переопределить. | 2026-09-30 | Прочитан инструментом web |
+| S15 | [Playwright CLI command reference](https://playwright.dev/agent-cli/capabilities) | Core; Network; DevTools; Global options | Форма команд `open`, `snapshot`, `click`, `console`, `requests`, `screenshot`, `tracing-*`, `close` и именованной сессии. Конкретный запуск приложения не выполнялся. | 2026-09-30 | Прочитан инструментом web |
+| S16 | [Playwright CLI snapshots](https://playwright.dev/agent-cli/snapshots) | Automatic snapshots; Element refs; Using refs | Ссылки элементов действуют до изменения страницы; после навигации нужен новый снимок. | 2026-09-30 | Прочитан инструментом web |
 
 ## Выбор моделей — 2026-09-23
 
