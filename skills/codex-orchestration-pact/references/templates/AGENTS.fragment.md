@@ -22,13 +22,13 @@ Choose only relevant procedures:
 
 The portable route table is authoritative. A ready local task can be done directly. File count, a fix/review pair, broad wording and an iteration number do not activate strict mode. Use existing profiles; do not add a role merely to restate a specification.
 
-Read applicable user and project rules before dependent work, including direct work without delegation; follow [Project requirements](.agents/skills/codex-orchestration-pact/SKILL.md#project-requirements). This reading does not activate strict dispatch.
+Subject owners read applicable user and project rules before dependent work, including direct work without delegation; follow [Project requirements](.agents/skills/codex-orchestration-pact/SKILL.md#project-requirements). This reading does not activate strict dispatch.
 
 Use existing tools. New auxiliary automation or measurement infrastructure requires a separate direct user request. Honor explicit limits on testing and other execution; report omitted verification as unrun.
 
 User-facing output follows the user's language. Internal agent prose uses concise English; exact source wording, code, identifiers and schema values remain unchanged.
 
-In `dispatcher_only`, root owns organization and process state, may read necessary result parts to assess progress, and preserves the separation of subject decisions from independent acceptance. Roles do not spawn roles. Missing mandatory capabilities produce an exact checkpoint, not expanded authority.
+Whenever root dispatches work, preserve the [mandatory dispatcher invariant](.agents/skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant): launch roles with basic instructions, unchanged original text/references and identifiers only. Root reads no subject files or agent reports, including excerpts and summaries, and never reformulates a task or changes its role. Each agent finds primary sources and predecessor reports itself, formulates and records its own working task. Dispatcher retelling causes cumulative task degradation; this boundary applies at every stage without exceptions. In `dispatcher_only`, root also keeps compact process state and consumes routing envelopes. Roles do not spawn roles; missing capabilities yield an exact checkpoint.
 
 Keep upstream skills byte-identical to their imported snapshot. Project extensions remain separate. Provenance is in `.agents/SOURCE.md` and `.agents/upstream.sha256`; local adaptations are in `.agents/LOCAL-ADAPTATIONS.md`. Preserve local-source precedence, safe path/Git boundaries and the existing runtime/tracked-file policy. Commands and permissions come from the consumer project.
 ```

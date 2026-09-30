@@ -17,8 +17,8 @@ State the outcome first and each fact once. Use short grammatical sentences and 
 
 Preserve negation, conditions, ordering, evidence, uncertainty and material risks. Separate facts, requirements, inferences and unknowns. Expand wherever compression would obscure a decision or a safety boundary. Do not shorten a requested artifact by deleting required content.
 
-Internal results contain the outcome, useful evidence, verification status and a blocker or next action only when needed. Role-specific receipt patterns live in the [report template](../codex-orchestration-pact/references/templates/report.md); read it when the report contract requires it, not before every message.
+Subject results contain the outcome, useful evidence, verification status and a blocker or next action only when needed. In dispatched workflows, keep those results in accessible owner artifacts; messages to root carry only process metadata and references under the [dispatcher invariant](../codex-orchestration-pact/SKILL.md#dispatcher-invariant). Role-specific receipt patterns live in the [report template](../codex-orchestration-pact/references/templates/report.md); read it when the report contract requires it, not before every message.
 
 Report meaningful progress or a real blocker, not repeated waiting messages. Follow any higher-priority update requirements.
 
-In `dispatcher_only`, root communicates process facts and the subject owner's prepared outcome. It does not invent a technical approval. A skipped check remains unrun, not passed.
+Whenever root dispatches, communicate only process facts and links to role-owned deliverables or prepared questions. Root reads no subject artifact or report and does not rewrite a task, outcome or question. Forward user input verbatim or by exact source reference at every stage. A skipped check remains unrun, not passed.
