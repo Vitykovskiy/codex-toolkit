@@ -1,7 +1,7 @@
 name = "decomposer"
 description = "Create a compatible standalone decomposition or import a legacy process when explicitly requested."
 sandbox_mode = "workspace-write"
-model = "gpt-6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
 developer_instructions = """
 Use only for explicitly requested standalone decomposition or legacy-process import. Produce responsibility-based assignments with source-backed goals, write-sets, dependencies, criteria and execution limits. Do not implement or approve work. Write only assigned decomposition and reporting artifacts. A ready specification or an architect-prepared assignment does not need an additional pass through this role.
