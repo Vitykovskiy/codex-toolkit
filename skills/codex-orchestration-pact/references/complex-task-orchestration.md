@@ -2,6 +2,8 @@
 
 The [portable route table](../SKILL.md#portable-route-table) is authoritative. Existing agent profiles provide model and reasoning settings. This reference does not introduce another sequence of mandatory roles.
 
+The subject owner chooses bounded Astra work and reasoning under [Model and reasoning selection](../SKILL.md#model-and-reasoning-selection), using [Efficiency per accepted task](../SKILL.md#efficiency-per-accepted-task) for the whole cycle under a subscription. Strict root launches the prepared process transition without reading subject material. Profile availability alone does not justify escalation or establish runtime loading.
+
 A ready specification goes to one owner. Ordinary implementation questions stay with the developer. Delegate one material unknown only when the answer is needed to proceed; use the existing analyst or architect responsibility, not an analyst–architect–decomposer relay.
 
 Each subject owner independently finds and reads original user requirements, applicable rules and needed predecessor reports before dependent analysis, design or changes under [Project requirements](../SKILL.md#project-requirements). An existing current set is reused; unknown or scattered rules in orchestrated work can be collected by the existing scout. A simple local owner reads them directly. A ready specification still requires applicable project rules but does not trigger an extra planning role.
