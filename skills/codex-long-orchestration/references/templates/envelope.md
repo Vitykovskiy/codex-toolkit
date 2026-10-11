@@ -12,6 +12,11 @@ accepts: null
 finding_id: null
 progress: null
 no_progress: null
+completion:
+  plan_revision: P1
+  confirmed_weight: 2
+  total_weight: 5
+process_signal: on_track
 next_transition:
   profile: reviewer
   assignment_id: R01
@@ -23,4 +28,10 @@ next_transition:
 
 For `approved`, `accepts` is the legacy string `<assignment_id>/<attempt>` (with `@<snapshot>` when required) or a nonempty list of those strings for a packet. Other statuses use `null`. The independent reviewer checks exact correlation with full reports and evidence. Root records the supported process receipt, not its own technical approval.
 
-A blocker has a stable `finding_id` and `progress` of `confirmed`, `none`, or `unknown`. `none` and `unknown` require nonblank `no_progress.missing_input` and `no_progress.next_check`; these carry only capability/input identifiers and routing actions, with subject diagnosis kept in the artifact. A non-blocker uses null progress fields. Root copies process fields without interpreting a report. Full-report reading, excerpts or summaries are never a fallback for absent metadata.
+A blocker has a stable `finding_id` and `progress` of `confirmed`, `none`, or `unknown`. `none` and `unknown` require nonblank `no_progress.missing_input` and `no_progress.next_check`; these carry only capability/input identifiers and routing actions, with subject diagnosis kept in the artifact. A non-blocker uses null blocker progress fields. Root copies process fields without interpreting a report. Full-report reading, excerpts or summaries are never a fallback for absent metadata.
+
+`completion` is the current plan owner's task-level aggregate, or `null` when unavailable or not supplied by that owner. `plan_revision` identifies the agreed current plan; `confirmed_weight` is nonnegative and at most positive `total_weight`. Root derives an approximate percentage from the ratio, replacing rather than adding aggregates. Other roles report their assignment status; they do not invent an overall percentage. Required review and delivery stages remain unfinished until supported by their own receipts. A changed denominator requires a new plan revision; stale or conflicting fields cannot update the current estimate.
+
+`process_signal` is `on_track`, `stalled`, `repeated_action`, `excessive_verification`, `plan_drift`, `goal_drift`, `unknown`, or `null`. Send a material signal promptly in a compact active checkpoint carrying `status: running`, assignment/attempt and artifact references; it neither completes the assignment nor authorizes its next launch. Final reports retain the existing status/acceptance contract. Checkpoints do not require new report copies or a reporting loop. Root uses the signal to route correction under [Progress and efficiency](../../../codex-orchestration-pact/SKILL.md#progress-and-efficiency), leaving diagnosis and strategy with the existing owner.
+
+Legacy receipts may omit `completion` and `process_signal`; omission means unavailable metadata, not zero completion or evidence of a healthy process. Request needed fields at the next meaningful checkpoint without restarting completed work or activating strict mode.
