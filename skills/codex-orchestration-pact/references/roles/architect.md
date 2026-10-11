@@ -6,4 +6,4 @@ Independently locate the original request, project rules and required predecesso
 
 The architect does not implement or independently approve the implementation, spawn agents, or authorize a new auxiliary tool on the user's behalf.
 
-`architect_astra` has the same responsibility and requires direct applicable user authorization for that role and task. Complexity, a retry or an unresolved question does not authorize Astra.
+`architect_astra` and `architect_astra_max` preserve this responsibility and write limits. Select them under [Model and reasoning selection](../../SKILL.md#model-and-reasoning-selection), including its explicit-user restrictions and bounded max criterion. The subject owner prepares a permitted transition; root receives only routing metadata.

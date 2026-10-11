@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 13 готовых профилей. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
+Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 18 готовых профилей. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
 
 ## Подключение
 
@@ -36,7 +36,6 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 |---|---|
 | [scout](agents/scout.toml) | Собирает проверяемые факты и порученные применимые требования проекта без изменения исходников |
 | [analyst](agents/analyst.toml) | Обычный аналитик для конкретной неопределённости |
-| [analyst_astra](agents/analyst-astra.toml) | Astra-аналитик по прямому применимому указанию пользователя |
 | [architect](agents/architect.toml) | Выбирает техническое решение |
 | [decomposer](agents/decomposer.toml) | Самостоятельная декомпозиция или импорт старого процесса по прямому запросу |
 | [mechanical](agents/mechanical.toml) | Выполняет однозначную механическую правку |
@@ -45,6 +44,17 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [reviewer_fast](agents/reviewer-fast.toml) | Проверяет только буквальную несемантическую правку |
 | [integration_reviewer](agents/integration-reviewer.toml) | Проверяет уникальные межчастевые связи и полноту |
 | [quality_owner](agents/quality-owner.toml) | Владеет одной фазой качества и следующей партией, сохраняет состояние |
+
+Варианты тех же ответственностей выбираются по [Model and reasoning selection](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection); модель и effort закреплены в TOML:
+
+| Ответственность | Astra | Astra max |
+|---|---|---|
+| Аналитик | [analyst_astra](agents/analyst-astra.toml) | [analyst_astra_max](agents/analyst-astra-max.toml) |
+| Архитектор | [architect_astra](agents/architect-astra.toml) | [architect_astra_max](agents/architect-astra-max.toml) |
+| Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
+| Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
+
+Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты и первый незавершённый шаг; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
 
 Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 

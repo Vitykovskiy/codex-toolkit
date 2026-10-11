@@ -4,7 +4,7 @@ Use intake only when source requirements genuinely need reconciliation. A broad 
 
 A ready specification does not waive applicable project rules: read them before dependent decisions under [Project requirements](../SKILL.md#project-requirements). Reuse a current set; if it is unknown or scattered in orchestrated work, the existing scout may collect it before the dependent step, without an analyst/decomposer relay. Keep the rule's primary source, scope and any unresolved conflict distinct from the analyst's conclusion.
 
-For one source or requirements uncertainty, use relevant reading or one assigned `analyst`. A material technical decision goes to `architect` under the [route table](../SKILL.md#portable-route-table). Neither path mandates the other or a subsequent decomposer. The Astra `analyst_astra` requires direct applicable user authorization.
+For one source or requirements uncertainty, use relevant reading or one assigned `analyst`. A material technical decision goes to `architect` under the [route table](../SKILL.md#portable-route-table). Neither path mandates the other or a subsequent decomposer. Select an Astra variant only under [Model and reasoning selection](../SKILL.md#model-and-reasoning-selection).
 
 Ordinary direct intake may return its result inline. When dispatched, the analyst keeps supported requirements, source references, conflicts and missing decisions in an accessible role-owned artifact; root receives only routing metadata and references under the [dispatcher invariant](../SKILL.md#dispatcher-invariant). The analyst independently reads the original request and relevant predecessor artifacts, then formulates and records its own task. Ask for a user decision only when it blocks the requested outcome; continue independent determinate work. Do not invent a requirement or a tool-building task to fill a gap.
 
@@ -40,3 +40,9 @@ next_subject_owner: developer
 ```
 
 This is a source-grounded example, not a fixed route for every intake. An unavailable input remains unknown; it is not reconstructed from an earlier agent's unsupported summary.
+
+## Product intent
+
+Keep intent content in the existing authoritative sources, goal or assignment by default: why the change matters, affected people/systems, constraints and open questions. An optional `intent.md` is useful only when it adds missing product intent across people or sessions. Give it an owner, explicitly reference it from the existing task or project navigation, state its precedence and retain unresolved questions. Do not introduce a mandatory parallel file, universal interview or additional approval gate.
+
+The user's spelling `intend.md` is a question, not a toolkit filename convention. Anthropic's [AI-native SDLC playbook](https://claude.com/resources/articles/the-ai-native-sdlc-playbook) describes `intent.md` as an attributed practice; it does not establish a universal new meta or Codex special discovery. Adopting intent content does not adopt that playbook's whole gated process. A filename alone guarantees neither accuracy nor loading. Original user text and ordered corrections, applicable `AGENTS.md`, criteria and completion evidence retain their authority; an intent paraphrase cannot replace them.
