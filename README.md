@@ -30,14 +30,14 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 
 ## Роли и поток
 
-Маршрутизацию определяет [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table): готовую правку выполняет один владелец, независимое ревью подключается по контракту или риску, а строгий процесс применяется только по прямому запросу или для продолжающейся строгой задачи.
+Маршрутизацию определяет [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table): готовую правку выполняет один владелец, независимое ревью подключается по контракту или риску, а строгий процесс применяется только по прямому запросу или для продолжающейся строгой задачи. Общий контракт [параллельной работы](skills/codex-orchestration-pact/references/parallel-execution.md) использует готовые независимые назначения и доступные слоты клиента без фиксированного лимита писателей или обязательного согласования бюджета. Зависимые продолжения запускаются по готовности своих входов; иерархия остаётся плоской.
 
 | Роль | Ответственность |
 |---|---|
 | [scout](agents/scout.toml) | Собирает проверяемые факты и порученные применимые требования проекта без изменения исходников |
 | [analyst](agents/analyst.toml) | Обычный аналитик для конкретной неопределённости |
 | [architect](agents/architect.toml) | Выбирает техническое решение |
-| [decomposer](agents/decomposer.toml) | Самостоятельная декомпозиция или импорт старого процесса по прямому запросу |
+| [decomposer](agents/decomposer.toml) | Готовит недостающие назначения, зависимости и владение записью для параллельной работы; готовый граф используется повторно |
 | [mechanical](agents/mechanical.toml) | Выполняет однозначную механическую правку |
 | [developer](agents/developer.toml) | Реализует назначение в разрешённой области |
 | [reviewer](agents/reviewer.toml) | Независимо принимает назначение |
@@ -54,7 +54,7 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
 | Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
 
-Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты и первый незавершённый шаг; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
+Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты, активные назначения и очередь готовых работ; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
 
 Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 

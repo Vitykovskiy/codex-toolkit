@@ -1,0 +1,46 @@
+# Parallel execution
+
+Use this shared rule in ordinary orchestration, explicit strict workflows and authorized quality campaigns when independent assignments can reduce waiting. Preserve the [dispatcher invariant](../SKILL.md#dispatcher-invariant), [packet boundaries](../SKILL.md#scope-and-profiles) and existing execution limits. Parallelism does not activate strict mode, expand a campaign or justify splitting a connected result by file count.
+
+## Responsibilities and preparation
+
+Keep a flat topology: root dispatches subject agents; subject agents do not spawn children. Keep the existing profiles and configured model/effort values. More work or more slots alone does not justify a stronger model or another dispatch level.
+
+A ready assignment goes directly to its executor. Reuse current assignments and dependencies, including those prepared by architect. Use the existing `decomposer` when useful independent work needs an execution graph, dependency order or write ownership that is not already available. It prepares execution assignments within the authorized outcome; it does not choose architecture, implement, dispatch or approve. Architect resolves material technical decisions and may prepare their assignments; it is not a routine scheduling stage. The current subject owner identifies the missing responsibility and returns its routing descriptor to root.
+
+The subject planning owner records the following in existing assignments or its result, without a new planning service or mandatory file:
+
+- Responsibility-based outcomes, source references, acceptance criteria and permitted checks; one owner for each assignment.
+- An acyclic dependency graph. Each edge identifies the producer and attempt, required input revision, and whether `completed` or independent `approved` is needed. An implementation may feed its review at `completed`; a gate requiring approval cannot be weakened to completion.
+- Write-sets and shared resources, with stable conflict identifiers and read/write claims. Overlapping files or directories, shared Git index/ref operations, generated output, build directories, ports and mutable external state need coordinated ownership. Different files alone do not prove independence.
+- Stable input/output snapshot references, the owner of any implementation integration, and prepared review assignments. Keep related changes together when dividing them would cause repeated context loading or conflicting edits.
+
+Root receives only the routing projection: role, assignment ID/attempt/path, plan/input revision, dependency identities and required status, snapshot references, resource claims and owner-supplied priority if needed. Scope, file lists, criteria, findings and planning rationale stay with subject owners. The planner checks overlap and graph correctness; root compares supplied process identifiers and never opens assignments to infer them. A missing or conflicting descriptor returns to its owner before dependent launch.
+
+## Ready work and capacity
+
+Launch an assignment when its current dependencies meet their stated gates, the required snapshots are identified, its resource claims do not conflict, and the client has capacity. `completed` is not `approved`, a file is not a receipt, and a stale attempt or snapshot cannot unlock a successor. A dependency whose future snapshot is not yet known remains queued; bind it to the matching producer receipt before launch and preserve that binding in active state. The recipient independently verifies the referenced inputs before subject work.
+
+There is no toolkit-wide numeric writer cap. Use the actual client slot limit and its observed accounting, including open, running or waiting contexts when the client counts them. Respect explicit user restrictions if supplied; do not invent a user budget or ask for one to begin ordinary parallel work. Unknown usage is not zero, but absent optional usage telemetry does not block authorized work. Client limits and required permissions remain in force.
+
+Start only useful ready work and keep the rest queued. When several assignments compete for a slot, follow the subject owner's supplied priority or stable queue order; root does not assess technical importance. Prefer work that unlocks dependencies when the owner has identified that priority. Reuse a suitable owner for a narrow continuation; release finished native contexts when no longer needed and supported by the client. Do not create agents merely to fill slots, poll or summarize results. A capacity refusal leaves work queued until a native capacity change; it does not justify repeated spawn attempts or a new coordination layer.
+
+Reserve an assignment identity and its resource claims in root's existing process state before launch, then attach the native runtime handle. A write claim conflicts with every read or write claim on the same resource; multiple readers may share a stable snapshot. A failed launch releases its reservation only after confirming that no worker started. A running, waiting or cancellation-requested assignment retains its claims until native completion or termination is confirmed. Use isolated working contexts where available and useful; otherwise serialize conflicting writes. Subject owners request a revision before writing outside their assigned resources.
+
+Use native completion events or blocking waits. Match sender, assignment, attempt, revision and snapshot; process each terminal receipt once. As soon as a result satisfies a successor's own dependencies and frees its resources, launch that successor if capacity permits. Do not wait for unrelated assignments or impose a whole-batch barrier. A blocker pauses its dependent work; other ready branches continue. Checkpoints with `status: running` never complete a dependency.
+
+## Integration and independent acceptance
+
+The assigned `developer` owns implementation integration, including merging compatible changes and resolving conflicts within its scope. Root performs no merging, and a reviewer does not repair the implementation it accepts. Use a distinct integration assignment only when combining outputs requires work; do not add an empty integration stage to every parallel task.
+
+Review a stable identified snapshot. It may overlap unrelated implementation when the reviewed inputs cannot change underneath it. Independent approval names the exact assignment, attempt, goal version and snapshot under the [report contract](templates/report.md). The planner sets review dependencies from actual criteria; one sufficient review may accept a packet. `integration_reviewer` replaces ordinary review for a named cross-part or security criterion. Add a later review only for a concrete uncovered criterion or changed evidence, not automatically after every local review.
+
+Before combining or changing an input, the subject owner identifies which dependent results and acceptance evidence need revalidation. Recheck those changes and affected connections; preserve unaffected accepted evidence. Approval of component snapshots does not automatically approve a changed integrated snapshot. Missing required coverage returns to the responsible reviewer without restarting unrelated work.
+
+## Revision and recovery
+
+The subject owner supplies revised descriptors and the IDs of affected assignments when sources, dependencies, scope or resources change. Root pauses their dependent launches and applies only that process revision. If active work must stop, request native cancellation and retain its claims until termination is confirmed; do not launch a replacement writer while the old one may still mutate shared state. Preserve unaffected running and accepted work. Late or duplicate receipts from superseded attempts cannot unlock the revised graph.
+
+On resume, reconcile recorded active handles with native status before launching queued work. Restore dependency receipts, accepted snapshots, pending descriptors and resource reservations from the existing state; do not recreate accepted work or infer success from file presence. Unknown activity or ambiguous identity blocks only the affected assignment and conflicting/dependent work until resolved. Continue every permitted ready branch, rather than restarting the graph or waiting for an unrelated branch.
+
+Ordinary workflows keep only the needed queue and receipts in their existing context/state. Strict workflows use the additive fields in [envelope](../../codex-long-orchestration/references/templates/envelope.md) and [state](../../codex-long-orchestration/references/templates/state.md). Normalize a legacy single `next_transition` into zero or one queued descriptor. Preserve known accepted results; obtain missing process fields from the subject owner without root reading subject artifacts. No new scheduler, validator, telemetry collector or process script is authorized by this rule.
