@@ -5,6 +5,7 @@ An envelope carries only process metadata, not subject content. Root checks its 
 ```yaml
 status: completed
 artifact: reports/A01.yaml
+user_artifacts: []
 assignment_id: A01
 attempt: 1
 profile: developer
@@ -38,6 +39,10 @@ next_transitions:
         access: read
 invalidated_assignments: []
 ```
+
+`user_artifacts` optionally lists paths of files prepared for communication with the user, for example `delivery/answer.md` or `questions/decision.md`. It carries only ready file references, never titles containing findings, excerpts or subject summaries. `artifact` remains the canonical internal report. An omitted field or empty list means this receipt offers no user-facing file; it does not erase earlier references or require completed work to run again.
+
+The subject author checks each listed Markdown file against the [user-facing Markdown contract](../../../codex-communication-pact/SKILL.md#user-facing-markdown) before exposing its path. Questions and intermediate messages may be supplied by their responsible owner. When a final deliverable requires independent acceptance, the accepting reviewer supplies its path for the exact reviewed version. Root validates the sender, path safety and applicable acceptance metadata, then forwards the references without opening files. Preserve needed references in existing receipts/checkpoints; no separate state registry is required.
 
 `next_transitions` is a list of prepared routing descriptors, empty when this receipt supplies no new transition. An empty list does not clear other queued or active work. Each descriptor identifies an existing permitted profile, assignment ID, attempt and assignment path; parallel scheduling also uses the owner-issued plan/input revision, dependency gates and resource claims under [Parallel execution](../../../codex-orchestration-pact/references/parallel-execution.md). Optional owner-supplied `priority` orders competing ready assignments; otherwise preserve queue order. Task root and unchanged original source references come from root's own state. The descriptor contains no subject instructions, criteria or write-set contents; the recipient independently finds and verifies its source material.
 

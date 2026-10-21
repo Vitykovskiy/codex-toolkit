@@ -11,6 +11,12 @@ Ordinary direct non-approval results are concise inline prose unless a report fi
 
 Use concise grammatical English for generated internal prose. Preserve exact quotes, identifiers, conditions and uncertainties. A word limit must not remove a necessary finding or qualification.
 
+## User-facing files
+
+When a report, question or other Markdown file will communicate with the user, its author and any already-required independent reviewer apply the [user-facing Markdown contract](../../../codex-communication-pact/SKILL.md#user-facing-markdown). Write a self-contained explanation in the user's language, with evidence and a clear conclusion or requested decision. The compact receipts and canonical YAML below serve internal coordination; dumping their fields or concatenating agent reports does not produce a user-facing answer.
+
+Keep canonical reporting and acceptance correlation intact. Reuse an existing suitable user-facing file or prepare the assigned deliverable; do not create a second full copy of the internal report or a document for every internal message. Retain the delivered file reference and applicable review evidence within existing `result` fields. In strict mode, expose a ready user-facing path through the optional `user_artifacts` references in the [envelope](../../../codex-long-orchestration/references/templates/envelope.md), leaving `artifact` pointed at the canonical report. The dispatcher receives references only.
+
 ## Canonical report
 
 This is the canonical full report. Envelope is a separate process notification.

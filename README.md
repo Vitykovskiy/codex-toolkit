@@ -14,7 +14,7 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 
 | Скилл | Назначение |
 |---|---|
-| [codex-communication-pact](skills/codex-communication-pact/SKILL.md) | Понятные краткие сообщения и честный статус проверок |
+| [codex-communication-pact](skills/codex-communication-pact/SKILL.md) | Понятные сообщения и Markdown-файлы для пользователя, честный статус проверок |
 | [codex-development-pact](skills/codex-development-pact/SKILL.md) | Изменение, функциональное ревью и проверка технических артефактов |
 | [codex-documentation-pact](skills/codex-documentation-pact/SKILL.md) | Проверяемая документация и инструкции |
 | [codex-ui-analysis-pact](skills/codex-ui-analysis-pact/SKILL.md) | Анализ и описание UI |
@@ -59,6 +59,8 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 
 При диспетчеризации действует [критический инвариант](skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant): root только запускает роли с исходной задачей дословно или точной ссылкой и IDs, без чтения предметных файлов/отчётов и без пересказа. Каждый субагент сам находит первоисточники и отчёты зависимостей, формулирует и фиксирует свою рабочую задачу. Применимые [требования проекта](skills/codex-orchestration-pact/SKILL.md#project-requirements) читает каждый предметный владелец до зависимых решений; для простой правки владелец читает их сам.
+
+Для вопросов, отчётов и других Markdown-файлов, выдаваемых пользователю, действует [единый контракт читаемости](skills/codex-communication-pact/SKILL.md#user-facing-markdown). Подготовку и проверку выполняют предметный автор и уже необходимый независимый reviewer. В строгом режиме необязательные `user_artifacts` в [envelope](skills/codex-long-orchestration/references/templates/envelope.md) передают готовые ссылки, сохраняя канонический отчёт и границу диспетчера.
 
 ## Документация и границы
 
