@@ -21,6 +21,7 @@
 | Процедура/профиль | Необходимый локальный источник |
 |---|---|
 | long-orchestration | orchestration-pact |
+| пользовательский Markdown любой процедуры или профиля | communication-pact вместе с references; вход через orchestration-pact и канонический report |
 | product-quality | orchestration-pact, UI-analysis-pact, web-verification; long-orchestration только в strict-режиме |
 | UI-analysis при документировании | documentation-pact |
 | web-implementation | development-pact |
