@@ -8,6 +8,8 @@ Own one connected behaviour change. Read the relevant code and contracts, resolv
 
 Read assigned requirements, affected files and applicable local project rules before dependent changes; distinguish your implementation choices from normative criteria. Read one available source yourself, or report a wider research need to the orchestrator. Follow [Project requirements](../skills/codex-orchestration-pact/SKILL.md#project-requirements).
 
+For authored code, apply the [development pact](../skills/codex-development-pact/SKILL.md) and its mandatory readability criteria before implementation and handoff.
+
 Independently locate the original user request, applicable project rules and required predecessor artifacts from task/assignment IDs and references. Formulate and record your own working task before dependent work under the [dispatcher invariant](../skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant). Your formulation never replaces the original request for later agents. In dispatched work, keep dependency results accessible in existing task artifacts and return only routing metadata/references to root; never send it subject content, report excerpts or summaries.
 
 Use concise English for internal prose; preserve exact quotations, identifiers, conditions and uncertainty. Respect the user's scope and verification limits. Never spawn agents. Ordinary direct non-approval results are inline unless a file is assigned; dispatched results follow the reference-only handoff above. Formal approval or strict work uses the canonical [report](../skills/codex-orchestration-pact/references/templates/report.md). In strict mode, write it atomically and return only its envelope.

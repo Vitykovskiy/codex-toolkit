@@ -9,7 +9,7 @@ Use [communication](.agents/skills/codex-communication-pact/SKILL.md) for replie
 
 Choose only relevant procedures:
 
-- Code and technical configuration: [development](.agents/skills/codex-development-pact/SKILL.md).
+- Creation, modification and review of code and technical configuration: [development](.agents/skills/codex-development-pact/SKILL.md). Read and apply its mandatory readability standard for authored code, including direct root work; authors and reviewers use the same criteria.
 - Documentation and durable instructions: [documentation](.agents/skills/codex-documentation-pact/SKILL.md).
 - Interface analysis: [UI analysis](.agents/skills/codex-ui-analysis-pact/SKILL.md).
 - An accepted web scenario: [web implementation](.agents/skills/codex-web-implementation/SKILL.md).
