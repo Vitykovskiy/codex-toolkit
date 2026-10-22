@@ -47,4 +47,14 @@
 
 ## Происхождение заимствований
 
+### Человекочитаемый код — 2026-10-22
+
+Нормативное основание — прямой запрос пользователя: код агента должен быть понятен при чтении, максимально прост и сопровождаем. Прочитаны предоставленные `Code-style-Principles` (KISS, DRY, область и приёмка), `Code-style-Naming` (роль и словарь), `Code-style-Functions` (связность, последовательность и принятый `shouldNotify`), `Code-style-Comments` (контракт и причины у ветвей), `Code-style-Types` (явные значения и предпосылки). Из них перенесены общие критерии; проектные ADR, каталогизация и правила Angular/RxJS не становятся нормами toolkit.
+
+Для оснований прочитаны [SKILL.md](https://github.com/Vitykovskiy/clean-code-rules/blob/11bcff1dec24ac3db90bfd3e2f84a9e8997ec0fb/skills/clean-code-rules/SKILL.md), разделы [имён](https://github.com/Vitykovskiy/clean-code-rules/blob/11bcff1dec24ac3db90bfd3e2f84a9e8997ec0fb/skills/clean-code-rules/references/readability/names.md), [функций](https://github.com/Vitykovskiy/clean-code-rules/blob/11bcff1dec24ac3db90bfd3e2f84a9e8997ec0fb/skills/clean-code-rules/references/readability/functions.md) об одной операции, компактности, повторах и последовательном уточнении, [комментариев](https://github.com/Vitykovskiy/clean-code-rules/blob/11bcff1dec24ac3db90bfd3e2f84a9e8997ec0fb/skills/clean-code-rules/references/readability/comments.md) о полезных объяснениях и формальной документации. Это изложение clean-code-rules на указанном commit; исходная книга повторно не проверялась.
+
+Единственный нормативный владелец переносимого стандарта — [development-pact](../skills/codex-development-pact/references/development-pact.md#человекочитаемый-код). Подключение внешнего навыка и чтение исходных вложений при каждой задаче не требуются. [Пример](../skills/codex-development-pact/references/readability-examples.md) адаптирован из приложенной пары с одинаковой HTTP-политикой; он показывает читаемость и не доказывает поведение приложения либо эффективность изменённых инструкций в клиенте.
+
+### Краткая коммуникация
+
 Идея кратких результатов, точных ссылок на код и сохранения существенного содержания восходит к Caveman/Cavecrew, upstream JuliusBrussee/caveman, commit 15581d14007fd01fb3f132016741962f34936ca2. Использованы как источники идей [skills/caveman/SKILL.md](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/skills/caveman/SKILL.md), [cavecrew-investigator](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-investigator.md), [cavecrew-builder](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-builder.md) и [cavecrew-reviewer](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-reviewer.md). Отдельный пакет, движок, прокси, SDK, hooks и новые агенты не импортируются.
