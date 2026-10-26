@@ -11,6 +11,8 @@ Ordinary direct non-approval results are concise inline prose unless a report fi
 
 Use concise grammatical English for generated internal prose. Preserve exact quotes, identifiers, conditions and uncertainties. A word limit must not remove a necessary finding or qualification.
 
+Before handing a result to a dependent subject owner, make its conclusion, supporting source locations, relevant snapshot and unchecked criteria clear in the existing fields. Keep bulky intermediate material addressable instead of copying it into every handoff. The recipient verifies identity, currency and coverage against its own primary requirements; a compact summary alone is not acceptance evidence. The dispatcher receives only the permitted process receipt and artifact references.
+
 ## User-facing files
 
 When a report, question or other Markdown file will communicate with the user, its author and any already-required independent reviewer apply the [user-facing Markdown contract](../../../codex-communication-pact/SKILL.md#user-facing-markdown). Write a self-contained explanation in the user's language, with evidence and a clear conclusion or requested decision. The compact receipts and canonical YAML below serve internal coordination; dumping their fields or concatenating agent reports does not produce a user-facing answer.

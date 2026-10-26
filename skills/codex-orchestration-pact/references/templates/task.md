@@ -19,6 +19,9 @@ Working task: the role's outcome, grounded in the original request.
 Sources: original request and applicable rule locations; distinguish exact quotes from your formulation.
 Scope and dependencies: authorized responsibility, work files and required predecessor artifacts.
 Criteria and limits: source-backed acceptance, evidence and execution restrictions.
+Delegation basis, when delegated: the bounded result and why a separate context helps under [Context boundaries](../../SKILL.md#context-boundaries).
+Return contract: conclusion, addressable primary evidence, relevant snapshot and material gaps needed by the next subject owner; keep large intermediate material at its source.
+Stop or reconsider: satisfied criteria, an exact blocker or a changed dependency that invalidates the planned continuation.
 Gaps: unread inputs, conflicts and known currency.
 
 This formulation does not replace the original request or authorize new scope. Later agents ground their tasks independently in the same primary sources. A scout finds rules; an executor finds necessary predecessor reports; a reviewer finds original criteria and foreign evidence. Missing or ambiguous access is blocked, not a reason for dispatcher relay. New auxiliary process tooling requires the user's separate direct request.
