@@ -93,6 +93,12 @@ File count, a normal fix/review pair, broad wording, an iteration number, or per
 
 The shared [parallel execution rule](references/parallel-execution.md) governs ordinary, long and quality orchestration: flat root-to-subject dispatch, actual available slots, conflict-free resource ownership, dependency-driven successors and recovery. Do not add a fixed agent cap, mandatory user-budget question or automatic model/depth escalation.
 
+### Context boundaries
+
+When preparing or materially revising an assignment, its subject owner establishes why a separate context is useful: an independent decision or acceptance, useful parallel work, or isolation of substantial intermediate material. A domain label, role name or another step in one connected operation is not sufficient by itself. Keep tightly coupled steps with their suitable current owner within that owner's permissions; use existing tools for small deterministic reads. Required independent acceptance remains separate even when implementation and review frequently follow each other.
+
+Bound the requested result, necessary source and dependency references, permitted changes and stopping condition in the existing assignment or working context; use the [assignment guide](references/templates/task.md) when needed. Return a concise conclusion with addressable evidence, relevant snapshot and material gaps under the [report contract](references/templates/report.md). A dependent subject owner checks those inputs before use. This keeps subject context with its owner; it does not move subject work into a dispatcher, change role permissions or add a planning stage.
+
 ## Scope and profiles
 
 A subject-owned assignment records its source-grounded goal, scope, criteria, required evidence and execution limits under the [dispatcher invariant](#dispatcher-invariant). The dispatcher launch carries only the role, basic instruction, original text/reference and identifiers needed for the recipient to find its assignment and dependencies. Preserve profile boundaries; never inject a parent conversation or peer result into dispatcher context.
@@ -147,7 +153,7 @@ During active work, each subject owner compares the next action with the origina
 
 On suspected looping, a stall, excessive verification or plan/goal drift, root redirects the active owner through a native message or the existing permitted decision-owner transition, using original source references and process fields only. Pause the affected repeat or dependent launch as needed; independent useful work may continue. After two consecutive receipts for the same unresolved work without confirmed progress, invoke that correction even if no explicit signal arrived; duplicate notifications do not count as another attempt. Root does not wait for formal failure, select a technical strategy or open subject artifacts.
 
-The existing decision owner rechecks the original outcome and current plan, retains accepted work, and chooses one bounded next action with an expected result and stopping condition. Remove optional repetition or verification that no longer changes a decision, preserve required gates, and revise the plan only where evidence warrants it. Return the updated process fields and permitted next transition; root resumes that route and checks the next checkpoint for confirmed movement. An unresolved capability or user decision remains an exact blocker, not another identical attempt or an expanded assignment.
+The existing decision owner rechecks the original outcome and current plan, retains accepted work, and chooses one bounded next action with an expected observable result and stopping condition. Address the actual source of avoidable work: reuse current evidence or owner context, remove an optional relay or repeated check, narrow an oversized read, or release a dependency-ready branch. Preserve required gates and revise the plan only where evidence warrants it; model changes still follow the existing selection policy. Return the updated process fields and permitted next transition; root resumes that route and checks the next checkpoint for confirmed movement. An unresolved capability or user decision remains an exact blocker, not another identical attempt or an expanded assignment. Missing usage data does not require a new meter or block otherwise permitted work.
 
 ## Context
 
