@@ -12,6 +12,8 @@ profile: developer
 goal_version: 1
 snapshot: S1
 plan_revision: P1
+stream_id: T1
+stream_owner: A01/1
 accepts: null
 finding_id: null
 progress: null
@@ -20,6 +22,10 @@ completion:
   plan_revision: P1
   confirmed_weight: 2
   total_weight: 5
+stream_completion:
+  plan_revision: P1
+  confirmed_weight: 3
+  total_weight: 5
 process_signal: on_track
 next_transitions:
   - profile: reviewer
@@ -27,6 +33,8 @@ next_transitions:
     attempt: 1
     assignment_path: assignments/R01.yaml
     plan_revision: P1
+    stream_id: T1
+    stream_owner: A01/1
     input_revision: G1
     depends_on:
       - assignment_id: A01
@@ -58,6 +66,12 @@ A blocker has a stable `finding_id` and `progress` of `confirmed`, `none`, or `u
 
 `completion` is the current plan owner's task-level aggregate, or `null` when unavailable or not supplied by that owner. `plan_revision` identifies the agreed current plan; `confirmed_weight` is nonnegative and at most positive `total_weight`. Root derives an approximate percentage from the ratio, replacing rather than adding aggregates. Other roles report their assignment status; they do not invent an overall percentage. Required review and delivery stages remain unfinished until supported by their own receipts. A changed denominator requires a new plan revision; stale or conflicting fields cannot update the current estimate.
 
+`stream_id` identifies the executable subtask under [Progress and efficiency](../../../codex-orchestration-pact/SKILL.md#progress-and-efficiency). The plan owner supplies this ID and `stream_owner: <assignment_id>/<attempt>` in routing descriptors; collaborating roles preserve that shared ID in their receipts. `stream_completion` uses the same fields and validity rules as `completion`, scoped to that subtask. Its designated owner supplies the aggregate; supporting roles use `null`. Root matches the sender to the designated owner and replaces that stream's last valid aggregate. An ownership transfer comes from the plan owner and preserves the stream ID and still-valid outcomes. Parent grouping or task-wide coordination assignments use `stream_id: null`, `stream_owner: null` and `stream_completion: null`; their executing child subtasks carry the stream IDs.
+
+An existing packet review or integration assignment spanning several subtasks represents one shared executable subtask with its own `stream_id` and progress owner. The plan owner supplies that mapping within the existing assignment. Its constituent streams retain their actual waiting, running or completed states; count each through its own active assignments. For example, one packet review of T1 and T2 with both implementations finished contributes one active review stream. Its receipt advances the relevant constituent gates, and their progress owners update their totals. Account for the shared stage once in the whole-task aggregate while retaining its acceptance effect on each constituent subtask.
+
 `process_signal` is `on_track`, `stalled`, `repeated_action`, `excessive_verification`, `plan_drift`, `goal_drift`, `unknown`, or `null`. Send a material signal promptly in a compact active checkpoint carrying `status: running`, assignment/attempt and artifact references; it neither completes the assignment nor authorizes its next launch. Final reports retain the existing status/acceptance contract. Checkpoints do not require new report copies or a reporting loop. Root uses the signal to route correction under [Progress and efficiency](../../../codex-orchestration-pact/SKILL.md#progress-and-efficiency), leaving diagnosis and strategy with the existing owner.
 
 Legacy receipts may omit `completion` and `process_signal`; omission means unavailable metadata, not zero completion or evidence of a healthy process. Request needed fields at the next meaningful checkpoint without restarting completed work or activating strict mode.
+
+For legacy receipts and descriptors, omitted stream fields mean unknown metadata. Preserve completed work and restore the mapping and owner at the next meaningful checkpoint. An omitted or `null` `stream_completion` retains the last valid estimate for that stream; use unknown until a current-revision estimate is available.
