@@ -47,6 +47,12 @@
 
 ## Происхождение заимствований
 
+### Crapper, Dryer, Mutator и содержательность тестов — 2026-10-28
+
+Прочитаны [ub-mode](https://github.com/unclebob/ub-mode/blob/57a8bdd28e45ed41900ace0bafa2ff76dd9ed70f/SKILL.md), разделы Test Behavior, Not Implementation, Crapper, Dryer и Mutator, а также исходные README, launcher-файлы, package metadata и относящаяся реализация CLI/coverage/worker трёх инструментов. Точные ревизии и прочитанные контракты перечислены в [экспериментальной процедуре](../skills/codex-development-pact/references/experimental-quality-tools.md#источники). Crapper, Dryer и Mutator распространяются под 0BSD; их код в toolkit не копируется. В прочитанном корне ub-mode файл лицензии не обнаружен; используются ссылки и адаптированное изложение идей.
+
+По запросу пользователя в существующий development-pact перенесён критерий результата, доступного потребителю, и обнаружения отсутствующего существенного поведения. Три инструмента подключены как обратимый эксперимент с явным включением, ограниченной областью и проверкой интерпретации отчётов. Механическое дробление функций, безусловное объединение похожих фрагментов, обязательные пороги для каждого проекта и остальные правила ub-mode не приняты. Установка в потребителей и работа обновлённых инструкций в клиенте этим изменением не подтверждаются.
+
 ### Границы субагентов и проверка изменений — 2026-10-26
 
 Прочитана статья Anthropic [Building agents: When to fold subagents into your main agent loop](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop), разделы Using an agent loop with progressive disclosure, Task-completion evals, Combining domain agents и Folding subagents into the main agent via skills and tools. Заимствованы основания для границ по контексту, компактного результата с доступными доказательствами и сравнения повторяемых полных задач с просмотром отдельных регрессий. Это опыт Claude Platform; численные результаты статьи не перенесены на Codex.
