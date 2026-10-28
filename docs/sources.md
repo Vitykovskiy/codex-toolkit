@@ -70,3 +70,12 @@
 ### Краткая коммуникация
 
 Идея кратких результатов, точных ссылок на код и сохранения существенного содержания восходит к Caveman/Cavecrew, upstream JuliusBrussee/caveman, commit 15581d14007fd01fb3f132016741962f34936ca2. Использованы как источники идей [skills/caveman/SKILL.md](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/skills/caveman/SKILL.md), [cavecrew-investigator](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-investigator.md), [cavecrew-builder](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-builder.md) и [cavecrew-reviewer](https://github.com/JuliusBrussee/caveman/blob/15581d14007fd01fb3f132016741962f34936ca2/agents/cavecrew-reviewer.md). Отдельный пакет, движок, прокси, SDK, hooks и новые агенты не импортируются.
+
+## Terra — 2026-10-28
+
+- [GPT-6.1 Terra](https://developers.openai.com/api/docs/models/gpt-6.1-terra), описание модели и reasoning: подтверждены ID `gpt-6.1-terra` и поддержка `medium` как исходного effort. Прочитано 2026-10-28; API-документация не подтверждает загрузку профиля в Codex.
+- [Model selection](https://learn.chatgpt.com/docs/model-selection), When to consider GPT-6.1 Terra / Sol: Terra предложена для работы с экраном, текста по предоставленным материалам и ограниченных исправлений кода с ясными входами и проверяемым результатом; Sol — для сложных проектов. Ограничения трёх профилей — инженерная политика toolkit, а не доказанная равноценность моделей.
+- [Models](https://learn.chatgpt.com/docs/models), Choose a model, CLI: прочитано требование Codex CLI 0.159.0+ для Terra. Доступность конкретного аккаунта и локальная версия пользователя не проверены.
+- [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), Custom agents: прочитаны приоритет закреплённых `model`/`model_reasoning_effort` и проектный `.codex/agents/`. Смена родительской модели не заменяет эти поля.
+
+Начальный effort трёх Terra-вариантов — `medium`. Runtime-загрузка и поведение новых профилей, сравнительные попытки и экономия не проверялись. Существующие [правила оценки](../skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task) и [benchmark](benchmark.md) сохраняются; новых средств измерения эта правка не создаёт.

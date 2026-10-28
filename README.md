@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 18 готовых профилей. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
+Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 21 готовый профиль. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
 
 ## Подключение
 
@@ -53,6 +53,16 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | Архитектор | [architect_astra](agents/architect-astra.toml) | [architect_astra_max](agents/architect-astra-max.toml) |
 | Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
 | Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
+
+Дополнительные Terra-профили используют `gpt-6.1-terra` / `medium` в ограниченной области по той же [политике выбора](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection):
+
+| Профиль | Область |
+|---|---|
+| [developer_terra](agents/developer-terra.toml) | Локальное исправление с известным поведением, зависимостями и существующим способом проверки |
+| [analyst_terra](agents/analyst-terra.toml) | Анализ экранов, сравнение с явными требованиями и синтез предоставленных материалов |
+| [quality_owner_terra](agents/quality-owner-terra.toml) | Наблюдение и инвентаризация UI в одной разрешённой фазе кампании качества |
+
+Это варианты существующих ответственностей. Подключение требует согласованной политики и проверки доступности клиента по [compatibility](docs/compatibility.md); измеренная экономия и загрузка профилей не подтверждены.
 
 Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты, активные назначения и очередь готовых работ; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
 
