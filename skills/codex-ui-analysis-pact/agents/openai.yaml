@@ -1,6 +1,0 @@
-interface:
-  display_name: "Codex UI Analysis Pact"
-  short_description: "Документирует наблюдаемое поведение и разрывы UI"
-  default_prompt: "$codex-ui-analysis-pact"
-policy:
-  allow_implicit_invocation: true

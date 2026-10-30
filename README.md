@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 21 готовый профиль. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
+Toolkit — канонический набор 8 общих навыков и 17 готовых профилей. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
 
 ## Подключение
 
@@ -17,14 +17,11 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [codex-communication-pact](skills/codex-communication-pact/SKILL.md) | Понятные сообщения и Markdown-файлы для пользователя, честный статус проверок |
 | [codex-development-pact](skills/codex-development-pact/SKILL.md) | Изменение, функциональное ревью и проверка технических артефактов |
 | [codex-documentation-pact](skills/codex-documentation-pact/SKILL.md) | Проверяемая документация и инструкции |
-| [codex-ui-analysis-pact](skills/codex-ui-analysis-pact/SKILL.md) | Анализ и описание UI |
 | [codex-orchestration-pact](skills/codex-orchestration-pact/SKILL.md) | Координация назначений и независимой приёмки |
-| [codex-web-implementation](skills/codex-web-implementation/SKILL.md) | Реализация веб-сценария по существующим контрактам |
 | [codex-debugging](skills/codex-debugging/SKILL.md) | Диагностика и исправление дефекта в разрешённом режиме |
 | [codex-web-verification](skills/codex-web-verification/SKILL.md) | Проверка пользовательского поведения в браузере |
 | [codex-security-review](skills/codex-security-review/SKILL.md) | Доказательная проверка безопасности ограниченной области |
 | [codex-long-orchestration](skills/codex-long-orchestration/SKILL.md) | Строгая диспетчеризация, файловый обмен и возобновление |
-| [codex-product-quality](skills/codex-product-quality/SKILL.md) | Наблюдение и выбор следующей малой партии качества |
 
 Точки входа — skills/<имя>/SKILL.md, метаданные — agents/openai.yaml внутри скилла, дополнительные процедуры — его references/. Профили находятся в корневом agents/, документация — в docs/.
 
@@ -43,7 +40,6 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [reviewer](agents/reviewer.toml) | Независимо принимает назначение |
 | [reviewer_fast](agents/reviewer-fast.toml) | Проверяет только буквальную несемантическую правку |
 | [integration_reviewer](agents/integration-reviewer.toml) | Проверяет уникальные межчастевые связи и полноту |
-| [quality_owner](agents/quality-owner.toml) | Владеет одной фазой качества и следующей партией, сохраняет состояние |
 
 Варианты тех же ответственностей выбираются по [Model and reasoning selection](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection); модель и effort закреплены в TOML:
 
@@ -52,7 +48,6 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | Аналитик | [analyst_astra](agents/analyst-astra.toml) | [analyst_astra_max](agents/analyst-astra-max.toml) |
 | Архитектор | [architect_astra](agents/architect-astra.toml) | [architect_astra_max](agents/architect-astra-max.toml) |
 | Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
-| Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
 
 Дополнительные Terra-профили используют `gpt-6.1-terra` / `medium` в ограниченной области по той же [политике выбора](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection):
 
@@ -60,7 +55,6 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 |---|---|
 | [developer_terra](agents/developer-terra.toml) | Локальное исправление с известным поведением, зависимостями и существующим способом проверки |
 | [analyst_terra](agents/analyst-terra.toml) | Анализ экранов, сравнение с явными требованиями и синтез предоставленных материалов |
-| [quality_owner_terra](agents/quality-owner-terra.toml) | Наблюдение и инвентаризация UI в одной разрешённой фазе кампании качества |
 
 Это варианты существующих ответственностей. Подключение требует согласованной политики и проверки доступности клиента по [compatibility](docs/compatibility.md); измеренная экономия и загрузка профилей не подтверждены.
 

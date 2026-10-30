@@ -1,6 +1,6 @@
 # Parallel execution
 
-Use this shared rule in ordinary orchestration, explicit strict workflows and authorized quality campaigns when independent assignments can reduce waiting. Preserve the [dispatcher invariant](../SKILL.md#dispatcher-invariant), [packet boundaries](../SKILL.md#scope-and-profiles) and existing execution limits. Parallelism does not activate strict mode, expand a campaign or justify splitting a connected result by file count.
+Use this shared rule in ordinary orchestration and explicit strict workflows when independent assignments can reduce waiting. Preserve the [dispatcher invariant](../SKILL.md#dispatcher-invariant), [packet boundaries](../SKILL.md#scope-and-profiles) and existing execution limits. Parallelism does not activate strict mode, expand the authorized scope or justify splitting a connected result by file count.
 
 ## Responsibilities and preparation
 

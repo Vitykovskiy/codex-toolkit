@@ -16,15 +16,12 @@
 
 ## Комплект и зависимости
 
-Полный комплект содержит 11 скиллов и 21 профиль из [каталога](../README.md). Выборочный импорт замыкается транзитивно по обязательным и применимым условным зависимостям. Для Terra, Astra и max импортируйте согласованную [политику выбора](../skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection) вместе с профилями; исходные файлы не меняют действующие установки. Потребитель сохраняет прямые ограничения пользователя и проверяет фактическую загрузку требуемого model/effort по [compatibility](compatibility.md).
+Полный комплект содержит 8 скиллов и 17 профилей из [каталога](../README.md). Выборочный импорт замыкается транзитивно по обязательным и применимым условным зависимостям. Для Terra, Astra и max импортируйте согласованную [политику выбора](../skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection) вместе с профилями; исходные файлы не меняют действующие установки. Потребитель сохраняет прямые ограничения пользователя и проверяет фактическую загрузку требуемого model/effort по [compatibility](compatibility.md).
 
 | Процедура/профиль | Необходимый локальный источник |
 |---|---|
 | long-orchestration | orchestration-pact |
 | пользовательский Markdown любой процедуры или профиля | communication-pact вместе с references; вход через orchestration-pact и канонический report |
-| product-quality | orchestration-pact, UI-analysis-pact, web-verification; long-orchestration только в strict-режиме |
-| UI-analysis при документировании | documentation-pact |
-| web-implementation | development-pact |
 | debugging при исправлении | development-pact |
 | создание, изменение и ревью авторского кода, включая developer, mechanical и все reviewer-профили | development-pact вместе с references; буквальные роли сохраняют свою область |
 | изменение агентских инструкций, профилей, описаний инструментов или маршрутизации | documentation-pact вместе с references; ограниченный аудит входит в авторство и уже необходимое ревью |

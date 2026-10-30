@@ -11,14 +11,11 @@ Choose only relevant procedures:
 
 - Creation, modification and review of code and technical configuration: [development](.agents/skills/codex-development-pact/SKILL.md). Read and apply its mandatory readability standard for authored code, including direct root work; authors and reviewers use the same criteria.
 - Documentation and durable instructions: [documentation](.agents/skills/codex-documentation-pact/SKILL.md). Changes to agent instructions, profiles, tool descriptions or routing include its scoped instruction audit during authoring and any already-required review.
-- Interface analysis: [UI analysis](.agents/skills/codex-ui-analysis-pact/SKILL.md).
-- An accepted web scenario: [web implementation](.agents/skills/codex-web-implementation/SKILL.md).
 - A defect: [debugging](.agents/skills/codex-debugging/SKILL.md), preserving the difference between diagnosis and authorized repair.
 - Observed UI behaviour: [web verification](.agents/skills/codex-web-verification/SKILL.md).
 - An assigned trust boundary: [security review](.agents/skills/codex-security-review/SKILL.md).
 - Actual coordination: [orchestration](.agents/skills/codex-orchestration-pact/SKILL.md#portable-route-table).
 - Explicit strict dispatch or active strict continuation: [long orchestration](.agents/skills/codex-long-orchestration/SKILL.md).
-- An explicitly authorized product-quality campaign: [product quality](.agents/skills/codex-product-quality/SKILL.md).
 
 The portable route table is authoritative. A ready local task can be done directly. File count, a fix/review pair, broad wording and an iteration number do not activate strict mode. Use existing profiles; do not add a role merely to restate a specification.
 
