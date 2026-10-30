@@ -1,6 +1,6 @@
 # Assignment report
 
-Ordinary direct non-approval results are concise inline prose unless a report file is assigned. Dispatched subject results stay with their owners at accessible task locations; root receives only process metadata and artifact references under the [dispatcher invariant](../../SKILL.md#dispatcher-invariant). The receipts below are writing patterns, not replacement schemas. Formal approval uses the existing canonical report and acceptance correlation, even when returned inline. A strict workflow always writes the canonical file report and returns only its envelope. Do not emit a second full copy.
+Ordinary direct and delegated non-approval results are concise inline prose with evidence references unless a file is assigned or needed for durable access. Root may read them under the [mode boundary](../../SKILL.md#dispatcher-invariant). The receipts below are writing patterns, not replacement schemas. Formal approval uses the existing canonical report and acceptance correlation, even when returned inline. Only strict workflows always write the canonical file report and return a metadata-only envelope. Do not emit a second full copy.
 
 ## Compact receipts
 
@@ -11,7 +11,7 @@ Ordinary direct non-approval results are concise inline prose unless a report fi
 
 Use concise grammatical English for generated internal prose. Preserve exact quotes, identifiers, conditions and uncertainties. A word limit must not remove a necessary finding or qualification.
 
-Before handing a result to a dependent subject owner, make its conclusion, supporting source locations, relevant snapshot and unchecked criteria clear in the existing fields. Keep bulky intermediate material addressable instead of copying it into every handoff. The recipient verifies identity, currency and coverage against its own primary requirements; a compact summary alone is not acceptance evidence. The dispatcher receives only the permitted process receipt and artifact references.
+Before handing a result to a dependent subject owner, make its conclusion, supporting source locations, relevant snapshot and unchecked criteria clear in existing fields or inline prose. Keep bulky intermediate material addressable instead of copying it into every handoff. The recipient verifies identity, currency and coverage against its own primary requirements; a compact summary alone is not acceptance evidence. Only strict root receives a process receipt and artifact references without subject content.
 
 ## User-facing files
 
@@ -40,7 +40,7 @@ risks: []
 next_action: null
 ```
 
-Before dependent work, record your own source-grounded working task in the existing assignment or working context. In a canonical report, retain its formulation and primary source references under existing `result` fields; never replace the original request or add top-level keys.
+Before dependent work, establish the source-grounded task in existing context; strict work records it in its assigned subject artifact. A canonical report retains the outcome and primary source references under existing `result` fields, without repeating the assignment or adding top-level keys. The original request remains authoritative.
 
 Exactly these six top-level keys are required. `approved` is only an independent reviewer or integration reviewer verdict. `paused`, `blocked`, and incomplete results are never accepted. `assignment` identifies this report; `snapshot` is required whenever import, cross-tree transfer, parallel writing, release, security, or the assignment requires it.
 
@@ -48,4 +48,4 @@ Exactly these six top-level keys are required. `approved` is only an independent
 
 Each check records a nonblank command, `execution_status: checked | not_run | unable_to_verify`, and `result: passed | failed | null`. An unrun check requires `result: null` and a nonblank reason. Keep applicable rule sources, scope, material gaps and primary evidence under existing `result` fields when relevant; do not add top-level keys or repeat the whole conversation.
 
-In dispatcher mode the subject role writes this report atomically at its assigned `artifact_path` and returns only the linked envelope. The subject reviewer checks full-report correlation and required evidence; the dispatcher does not open this report. In ordinary direct work, use an inline receipt for non-approval work; use the canonical report for formal approval or an explicitly requested structured report. A report file is created only when assigned. `completed` is implementation completion, not independent approval. Unrun required checks prevent an unsupported `approved` verdict.
+In `dispatcher_only` the subject role writes this report atomically at its assigned `artifact_path` and returns only the linked envelope. The reviewer checks full-report correlation and required evidence; strict root does not open it. Ordinary direct and delegated work use inline receipts for non-approval results and the canonical report for formal approval or an explicitly requested structured report. A report file is created only when assigned or needed for durable access. `completed` is implementation completion, not independent approval. Unrun required checks prevent an unsupported `approved` verdict.

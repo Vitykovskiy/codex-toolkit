@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Toolkit — канонический набор 11 общих skills, 11 предметных ответственностей и 21 готовый профиль. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
+Toolkit — канонический набор 8 общих навыков и 17 готовых профилей. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
 
 ## Подключение
 
@@ -17,14 +17,11 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [codex-communication-pact](skills/codex-communication-pact/SKILL.md) | Понятные сообщения и Markdown-файлы для пользователя, честный статус проверок |
 | [codex-development-pact](skills/codex-development-pact/SKILL.md) | Изменение, функциональное ревью и проверка технических артефактов |
 | [codex-documentation-pact](skills/codex-documentation-pact/SKILL.md) | Проверяемая документация и инструкции |
-| [codex-ui-analysis-pact](skills/codex-ui-analysis-pact/SKILL.md) | Анализ и описание UI |
 | [codex-orchestration-pact](skills/codex-orchestration-pact/SKILL.md) | Координация назначений и независимой приёмки |
-| [codex-web-implementation](skills/codex-web-implementation/SKILL.md) | Реализация веб-сценария по существующим контрактам |
 | [codex-debugging](skills/codex-debugging/SKILL.md) | Диагностика и исправление дефекта в разрешённом режиме |
 | [codex-web-verification](skills/codex-web-verification/SKILL.md) | Проверка пользовательского поведения в браузере |
 | [codex-security-review](skills/codex-security-review/SKILL.md) | Доказательная проверка безопасности ограниченной области |
 | [codex-long-orchestration](skills/codex-long-orchestration/SKILL.md) | Строгая диспетчеризация, файловый обмен и возобновление |
-| [codex-product-quality](skills/codex-product-quality/SKILL.md) | Наблюдение и выбор следующей малой партии качества |
 
 Точки входа — skills/<имя>/SKILL.md, метаданные — agents/openai.yaml внутри скилла, дополнительные процедуры — его references/. Профили находятся в корневом agents/, документация — в docs/.
 
@@ -43,16 +40,14 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 | [reviewer](agents/reviewer.toml) | Независимо принимает назначение |
 | [reviewer_fast](agents/reviewer-fast.toml) | Проверяет только буквальную несемантическую правку |
 | [integration_reviewer](agents/integration-reviewer.toml) | Проверяет уникальные межчастевые связи и полноту |
-| [quality_owner](agents/quality-owner.toml) | Владеет одной фазой качества и следующей партией, сохраняет состояние |
 
-Варианты тех же ответственностей выбираются по [Model and reasoning selection](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection); модель и effort закреплены в TOML:
+Варианты тех же ответственностей выбираются по [Model and reasoning selection](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection); модель и effort закреплены в TOML. Astra применяется только по прямому разрешению пользователя для соответствующей работы, max также требует явного разрешения; оно сохраняется при продолжении той же области:
 
 | Ответственность | Astra | Astra max |
 |---|---|---|
 | Аналитик | [analyst_astra](agents/analyst-astra.toml) | [analyst_astra_max](agents/analyst-astra-max.toml) |
 | Архитектор | [architect_astra](agents/architect-astra.toml) | [architect_astra_max](agents/architect-astra-max.toml) |
 | Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
-| Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
 
 Дополнительные Terra-профили используют `gpt-6.1-terra` / `medium` в ограниченной области по той же [политике выбора](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection):
 
@@ -60,15 +55,14 @@ Toolkit — канонический набор 11 общих skills, 11 пре�
 |---|---|
 | [developer_terra](agents/developer-terra.toml) | Локальное исправление с известным поведением, зависимостями и существующим способом проверки |
 | [analyst_terra](agents/analyst-terra.toml) | Анализ экранов, сравнение с явными требованиями и синтез предоставленных материалов |
-| [quality_owner_terra](agents/quality-owner-terra.toml) | Наблюдение и инвентаризация UI в одной разрешённой фазе кампании качества |
 
-Это варианты существующих ответственностей. Подключение требует согласованной политики и проверки доступности клиента по [compatibility](docs/compatibility.md); измеренная экономия и загрузка профилей не подтверждены.
+Это варианты существующих ответственностей. Luna scout/high и остальные заданные модели/effort сохранены. Обычная координация использует краткие назначения и результаты со ссылками на источники; файловый обмен и запрет чтения результатов координатором относятся только к явно выбранному строгому режиму по [границе режимов](skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant). Подключение требует согласованной политики и проверки доступности клиента по [compatibility](docs/compatibility.md); измеренная экономия и загрузка профилей не подтверждены.
 
 Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты, активные назначения и очередь готовых работ; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
 
-Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
+Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Обычные результаты возвращаются кратко в чате, если файл не назначен или не нужен для устойчивого доступа; только `dispatcher_only` передаёт root процессные поля и ссылки. Формальная приёмка и строгая работа используют [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 
-При диспетчеризации действует [критический инвариант](skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant): root только запускает роли с исходной задачей дословно или точной ссылкой и IDs, без чтения предметных файлов/отчётов и без пересказа. Каждый субагент сам находит первоисточники и отчёты зависимостей, формулирует и фиксирует свою рабочую задачу. Применимые [требования проекта](skills/codex-orchestration-pact/SKILL.md#project-requirements) читает каждый предметный владелец до зависимых решений; для простой правки владелец читает их сам.
+Применимые [требования проекта](skills/codex-orchestration-pact/SKILL.md#project-requirements) читает каждый предметный владелец до зависимых решений, повторно используя актуальный контекст. Для простой правки владелец читает их сам; отдельный скаут или пересказ назначения не требуются.
 
 Для вопросов, отчётов и других Markdown-файлов, выдаваемых пользователю, действует [единый контракт читаемости](skills/codex-communication-pact/SKILL.md#user-facing-markdown). Подготовку и проверку выполняют предметный автор и уже необходимый независимый reviewer. В строгом режиме необязательные `user_artifacts` в [envelope](skills/codex-long-orchestration/references/templates/envelope.md) передают готовые ссылки, сохраняя канонический отчёт и границу диспетчера.
 
