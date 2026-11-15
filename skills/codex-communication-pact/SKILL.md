@@ -11,11 +11,17 @@ Use the user's language for replies, questions and progress messages. Match the 
 
 Use concise English for internal assignments, agent messages, process notes, handoffs and internal report prose. A file intended for the user follows the user's language and requested detail, even when an internal role writes it. Keep source requirements and quotations in their original language. Preserve code, identifiers, paths, commands, errors, schema keys, enum values, numbers and units exactly. Do not produce bilingual copies of the same internal content.
 
+## Chat delivery
+
+Send the concise conclusion and every necessary question directly in chat, in the user's language. Include the actual verification status and any material blocker or decision needed to continue. File links may supplement this message; a report or question file alone is not delivery. Keep detailed evidence and canonical internal reports at their existing locations.
+
+In dispatched workflows, the subject owner prepares `ready_to_send_chat`: complete user-facing text for verbatim forwarding. The dispatcher sends that text directly in chat without rewriting it, opening subject artifacts or inferring a conclusion from process metadata. This narrow delivery exception applies to reference-only handoffs in all dispatcher modes and role profiles; it does not permit report excerpts or internal handoff summaries. Required independent acceptance covers the final message's exact version; questions and progress messages need only the author's existing check. Use the [envelope contract](../codex-long-orchestration/references/templates/envelope.md) in strict mode. If required user text is missing, request it from its owner rather than substituting a file link.
+
 ## User-facing Markdown
 
 Before authoring, reviewing or handing off a Markdown file for communication with the user, read and apply the [user-facing Markdown contract](references/communication-pact.md#пользовательские-markdown-файлы). It covers questions, blockers, progress updates, reports, decisions and final answers in direct, ordinary and strict workflows, regardless of author or path. A working artifact promoted to user communication meets the same contract.
 
-Make the document self-contained, correctly formatted and proportionately structured, with sufficient evidence and one clear conclusion or requested decision. The subject author checks the actual file before returning its reference; required independent review includes that file. The dispatcher forwards ready references and process facts without reading or rewriting their content. Internal report schemas remain unchanged; their compact receipts are not a user-facing writing template.
+Make the document self-contained, correctly formatted and proportionately structured, with sufficient evidence and one clear conclusion or requested decision. The subject author checks the actual file before returning its reference; required independent review includes that file. The dispatcher forwards prepared chat text under [Chat delivery](#chat-delivery), with file references as supplements, without opening or rewriting the files. Internal report schemas remain unchanged; their compact receipts are not a user-facing writing template.
 
 ## Compression
 
@@ -23,8 +29,8 @@ State the outcome first and each fact once. Use short grammatical sentences and 
 
 Preserve negation, conditions, ordering, evidence, uncertainty and material risks. Separate facts, requirements, inferences and unknowns. Expand wherever compression would obscure a decision or a safety boundary. Do not shorten a requested artifact by deleting required content.
 
-Subject results contain the outcome, useful evidence, verification status and a blocker or next action only when needed. In dispatched workflows, keep those results in accessible owner artifacts; messages to root carry only process metadata and references under the [dispatcher invariant](../codex-orchestration-pact/SKILL.md#dispatcher-invariant). Role-specific receipt patterns live in the [report template](../codex-orchestration-pact/references/templates/report.md); read it when the report contract requires it, not before every message.
+Subject results contain the outcome, useful evidence, verification status and a blocker or next action only when needed. In dispatched workflows, keep those results in accessible owner artifacts; messages to root carry process metadata and references plus the prepared user text allowed by [Chat delivery](#chat-delivery), under the [dispatcher invariant](../codex-orchestration-pact/SKILL.md#dispatcher-invariant). Role-specific receipt patterns live in the [report template](../codex-orchestration-pact/references/templates/report.md); read it when the report contract requires it, not before every message.
 
 Report meaningful progress or a real blocker, not repeated waiting messages. Follow any higher-priority update requirements.
 
-Whenever root dispatches, communicate only process facts and links to role-owned deliverables or prepared questions. Root reads no subject artifact or report and does not rewrite a task, outcome or question. Forward user input verbatim or by exact source reference at every stage. A skipped check remains unrun, not passed.
+Whenever root dispatches, forward the owner's prepared user text under [Chat delivery](#chat-delivery), alongside process facts and useful deliverable links. Root reads no subject artifact or report and does not rewrite a task, outcome or question. Forward user input verbatim or by exact source reference at every stage. A skipped check remains unrun, not passed.
