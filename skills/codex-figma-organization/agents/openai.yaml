@@ -1,0 +1,6 @@
+interface:
+  display_name: "Codex Figma Organization"
+  short_description: "Структура, навигация и компоненты файлов Figma"
+  default_prompt: "Примени $codex-figma-organization: организуй файл Figma, сохранив связи, состояния и соглашения проекта."
+policy:
+  allow_implicit_invocation: true
