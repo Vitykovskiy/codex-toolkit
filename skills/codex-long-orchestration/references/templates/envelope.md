@@ -1,11 +1,12 @@
 # Dispatcher envelope
 
-An envelope carries only process metadata, not subject content. Root checks its shape, path safety, runtime sender, identity and permitted transition under the [dispatcher invariant](../../../codex-orchestration-pact/SKILL.md#dispatcher-invariant), without opening its artifact or any prepared assignment. Exclude task summaries, criteria, findings text and report excerpts.
+An envelope carries process metadata and optional prepared user text under [Chat delivery](../../../codex-communication-pact/SKILL.md#chat-delivery); other subject content remains excluded. Root checks its shape, path safety, runtime sender, identity and permitted transition under the [dispatcher invariant](../../../codex-orchestration-pact/SKILL.md#dispatcher-invariant), without opening its artifact or any prepared assignment. Exclude internal task summaries, criteria, findings text and report excerpts. `ready_to_send_chat` is a complete user message for verbatim forwarding, not an internal report excerpt.
 
 ```yaml
 status: completed
 artifact: reports/A01.yaml
 user_artifacts: []
+ready_to_send_chat: null
 assignment_id: A01
 attempt: 1
 profile: developer
@@ -49,9 +50,11 @@ next_transitions:
 invalidated_assignments: []
 ```
 
+`ready_to_send_chat` contains the owner's complete concise message in the user's language, ready to send directly in chat under [Chat delivery](../../../codex-communication-pact/SKILL.md#chat-delivery). Root forwards it verbatim without opening files or rewriting it. The author checks questions and progress text; an already-required independent reviewer checks the exact final message. Omitted or null means no chat text is supplied in this receipt; it does not satisfy a pending conclusion or necessary question. Request missing text from its owner. This field does not grant approval or change the six-key canonical report.
+
 `user_artifacts` optionally lists paths of files prepared for communication with the user, for example `delivery/answer.md` or `questions/decision.md`. It carries only ready file references, never titles containing findings, excerpts or subject summaries. `artifact` remains the canonical internal report. An omitted field or empty list means this receipt offers no user-facing file; it does not erase earlier references or require completed work to run again.
 
-The subject author checks each listed Markdown file against the [user-facing Markdown contract](../../../codex-communication-pact/SKILL.md#user-facing-markdown) before exposing its path. Questions and intermediate messages may be supplied by their responsible owner. When a final deliverable requires independent acceptance, the accepting reviewer supplies its path for the exact reviewed version. Root validates the sender, path safety and applicable acceptance metadata, then forwards the references without opening files. Preserve needed references in existing receipts/checkpoints; no separate state registry is required.
+The subject author checks each listed Markdown file against the [user-facing Markdown contract](../../../codex-communication-pact/SKILL.md#user-facing-markdown) before exposing its path. Questions and intermediate messages may be supplied by their responsible owner. When a final deliverable requires independent acceptance, the accepting reviewer supplies its path for the exact reviewed version. Root validates the sender, path safety and applicable acceptance metadata, then forwards prepared chat text verbatim and supplemental references without opening files. Preserve needed references in existing receipts/checkpoints; no separate state registry is required.
 
 `next_transitions` is a list of prepared routing descriptors, empty when this receipt supplies no new transition. An empty list does not clear other queued or active work. Each descriptor identifies an existing permitted profile, assignment ID, attempt and assignment path; parallel scheduling also uses the owner-issued plan/input revision, dependency gates and resource claims under [Parallel execution](../../../codex-orchestration-pact/references/parallel-execution.md). Optional owner-supplied `priority` orders competing ready assignments; otherwise preserve queue order. Task root and unchanged original source references come from root's own state. The descriptor contains no subject instructions, criteria or write-set contents; the recipient independently finds and verifies its source material.
 
