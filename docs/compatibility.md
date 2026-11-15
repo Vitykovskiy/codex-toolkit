@@ -4,7 +4,7 @@
 
 ## Форматы и документированное обнаружение
 
-Скилл содержит Markdown с YAML frontmatter `name`/`description`; `agents/openai.yaml` задаёт интерфейсные метаданные и политику. В toolkit 11 скиллов: `allow_implicit_invocation: false` у communication и `true` у остальных десяти. Обязательность коммуникации здесь задаёт прямое правило [AGENTS](../AGENTS.md). Список доступных скиллов и чтение выбранной процедуры различаются. Формат и политика описаны в [Build skills](https://learn.chatgpt.com/docs/build-skills).
+Скилл содержит Markdown с YAML frontmatter `name`/`description`; `agents/openai.yaml` задаёт интерфейсные метаданные и политику. В toolkit 12 скиллов: `allow_implicit_invocation: false` у communication и `true` у остальных одиннадцати. Обязательность коммуникации здесь задаёт прямое правило [AGENTS](../AGENTS.md). Список доступных скиллов и чтение выбранной процедуры различаются. Формат и политика описаны в [Build skills](https://learn.chatgpt.com/docs/build-skills).
 
 Руководство обнаружения описывает `.agents/skills` от рабочего каталога до корня Git, пользовательские и системные источники, а также следование symlink для скиллов. Одинаковые имена не сливаются. Поэтому project-local путь надо подтверждать фактически; наличие глобального дубля не подтверждает импорт. [Источник: Where Codex loads local skills](https://learn.chatgpt.com/docs/build-skills).
 
