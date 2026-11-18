@@ -2,7 +2,7 @@
 
 ## Назначение
 
-Toolkit — канонический набор 12 общих skills, 11 предметных ответственностей и 21 готовый профиль. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
+Toolkit — канонический набор 12 общих skills, 11 предметных ответственностей и 22 готовых профиля. Проект-потребитель выбирает нужные процедуры и хранит свои соглашения в собственном AGENTS.md. README служит каталогом; действующие правила находятся в скиллах.
 
 ## Подключение
 
@@ -60,10 +60,11 @@ $codex-figma-organization Организуй этот файл Figma: выдел
 
 Варианты тех же ответственностей выбираются по [Model and reasoning selection](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection); модель и effort закреплены в TOML:
 
-| Ответственность | Astra | Astra max |
+| Ответственность | Astra 6.2 | Astra 6.2 max |
 |---|---|---|
 | Аналитик | [analyst_astra](agents/analyst-astra.toml) | [analyst_astra_max](agents/analyst-astra-max.toml) |
 | Архитектор | [architect_astra](agents/architect-astra.toml) | [architect_astra_max](agents/architect-astra-max.toml) |
+| Разработчик связного изменения взаимодействующих компонентов | [developer_astra](agents/developer-astra.toml) | — |
 | Независимый reviewer | [reviewer_astra](agents/reviewer-astra.toml) | [reviewer_astra_max](agents/reviewer-astra-max.toml) |
 | Владелец явно разрешённой кампании качества | [quality_owner_astra](agents/quality-owner-astra.toml) | [quality_owner_astra_max](agents/quality-owner-astra-max.toml) |
 
@@ -79,7 +80,9 @@ $codex-figma-organization Организуй этот файл Figma: выдел
 
 Оценку всего цикла по корректно принятым задачам и наблюдениям лимита подписки определяет [Efficiency per accepted task](skills/codex-orchestration-pact/SKILL.md#efficiency-per-accepted-task). Продолжение опирается на актуальные артефакты, активные назначения и очередь готовых работ; необязательный `intent.md` описан в [request intake](skills/codex-orchestration-pact/references/request-intake.md#product-intent). Исходники не подтверждают загрузку профилей или измеренную экономию.
 
-Для главной сессии, управляющей сложной работой, рекомендуются `gpt-6.1-sol` и `medium` при запуске; это не автоматическая настройка. Настройки подагентов находятся в agents/*.toml, а условия выбора — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
+Базовые Sol-профили используют `gpt-6.2-sol`, Astra-варианты — `gpt-6.2-astra`. Для главной сессии-диспетчера рекомендуются Sol 6.2 и `medium`; условия выбора Astra для предметной работы и уровней рассуждений задаёт [политика выбора](skills/codex-orchestration-pact/SKILL.md#model-and-reasoning-selection). Это рекомендации, не автоматическая настройка клиента. [Официальные гайды и основания адаптации](docs/sources.md#astra-и-sol-62--2026-11-18) объясняют изменения инструкций; измеренная эффективность не заявлена.
+
+Настройки подагентов находятся в agents/*.toml, а маршруты — в [portable route table](skills/codex-orchestration-pact/SKILL.md#portable-route-table). Результат прямой работы возвращается кратко в чате, если файл не назначен; при диспетчеризации предметные материалы остаются доступными субагентам по ссылкам, root получает только процессные поля. Формальная или strict-приёмка использует [канонический отчёт](skills/codex-orchestration-pact/references/templates/report.md). Новые тесты, валидаторы, скрипты и процессная автоматизация регулируются [общим правилом](skills/codex-orchestration-pact/SKILL.md#general-rule-for-verification-means).
 
 При диспетчеризации действует [критический инвариант](skills/codex-orchestration-pact/SKILL.md#dispatcher-invariant): root только запускает роли с исходной задачей дословно или точной ссылкой и IDs, без чтения предметных файлов/отчётов и без пересказа. Каждый субагент сам находит первоисточники и отчёты зависимостей, формулирует и фиксирует свою рабочую задачу. Применимые [требования проекта](skills/codex-orchestration-pact/SKILL.md#project-requirements) читает каждый предметный владелец до зависимых решений; для простой правки владелец читает их сам.
 
